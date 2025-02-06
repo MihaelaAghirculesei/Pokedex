@@ -1,0 +1,188 @@
+body {
+  display: flex;
+  flex-direction: column;
+  min-width: 100vh;
+  margin: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0,20px;
+  box-sizing: border-box;
+  background-image: url(./imgs/backgroung/Designer.jpeg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+/* ------------------------------------------- All abaut Header ------------------------------------------- */
+.header {
+  background-color: #0b6aa5;
+  border: 2px solid aqua;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.logo {
+  text-decoration: none;
+}
+
+.headline-box {
+  display: flex;
+  align-items: center;
+}
+
+.headline-icon {
+  width: 80px;
+  height: 80px;
+  margin-right: 10px;
+}
+
+.headline {
+  color: white;
+  margin: 0;
+}
+
+.search-input {
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+}
+
+
+/* ------------------------------------------- All abaut Pokedex Container ---------------------------- */
+.pokemon-content {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 1920px;
+  flex-direction: column;
+}
+
+.pokedex-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 50px;
+  padding: 50px;
+}
+
+/* ++++++++ All abaut ____ Cards ++++++++ */
+
+.pokemon-card {
+  border-radius: 20px;
+  padding: 20px;
+  border: 5px solid aqua;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  position: relative;
+  transition: transform 0.4s ease;
+  will-change: transform, filter;
+  cursor: pointer;
+}
+
+.pokemon-card:hover {
+  transform: translateY(-5px);
+  transform: scale(1.2);
+  box-shadow: 0 0 30px -5px white, 0 0 10px -7px white, 0 55px 35px -20px rgba(0, 0, 0, 0.5);
+}
+
+.pokemon-card img {
+  width: 120px;
+  height: 120px;
+}
+
+.pokemon-card h3 {
+  margin: 10px 0;
+  text-transform: capitalize;
+}
+
+.pokemon-card:hover:before,
+.pokemon-card:hover:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+    115deg,
+    transparent 20%,
+    var(--color1) 36%,
+    var(--color2) 43%,
+    var(--color3) 50%,
+    var(--color4) 57%,
+    var(--color5) 64%,
+    transparent 80%
+  );
+  background-position: 50% 50%;
+  background-size: 250% 250%;
+  mix-blend-mode: color-dodge;
+  opacity: 0.88;
+  filter: brightness(0.66) contrast(1.33);
+  transition: opacity 0.5s ease;
+}
+
+.pokemon-card {
+  --color1: #ff0000;
+  --color2: #00ff00;
+  --color3: #0000ff;
+  --color4: #ffff00;
+  --color5: #ff00ff;
+}
+
+/* ------------------------------------------- All abaut Footer ------------------------------------------- */
+.footer {
+  background-color: #0C3123;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80px;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex-grow: 1;
+}
+
+.footer {
+  width: 100%;
+}
+
+
+
+
+
+
+/* ++++++++ All abaut ____Card Footer ++++++++ */
+
+/* ++++++++  ++++++++ */
+
+/* ------------------------------------------- All abaut Section load ____ Button -------------------------- */
+
+
