@@ -44,18 +44,48 @@ function renderPokemon() {
     const pokedexContainer = document.getElementById('pokedex-container');
     pokedexContainer.innerHTML = '';
     pokemonDetails.forEach((pokemon, index) => {
-      const pokemonType = pokemon.types[0].type.name;
-      const backgroundColor = typeColor[pokemonType] || '#ffffff';
+      const pokemonTypes = pokemon.types.map(type => type.type.name);
+      const backgroundColor = typeColor[pokemonTypes[0]] || '#ffffff';
+      
+      let typeIconsHTML = '';
+      pokemonTypes.forEach(type => {
+        const typeIconSrc = getTypeIconSrc(type);
+        typeIconsHTML += `
+          <div class="type-item">
+            <img src="${typeIconSrc}" alt="${type}" class="type-icon">
+            <span>${type}</span>
+          </div>
+        `;
+      });
       
       pokedexContainer.innerHTML += `
         <div class="pokemon-card" style="background-color: ${backgroundColor}">
-          <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
-          <h3>${pokemon.name}</h3>
-          <p>Nr. ${pokemon.id}</p>
-          <p>Typ: ${pokemonType}</p>
+          <div class="card-header">
+            <h3 class="pokemon-name">${pokemon.name}</h3>
+            <p class="pokemon-number">Nr. ${pokemon.id}</p>
+          </div>
+          <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" class="pokemon-image">
+          <div class="type-container">
+            ${typeIconsHTML}
+          </div>
         </div>
       `;
     });
+  }
+  
+  function getTypeIconSrc(type) {
+    switch(type) {
+      case 'water': return 'imgs/icons/water.png';
+      case 'grass': return 'imgs/icons/grass.png';
+      case 'fire': return 'imgs/icons/fire.png';
+      case 'normal': return 'imgs/icons/normal.png';
+      case 'bug': return 'imgs/icons/bug.ia.png';
+      case 'poison': return 'imgs/icons/poison.png';
+      case 'electric': return 'imgs/icons/electric.ia.png';
+      case 'ground': return 'imgs/icons/ground.png';
+      case 'flying': return 'imgs/icons/flying.png';
+      default: return ''; // Fallback für andere Typen
+    }
   }
 
   cards.forEach(card => {
