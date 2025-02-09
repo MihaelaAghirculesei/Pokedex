@@ -6,33 +6,45 @@
     <link rel="icon" type="image/vnd.icon" href="imgs/icons/pokemon-ball.png">
     <title>Pokedex</title>
     <link rel="stylesheet" href="style.css">
-
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
-            <a class="logo" href="#footer">
+            <a class="logo" href="#" aria-label="Home">
                 <div class="headline-box">
-                    <img class="headline-icon" src="./imgs/icons/pokemon-ball.png" alt="">
+                    <img class="headline-icon" 
+                         src="./imgs/icons/pokemon-ball.png" 
+                         alt="Pokéball Icon"
+                         aria-hidden="true">
                     <h1 class="headline">Pokedex</h1>
                 </div>
             </a>
-            <input class="search-input" id="search-input" type="text" placeholder="Search">
+            <input class="search-input" 
+                   id="search-input" 
+                   type="text" 
+                   placeholder="Search"
+                   aria-label="Search Pokémon"
+                   autocomplete="off">
         </div>
     </header>
 
     <main class="pokemon-content">
-        <div id="pokedex-container" class="pokedex-container">
-            <!-- Hier werden die Pokemon-Karten eingefügt -->
+        <div id="loading" class="loading-indicator">Loading...</div>
+        <div id="pokedex-container" class="pokedex-container" aria-live="polite">
+            <!-- Dynamisch generierte Pokemon-Karten -->
         </div>
+        <div id="error-message" class="error-message" hidden></div>
     </main>
 
-    <footer id="footer" class="footer">
-        <a class="logo" href="#pokedex-container">
+    <footer class="footer">
+        <a class="logo" href="#" aria-label="Back to top">
             <div class="headline-box">
-                <img class="headline-icon" src="./imgs/icons/icon-pokemon.png" alt="">
-                <h1 class="headline">Pokedex</h1>
+                <img class="headline-icon" 
+                     src="./imgs/icons/icon-pokemon.png" 
+                     alt="Pokémon Logo"
+                     aria-hidden="true">
+                <h2 class="headline">Pokedex</h2>
             </div>
         </a>
     </footer>

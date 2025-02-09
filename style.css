@@ -17,7 +17,7 @@ body {
 
 /* ------------------------------------------- All abaut Header ------------------------------------------- */
 .header {
-  background-color: #0b6aa5;
+  background-color: #0a5485;
   border: 2px solid aqua;
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
@@ -98,6 +98,8 @@ body {
   overflow: hidden;
   padding: 15px;
   cursor: pointer;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .pokemon-card-header {
@@ -120,7 +122,6 @@ body {
   margin: 0;
 }
 
-/* Bild in der Mitte größer */
 .pokemon-image-container {
   display: flex;
   justify-content: center;
@@ -146,11 +147,12 @@ body {
   gap: 5px;
   border-radius: 15px;
   padding: 5px 10px;
-  color: white;
+  color: black !important;
   font-weight: bold;
   text-transform: capitalize;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.6); /* Dunkle Farbe */
+  background-color:aqua !important;
+  border: 3px solid black !important;
   transition: 0.3s;
   max-width: 120px;
   min-width: 90px;
@@ -200,21 +202,17 @@ body {
   font-weight: bold;
   text-transform: capitalize;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.6); /* Dunkle Farbe */
+  background-color: var(--type-color);
   transition: 0.3s;
   max-width: 120px;
   overflow: hidden;
 }
 
-.type-button:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-/* Typen-Icons */
 .type-icon {
-  width: 35px  !important;
+  width: 35px;
   height: 35px  !important;
-  object-fit: contain !important;
+  object-fit: contain;
+  background-color:aqua !important;
 }
 
 .pokemon-card:hover:before,
