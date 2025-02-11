@@ -2,7 +2,8 @@
 :root {
   --primary-color: #0a5485;
   --secondary-color: aqua;
-  --hover-shadow: 0 0 30px -5px white, 0 0 10px -7px white, 0 55px 35px -20px rgba(0, 0, 0, 0.5);
+  --hover-shadow: 0 0 30px -5px white, 0 0 10px -7px white,
+    0 55px 35px -20px rgba(0, 0, 0, 0.5);
   --font-family: Arial, sans-serif;
 }
 
@@ -39,19 +40,19 @@ main {
   z-index: 100;
 }
 
-.header-content {
+.header-content,
+.headline-box,
+.pokemon-card-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+}
+
+.header-content {
+  justify-content: space-between;
 }
 
 .logo {
   text-decoration: none;
-}
-
-.headline-box {
-  display: flex;
-  align-items: center;
 }
 
 .headline-icon {
@@ -105,14 +106,11 @@ main {
 
 .pokemon-card:hover {
   transform: scale(1.2) translateY(-5px);
-  box-shadow: 
-    0 0 30px -5px white, 
-    0 0 10px -7px white, 
+  box-shadow: 0 0 30px -5px white, 0 0 10px -7px white,
     0 55px 35px -10px rgba(0, 0, 0, 0.5);
 }
 
-.pokemon-card-header,
-.pokemon-card-footer {
+.pokemon-card-header {
   display: flex;
   justify-content: space-between;
 }
@@ -121,7 +119,7 @@ main {
   width: 100%;
   font-weight: bold;
   font-size: 16px;
-  border-bottom: 1px solid  aqua;
+  border-bottom: 1px solid aqua;
 }
 
 .pokemon-name {
@@ -136,8 +134,8 @@ main {
 }
 
 .pokemon-image {
-  width: auto; 
-  height: auto; 
+  width: auto;
+  height: auto;
 }
 
 .pokemon-image {
@@ -164,8 +162,8 @@ main {
   font-weight: bold;
   text-transform: capitalize;
   color: black !important;
-  background-color:aqua !important;
-  
+  background-color: aqua !important;
+
   cursor: pointer;
   transition: background-color 0.3s, filter 0.3s;
   max-width: 120px;
@@ -175,7 +173,7 @@ main {
 
 .type-button:hover {
   background-color: rgba(0, 0, 0, 0.8);
-    filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 1.1));
+  filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 1.1));
 }
 
 /* ------------------------------------------- All abaut Pokemon Card ------------------------------------------- */
@@ -204,9 +202,7 @@ main {
 
 .pokemon-card:hover {
   transform: translateY(-5px) scale(1.2);
-  box-shadow:
-    0 0 30px -5px white,
-    0 0 10px -7px white,
+  box-shadow: 0 0 30px -5px white, 0 0 10px -7px white,
     0 55px 35px -20px rgba(0, 0, 0, 0.5);
 }
 
@@ -244,24 +240,23 @@ main {
   padding: 5px 10px;
   border-radius: 15px;
   border: 3px solid black;
-  
+
   font-weight: bold;
   text-transform: capitalize;
-  color:black;
+  color: black;
 
   cursor: pointer;
   background-color: var(--type-color);
   transition: 0.3s;
   max-width: 120px;
   overflow: hidden;
- 
 }
 
 .type-icon {
   width: 35px;
   height: 35px !important;
   object-fit: contain;
-  background-color:aqua !important;
+  background-color: aqua !important;
 }
 
 .pokemon-card:hover:before,
@@ -353,17 +348,17 @@ main {
 
 @media (max-width: 320px) {
   .pokemon-card {
-      width: 90%;
-      height: 300px;
+    width: 90%;
+    height: 300px;
   }
-  
+
   .pokemon-image {
-      width: 150px !important;
-      height: 150px !important;
+    width: 150px !important;
+    height: 150px !important;
   }
-  
+
   .header-content {
-      flex-direction: column;
+    flex-direction: column;
   }
 }
 
@@ -376,7 +371,7 @@ main {
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
   font-size: 20px;
-  z-index: 1000; 
+  z-index: 1000;
 }
 
 .arrow-button {
@@ -398,5 +393,3 @@ main {
 .arrow-button.next {
   right: 10px;
 }
-
-

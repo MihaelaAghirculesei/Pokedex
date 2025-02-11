@@ -24,34 +24,35 @@ const typeColor = {
 
 async function init() {
   try {
-    await fetchPokemonData();
-    initSearch();
-    renderPokemon();
-  } catch (error) {
-    showError("Failed to load Pokémon data. Please try again later.");
-  }
-}
+    showLoading();
 
-async function fetchPokemonData() {
-  try {
     const response = await fetch(`${BASE_URL}pokemon?offset=${offset}&limit=${limit}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     const data = await response.json();
 
     const detailRequests = data.results.map((pokemon) => fetch(pokemon.url));
     const responses = await Promise.all(detailRequests);
     const newPokemonDetails = await Promise.all(responses.map((res) => res.json()));
-    
+
     pokemonDetails = [...pokemonDetails, ...newPokemonDetails];
     offset += limit;
 
+    initSearch();
+
     renderPokemon();
   } catch (error) {
-    console.error("Fetch error:", error);
-    throw error;
+    console.error("Error loading Pokémon data:", error);
+    showError("Failed to load Pokémon data. Please try again later.");
+  } finally {
+    hideLoading();
   }
 }
 
-document.getElementById('load-more').addEventListener('click', fetchPokemonData);
+document.getElementById('load-more').addEventListener('click', async () => {
+  await fetchPokemonData();
+});
 
 function initSearch() {
   const searchInput = document.getElementById("search-input");
@@ -78,14 +79,12 @@ function renderPokemon(pokemonArray = pokemonDetails) {
   const pokedexContainer = document.getElementById("pokedex-container");
   const fragment = document.createDocumentFragment();
 
-  pokedexContainer.innerHTML = "";
-
   pokemonArray.forEach((pokemon) => {
     const card = createPokemonCard(pokemon);
     fragment.appendChild(card);
   });
 
-  pokedexContainer.appendChild(fragment);
+  pokedexContainer.replaceChildren(fragment);
   addCardHoverEffects();
 }
 
@@ -173,6 +172,15 @@ function getTypeIconSrc(type) {
     electric: "imgs/icons/electric.png",
     ground: "imgs/icons/ground.png",
     flying: "imgs/icons/flying.png",
+    psychic: "imgs/icons/psychic.png",
+    fairy: "imgs/icons/fairy.png",
+    fighting: "imgs/icons/fighting.png",
+    rock: "imgs/icons/rock.png",
+    steel: "imgs/icons/steel.png",
+    ice: "imgs/icons/ice.png",
+   ghost: "imgs/icons/ghost.png",
+   dark: "imgs/icons/dark.png",
+   dragon: "imgs/icons/dragon.png"
   };
   return typeIcons[type] || "imgs/icons/default.png";
 }
@@ -222,29 +230,66 @@ function showPokemonDetails(pokemon) {
 }
 
 function createDetailsHTML(pokemon) {
+  const height = (pokemon.height / 10).toFixed(1);
+  const weight = (pokemon.weight / 10).toFixed(1);
+  const abilities = pokemon.abilities.map((a) => a.ability.name).join(", ");
+
   return `
-        <div class="details-header">
-            <h2>${pokemon.name}</h2>
-            <span>#${pokemon.id.toString().padStart(3, "0")}</span>
+    <div class="details-header">
+      <h2 style="display: inline-block; margin-right: 10px; text-transform: capitalize;">${pokemon.name}</h2>
+      <span style="display: inline-block;">#${pokemon.id.toString().padStart(3, "0")}</span>
+    </div>
+    <img src="${pokemon.sprites.other["official-artwork"].front_default}" 
+         alt="${pokemon.name}" 
+         class="details-image">
+    
+    <div class="tab-container">
+      <button class="tab-button active" onclick="openTab(event, 'About')">About</button>
+      <button class="tab-button" onclick="openTab(event, 'BaseStats')">Base Stats</button>
+      <button class="tab-button" onclick="openTab(event, 'Evolution')">Evolution</button>
+      <button class="tab-button" onclick="openTab(event, 'Moves')">Moves</button>
+      <button class="tab-button" onclick="openTab(event, 'Location')">Location</button>
+    </div>
+
+    <div id="About" class="tab-content" style="display: block;">
+      <p><strong>Species:</strong> ${pokemon.species.name}</p>
+      <p><strong>Height:</strong> ${height} m</p>
+      <p><strong>Weight:</strong> ${weight} kg</p>
+      <p><strong>Abilities:</strong> ${abilities}</p>
+      <p><strong>Breeding:</strong></p>
+      <p>- Gender: [API-Daten erforderlich]</p>
+      <p>- Egg Groups: [API-Daten erforderlich]</p>
+      <p>- Egg Cycle: [API-Daten erforderlich]</p>
+    </div>
+
+    <div id="BaseStats" class="tab-content">
+      <h3>Base Stats</h3>
+      ${pokemon.stats.map(stat => `
+        <div class="stat-row">
+          <span>${stat.stat.name}</span>
+          <progress value="${stat.base_stat}" max="200"></progress>
+          <span>${stat.base_stat}</span>
         </div>
-        <img src="${pokemon.sprites.other["official-artwork"].front_default}" 
-             alt="${pokemon.name}" 
-             class="details-image">
-        <div class="stats-container">
-            ${pokemon.stats
-              .map(
-                (stat) => `
-                <div class="stat-row">
-                    <span>${stat.stat.name}</span>
-                    <progress value="${stat.base_stat}" max="200"></progress>
-                    <span>${stat.base_stat}</span>
-                </div>
-            `
-              )
-              .join("")}
-        </div>
-    `;
+      `).join("")}
+    </div>
+
+  `;
 }
+
+function openTab(evt, tabName) {
+  var i, tabContent, tabButtons;
+  tabContent = document.getElementsByClassName("tab-content");
+  for (i = 0; i < tabContent.length; i++) {
+    tabContent[i].style.display = "none";
+  }
+  tabButtons = document.getElementsByClassName("tab-button");
+  for (i = 0; i < tabButtons.length; i++) {
+    tabButtons[i].className = tabButtons[i].className.replace(" active", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
 
 function createCardHeader(pokemon) {
   return `
@@ -273,28 +318,36 @@ function createCardFooter(types) {
 const loadingIndicator = document.getElementById('loading');
 const loadMoreButton = document.getElementById('load-more');
 
+const pokemonCache = {};
+
 async function fetchPokemonData() {
-  showLoading(); // Zeige den Ladebildschirm
-  loadMoreButton.disabled = true; // Deaktiviere den Button
+  showLoading();
+  loadMoreButton.disabled = true;
 
   try {
     const response = await fetch(`${BASE_URL}pokemon?offset=${offset}&limit=${limit}`);
     const data = await response.json();
 
-    const detailRequests = data.results.map((pokemon) => fetch(pokemon.url));
-    const responses = await Promise.all(detailRequests);
-    const newPokemonDetails = await Promise.all(responses.map((res) => res.json()));
+    const newPokemonDetails = await Promise.all(data.results.map(async (pokemon) => {
+      if (pokemonCache[pokemon.name]) {
+        return pokemonCache[pokemon.name];
+      } else {
+        const res = await fetch(pokemon.url);
+        const details = await res.json();
+        pokemonCache[pokemon.name] = details;
+        return details;
+      }
+    }));
 
     pokemonDetails = [...pokemonDetails, ...newPokemonDetails];
     offset += limit;
-
     renderPokemon();
   } catch (error) {
     console.error("Fetch error:", error);
     showError("Failed to load Pokémon data. Please try again later.");
   } finally {
-    hideLoading(); // Verstecke den Ladebildschirm
-    loadMoreButton.disabled = false; // Aktiviere den Button wieder
+    hideLoading();
+    loadMoreButton.disabled = false;
   }
 }
 
