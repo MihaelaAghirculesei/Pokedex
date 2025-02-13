@@ -2,17 +2,18 @@
 :root {
   --primary-color: #0a5485;
   --secondary-color: aqua;
-  --hover-shadow: 0 0 30px -5px white, 0 0 10px -7px white,
-    0 55px 35px -20px rgba(0, 0, 0, 0.5);
+  --hover-shadow: 0 0 30px -5px white, 0 0 10px -7px white, 0 55px 35px -20px rgba(0, 0, 0, 0.5);
   --font-family: Arial, sans-serif;
+  --card-width: 250px;
+  --card-height: 350px;
+  --border-radius: 20px;
+  --type-color: aqua;
 }
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
 body {
   display: flex;
   flex-direction: column;
@@ -24,51 +25,40 @@ body {
   background-size: cover;
   background-attachment: fixed;
 }
-
 main {
   flex-grow: 1;
 }
-
 /* ------------------------------------------- All abaut Header ------------------------------------------- */
 .header {
   background-color: var(--primary-color);
   border: 2px solid var(--secondary-color);
-  border-radius: 20px;
-  padding: 10px;
+  border-radius: var(--border-radius);
+  padding: var(--padding);
   position: sticky;
   top: 0;
   z-index: 100;
 }
-
 .header-content,
 .headline-box,
 .pokemon-card-footer {
   display: flex;
   align-items: center;
-}
-
-.header-content {
   justify-content: space-between;
 }
-
 .logo {
   text-decoration: none;
 }
-
 .headline-icon {
   width: 80px;
 }
-
 .headline {
   color: white;
 }
-
 .search-input {
   padding: 10px;
-  border-radius: 20px;
+  border-radius: var(--border-radius);
 }
-
-/* ------------------------------------------- All abaut Main Content ---------------------------- */
+/* ------------------------------------------- All abaut Main Content ------------------------------------------- */
 .pokemon-content {
   max-width: 1440px;
   margin: 0 auto;
@@ -76,7 +66,6 @@ main {
   flex-direction: column;
   align-items: center;
 }
-
 .pokedex-container {
   display: flex;
   justify-content: center;
@@ -84,98 +73,77 @@ main {
   gap: 50px;
   padding: 50px;
 }
-
 .pokemon-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   position: relative;
-
   width: 250px;
   height: 350px;
   padding: 15px;
-
-  border: 3px solid aqua;
-  border-radius: 20px;
+  border: 3px solid var(--secondary-color);
+  border-radius: var(--border-radius);
   overflow: hidden;
-
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .pokemon-card:hover {
-  transform: scale(1.2) translateY(-5px);
-  box-shadow: 0 0 30px -5px white, 0 0 10px -7px white,
-    0 55px 35px -10px rgba(0, 0, 0, 0.5);
+  transform: translateY(-5px) scale(1.2);
+  box-shadow: var(--hover-shadow);
 }
-
 .pokemon-card-header {
   display: flex;
   justify-content: space-between;
-}
-
-.pokemon-card-header {
   width: 100%;
   font-weight: bold;
   font-size: 16px;
   border-bottom: 1px solid aqua;
 }
-
 .pokemon-name {
   font-size: 25px;
 }
-
 .pokemon-image-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 200px;
 }
-
 .pokemon-image {
   width: auto;
   height: auto;
 }
-
 .pokemon-image {
   width: 240px !important;
   height: 240px !important;
   transition: transform 0.3s ease;
 }
-
 .pokemon-card:hover .pokemon-image {
   transform: scale(1.1);
   cursor: pointer;
 }
-
 .type-button {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-
   padding: 5px 10px;
   border-radius: 15px;
   border: 3px solid black !important;
-
   font-weight: bold;
   text-transform: capitalize;
   color: black !important;
   background-color: aqua !important;
-
   cursor: pointer;
   transition: background-color 0.3s, filter 0.3s;
   max-width: 120px;
   min-width: 90px;
   height: 50px !important;
 }
-
 .type-button:hover {
   background-color: rgba(0, 0, 0, 0.8);
   filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 1.1));
 }
-
 /* ------------------------------------------- All abaut Pokemon Card ------------------------------------------- */
 .pokemon-card {
   --color1: #ff000045;
@@ -188,77 +156,60 @@ main {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-
   width: 250px;
   height: 350px;
   padding: 15px;
-
   border-radius: 20px;
   overflow: hidden;
-
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .pokemon-card:hover {
   transform: translateY(-5px) scale(1.2);
   box-shadow: 0 0 30px -5px white, 0 0 10px -7px white,
     0 55px 35px -20px rgba(0, 0, 0, 0.5);
 }
-
 .pokemon-card img {
   width: 120px;
   height: 120px;
 }
-
 .pokemon-card h3 {
   margin: 10px 0;
   text-transform: capitalize;
 }
-
 .pokemon-card-footer {
   display: flex;
   justify-content: center;
   align-items: center;
-
   width: 100%;
   height: 35px;
-
   padding: 10px 0;
   gap: 10px;
-
   border-radius: 20px;
 }
-/* sono rimasta qui */
-
 .type-button {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-
   padding: 5px 10px;
   border-radius: 15px;
   border: 3px solid black;
-
   font-weight: bold;
   text-transform: capitalize;
   color: black;
-
   cursor: pointer;
   background-color: var(--type-color);
   transition: 0.3s;
   max-width: 120px;
   overflow: hidden;
 }
-
 .type-icon {
-  width: 35px;
+  width: 35px !important;
   height: 35px !important;
   object-fit: contain;
   background-color: aqua !important;
 }
-
 .pokemon-card:hover:before,
 .pokemon-card:hover:after {
   content: "";
@@ -284,39 +235,116 @@ main {
   filter: brightness(0.66) contrast(1.33);
   transition: opacity 0.5s ease;
 }
-
-/* ++++++++ All abaut Overlay Cards ++++++++ */
+/* ------------------------------------------- All abaut Overlay Cards ------------------------------------------- */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 999;
 }
-
+.detail-overlay {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+}
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+}
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .details-card {
   background: white;
-  padding: 2rem;
+  padding: 3rem;
   border-radius: 15px;
   max-width: 90%;
   position: relative;
+  color: #333;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 90vh;
+  overflow-y: auto;
 }
-
 .no-scroll {
   overflow: hidden;
 }
-
 .load-more-btn {
   padding: 1rem 2rem;
   margin: 2rem auto;
   display: block;
 }
-
+#access .stat-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #00698f;
+}
+#access .stat-row {
+  background-color: #f7f7f7;
+  padding: 1rem;
+  border-top: 1px solid #ddd;
+}
+#About .tab-table table {
+  font-size: 1.1rem;
+  width: 100%;
+  border-collapse: collapse;
+}
+#About .tab-table tr {
+  border-bottom: 1px solid #ddd;
+}
+#About .tab-table th,
+#About .tab-table td {
+  padding: 1rem;
+  text-align: left;
+}
+#About .tab-table th {
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
+.arrow-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #f0f0f0;
+  width: 40px;
+  height: 60px;
+  border-radius: 8px;
+  font-size: 24px;
+  transition: all 0.3s;
+  background-color: aqua;
+  color: rgb(7, 7, 7);
+  cursor: pointer;
+  z-index: 1001;
+}
+.arrow-button:hover {
+  background: rgba(255, 255, 255, 0.8);
+  color: #000;
+}
+.arrow-button.prev {
+  left: 10px;
+}
+.arrow-button.next {
+  right: 10px;
+}
+.loading-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  font-size: 20px;
+  z-index: 1000;
+}
 /* ------------------------------------------- All abaut Footer ------------------------------------------- */
 .footer {
   background-color: rgb(1, 48, 9);
@@ -331,65 +359,52 @@ main {
   width: 100%;
   height: 80px;
 }
-
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-main {
-  flex-grow: 1;
-}
-
 .footer {
   width: 100%;
 }
-
-@media (max-width: 320px) {
-  .pokemon-card {
-    width: 90%;
-    height: 300px;
-  }
-
-  .pokemon-image {
-    width: 150px !important;
-    height: 150px !important;
-  }
-
+/* ------------------------------------------- All abaut Responsive ------------------------------------------- */
+@media (max-width: 431px) {
   .header-content {
     flex-direction: column;
   }
 }
-
-.loading-indicator {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 10px;
-  font-size: 20px;
-  z-index: 1000;
+@media (max-width: 365px) {
+  .header-content {
+    width: auto;
+  }
+  .pokedex-container {
+    padding: 20px;
+  }
 }
-
-.arrow-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  z-index: 1001;
+@media (max-width: 310px) {
+  .pokemon-card {
+    width: 90%;
+    height: 300px;
+  }
+  .pokemon-image {
+    width: 150px !important;
+    height: 150px !important;
+  }
+  .header-content {
+    flex-direction: column;
+  }
+  .overlay {
+    max-width: 90vw;
+    font-size: 0.9rem;
+  }
+  .arrow-button {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: #f0f0f0;
+  }
+  table {
+    display: flex;
+    flex-direction: column;
+  }
 }
-
-.arrow-button.prev {
-  left: 10px;
-}
-
-.arrow-button.next {
-  right: 10px;
+@media (min-width: 5em) {
+  .details-image {
+    width: 80%;
+  }
 }
