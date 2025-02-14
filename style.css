@@ -1,9 +1,9 @@
-/* ------------------------------------------- All abaut Global Styles ------------------------------------------- */
 :root {
   --primary-color: #0a5485;
   --secondary-color: aqua;
   --table-border-color: black;
-  --hover-shadow: 0 0 30px -5px white, 0 0 10px -7px white, 0 55px 35px -20px rgba(0, 0, 0, 0.5);
+  --hover-shadow: 0 0 30px -5px white, 0 0 10px -7px white,
+    0 55px 35px -20px rgba(0, 0, 0, 0.5);
   --font-family: Arial, sans-serif;
   --card-width: 250px;
   --card-height: 350px;
@@ -29,7 +29,7 @@ body {
 main {
   flex-grow: 1;
 }
-/* ------------------------------------------- All abaut Header ------------------------------------------- */
+
 .header {
   background-color: var(--primary-color);
   border: 2px solid var(--secondary-color);
@@ -43,8 +43,11 @@ main {
 .headline-box,
 .pokemon-card-footer {
   display: flex;
+  flex-direction: row;
+  justify-content: space-around;
   align-items: center;
-  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
 }
 .logo {
   text-decoration: none;
@@ -59,7 +62,7 @@ main {
   padding: 10px;
   border-radius: var(--border-radius);
 }
-/* ------------------------------------------- All abaut Main Content ------------------------------------------- */
+
 .pokemon-content {
   max-width: 1440px;
   margin: 0 auto;
@@ -141,11 +144,18 @@ main {
   min-width: 90px;
   height: 50px !important;
 }
+.type-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 5px;
+}
 .type-button:hover {
   background-color: rgba(0, 0, 0, 0.8);
   filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 1.1));
+  margin-bottom: 5px;
 }
-/* ------------------------------------------- All abaut Pokemon Card ------------------------------------------- */
+
 .pokemon-card {
   --color1: #ff000045;
   --color2: #00ff0048;
@@ -236,7 +246,7 @@ main {
   filter: brightness(0.66) contrast(1.33);
   transition: opacity 0.5s ease;
 }
-/* ------------------------------------------- All abaut Overlay Cards ------------------------------------------- */
+
 .overlay {
   position: fixed;
   top: 0;
@@ -265,64 +275,60 @@ main {
   align-items: center;
 }
 .details-card {
-  background: white;
-  padding: 3rem;
+  background-image: url(./imgs/background/background-water.jpg);
+
+  padding: 1.5rem;
   border-radius: 15px;
   max-width: 90%;
   position: relative;
   color: #333;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-height: 160vh;
-  height: 800px;
+  height: 900px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 .details-header {
   display: flex;
-  justify-content: space-between; /* Verteilt Elemente horizontal */
-  align-items: center; /* Vertikal zentriert */
+  justify-content: space-between;
+  align-items: center;
 }
-
+.details-image {
+  background-color: url(./imgs/background/background-water.jpg);
+  padding: 10px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
 .details-header span {
-  margin-left: auto; /* Schiebt den Span nach rechts */
+  margin-left: auto;
 }
-
-/* Tab Buttons */
+#arrowDiv {
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
 .tab-container {
   display: flex;
-  justify-content: center; /* Zentriert die Buttons */
+  justify-content: center;
 }
-
 .tab-button {
-  font-size: 1.5rem; /* Größe eines h3 */
+  font-size: 1.5rem;
   text-align: center;
-  background-color: var(--secondary-color); /* Aqua-Hintergrund */
+  background-color: var(--secondary-color);
   color: black;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 5px;
   margin: 5px;
-  border: 1px solid black; /* Schwarzer Rand */
-  border-bottom: 5px solid black; /* Untere Border */
+  border: 1px solid black;
+  border-bottom: 5px solid black;
 }
-
 .tab-button.active {
   font-weight: bold;
-  /*Optionale zusätzliche Stile für den aktiven Button*/
-}
-.footer {
-  background-color: rgb(1, 48, 9);
-  color: rgb(11, 11, 11);
-  text-align: center;
-  padding: 20px;
-  margin-top: 50px;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 80px;
-  position: relative;
 }
 
 .no-scroll {
@@ -332,6 +338,7 @@ main {
   padding: 1rem 2rem;
   margin: 2rem auto;
   display: block;
+  cursor: pointer;
 }
 #access .stat-name {
   font-size: 1.2rem;
@@ -359,29 +366,22 @@ main {
 }
 #About .tab-table th {
   font-weight: bold;
-  background-color: #f0f0f0;
+  background-color: url(./imgs/background/background-water.jpg);
 }
 .arrow-button {
-  position: absolute; /*Positioniert die Pfeile absolut*/
-  bottom: 0; /*Positioniert am unteren Rand*/
-  width: 40px; /*Legt die Breite der Pfeile fest*/
-  height: 60px; /*Legt die Höhe der Pfeile fest*/
-  border-radius: 8px; /*Rundet die Ecken ab*/
-  font-size: 24px; /*Legt die Schriftgröße fest*/
-  transition: all 0.3s; /*Fügt eine Übergangsanimation hinzu*/
-  background-color: aqua; /*Legt die Hintergrundfarbe fest*/
-  color: rgb(7, 7, 7); /*Legt die Textfarbe fest*/
-  cursor: pointer; /*Ändert den Cursor in einen Zeiger*/
+  width: 40px;
+  height: 60px;
+  border-radius: 8px;
+  font-size: 24px;
+  transition: all 0.3s;
+  background-color: aqua;
+  color: rgb(7, 7, 7);
+  cursor: pointer;
 }
+
 .arrow-button:hover {
   background: rgba(255, 255, 255, 0.8);
   color: #000;
-}
-.arrow-button.prev {
-  left: 10px;
-}
-.arrow-button.next {
-  right: 10px;
 }
 .loading-indicator {
   position: fixed;
@@ -394,27 +394,51 @@ main {
   font-size: 20px;
   z-index: 1000;
 }
-/* ------------------------------------------- All abaut Footer ------------------------------------------- */
+
 .footer {
   background-color: rgb(1, 48, 9);
   color: rgb(11, 11, 11);
   text-align: center;
   padding: 20px;
   margin-top: 50px;
-  margin-bottom: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 80px;
+  height: 100px;
 }
+
+.button {
+  font-size: 1rem;
+  text-align: center;
+  background-color: var(--secondary-color);
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 5px;
+  border: 1px solid black;
+  border-bottom: 5px solid black;
+}
+
 .footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
   width: 100%;
-}
-/* ------------------------------------------- All abaut Responsive ------------------------------------------- */
-@media (max-width: 431px) {
-  .header-content {
-    flex-direction: column;
+  padding: 10px;
+  box-sizing: border-box;
+
+  .arrow-button {
+    position: fixed;
+    transform: none;
+    margin: 0;
+    width: auto;
+    height: auto;
+    padding: 5px 10px;
+    font-size: 16px;
   }
 }
 @media (max-width: 365px) {
@@ -423,6 +447,9 @@ main {
   }
   .pokedex-container {
     padding: 20px;
+  }
+  .tab-button {
+    font-size: 18px;
   }
 }
 @media (max-width: 310px) {
@@ -434,15 +461,12 @@ main {
     width: 150px !important;
     height: 150px !important;
   }
-  .header-content {
-    flex-direction: column;
-  }
   .overlay {
     max-width: 90vw;
     font-size: 0.9rem;
   }
   .arrow-button {
-    position: fixed;
+    position: static;
     top: 10px;
     left: 10px;
     background-color: #f0f0f0;
@@ -457,29 +481,27 @@ main {
     width: 80%;
   }
 }
-
 @media (max-width: 431px) {
+  .header-content {
+    flex-direction: column;
+  }
   #About .tab-table table {
-    font-size: 0.8rem; /* Kleinere Schriftgröße */
+    font-size: 0.8rem;
   }
-
-  /* Fixierte Arrow Buttons im Footer */
-  .arrow-button {
-    position: static; /* Entfernt die absolute Positionierung */
-    transform: none; /* Entfernt die Transformation */
-    margin: 10px; /* Fügt etwas Abstand hinzu */
-  }
-
   .details-card {
     display: flex;
     flex-direction: column;
-    transition: opacity 0.3s ease; /* Füge eine Transition für die Deckkraft hinzu */
+    transition: opacity 0.3s ease;
   }
-
+  .arrow-button {
+    position: static;
+    transform: none;
+    margin: 10px;
+  }
+  .search-input {
+    margin: 3px;
+  }
   .footer {
-    display: flex;
-    flex-direction: row; /* Ordnet die Buttons nebeneinander an */
-    justify-content: center; /* Zentriert die Buttons horizontal */
-    align-items: center; /* Zentriert die Buttons vertikal */
+    font-size: small;
   }
 }
