@@ -1,0 +1,7 @@
+# Diese Datei darf NICHT gelöscht werden. 
+# Sie sorgt dafür, dass deine Übungsprojekte nicht bei Google gefunden werden. 
+# Somit findet niemand in der Zukunft deine ersten Anfängerprojekte. ;-)
+# Wenn du diese Datei löschst oder veränderst, wird diese Datei automatisch wieder hergestellt.
+
+User-agent: *
+Disallow: /
