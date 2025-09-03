@@ -323,7 +323,66 @@ function resetCard() {
   this.style.setProperty("--y", "50%");
 }
 
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", () => {
+  init();
+  // Delay logo animation setup to ensure footer is rendered
+  setTimeout(() => {
+    initLogoAnimation();
+  }, 1000);
+});
+
+/**
+ * Initializes logo animation for footer
+ */
+function initLogoAnimation() {
+  const footerLogo = document.querySelector('.footer .headline-icon');
+  if (footerLogo) {
+    const observer = createLogoObserver();
+    observer.observe(footerLogo);
+  }
+}
+
+/**
+ * Creates intersection observer for logo animation
+ */
+function createLogoObserver() {
+  const observer = new IntersectionObserver((entries, obs) => {
+    handleLogoIntersection(entries, obs);
+  }, getObserverOptions());
+  return observer;
+}
+
+/**
+ * Handles logo intersection event
+ */
+function handleLogoIntersection(entries, observer) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      triggerLogoAnimation(entry.target);
+      observer.unobserve(entry.target);
+    }
+  });
+}
+
+/**
+ * Triggers logo animation by resetting and adding class
+ */
+function triggerLogoAnimation(element) {
+  element.classList.remove('animate-logo');
+  setTimeout(() => {
+    element.classList.add('animate-logo');
+  }, 10);
+}
+
+/**
+ * Gets observer configuration options
+ */
+function getObserverOptions() {
+  return {
+    threshold: 0.5,
+    rootMargin: '0px'
+  };
+}
 
 /**
  * Creates the details HTML for a Pokémon.
