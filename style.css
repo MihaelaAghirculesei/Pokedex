@@ -6,6 +6,31 @@
   margin-top: -8px !important;
   transform: translateY(-7px) !important;
 }
+
+@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .search-input {
+    transform: translateY(-3px) !important;
+    margin-top: 0px !important;
+  }
+}
+
+@media (width: 768px) {
+  .search-input {
+    transform: translateY(-1px) !important;
+  }
+}
+
+@media (width: 540px) and (height: 720px) {
+  .search-input {
+    transform: translateY(1px) !important;
+  }
+}
+
+@media (width: 1280px) and (height: 800px) {
+  .search-input {
+    transform: translateY(1px) !important;
+  }
+}
 .pokemon-content {
   max-width: 1440px;
   margin: 0 auto;
