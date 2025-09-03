@@ -76,11 +76,7 @@ async function fetchPokemonData() {
   const pokemonCache = {};
   try {
     await manageFetchLoading();
-    const data = await fetchPokemons();
-    const newPokemonDetails = await fetchPokemonDetails(
-      data.results,
-      pokemonCache
-    );
+    const newPokemonDetails = await fetchAndProcessPokemonData(pokemonCache);
     pokemonDetails.push(...newPokemonDetails);
     offset += limit;
     renderPokemon();
@@ -89,6 +85,17 @@ async function fetchPokemonData() {
   } finally {
     resetFetchLoading();
   }
+}
+
+/**
+ * Fetches and processes Pokémon data from the API.
+ * @async
+ * @param {Object} cache - Cache object for Pokémon details.
+ * @returns {Promise<Array>} Array of processed Pokémon details.
+ */
+async function fetchAndProcessPokemonData(cache) {
+  const data = await fetchPokemons();
+  return await fetchPokemonDetails(data.results, cache);
 }
 
 /**
@@ -255,32 +262,37 @@ function displayError(message) {
 }
 
 /**
+ * Mapping of Pokémon types to their icon file paths.
+ * @constant {Object}
+ */
+const TYPE_ICONS = {
+  water: "imgs/icons/water.png",
+  grass: "imgs/icons/grass.png",
+  fire: "imgs/icons/fire.png",
+  normal: "imgs/icons/normal.png",
+  bug: "imgs/icons/bug.png",
+  poison: "imgs/icons/poison.png",
+  electric: "imgs/icons/electric.png",
+  ground: "imgs/icons/ground.png",
+  flying: "imgs/icons/flying.png",
+  psychic: "imgs/icons/psychic.png",
+  fairy: "imgs/icons/fairy.png",
+  fighting: "imgs/icons/fighting.png",
+  rock: "imgs/icons/rock.png",
+  steel: "imgs/icons/steel.png",
+  ice: "imgs/icons/ice.png",
+  ghost: "imgs/icons/ghost.png",
+  dark: "imgs/icons/dark.png",
+  dragon: "imgs/icons/dragon.png",
+};
+
+/**
  * Retrieves the icon source for a given Pokémon type.
  * @param {string} type - The Pokémon type.
  * @returns {string} The file path of the corresponding type icon.
  */
 function getTypeIconSrc(type) {
-  const typeIcons = {
-    water: "imgs/icons/water.png",
-    grass: "imgs/icons/grass.png",
-    fire: "imgs/icons/fire.png",
-    normal: "imgs/icons/normal.png",
-    bug: "imgs/icons/bug.png",
-    poison: "imgs/icons/poison.png",
-    electric: "imgs/icons/electric.png",
-    ground: "imgs/icons/ground.png",
-    flying: "imgs/icons/flying.png",
-    psychic: "imgs/icons/psychic.png",
-    fairy: "imgs/icons/fairy.png",
-    fighting: "imgs/icons/fighting.png",
-    rock: "imgs/icons/rock.png",
-    steel: "imgs/icons/steel.png",
-    ice: "imgs/icons/ice.png",
-    ghost: "imgs/icons/ghost.png",
-    dark: "imgs/icons/dark.png",
-    dragon: "imgs/icons/dragon.png",
-  };
-  return typeIcons[type] || "imgs/icons/default.png";
+  return TYPE_ICONS[type] || "imgs/icons/default.png";
 }
 
 /**
@@ -332,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * Initializes logo animation for footer
+ * Initializes logo animation for footer when it becomes visible.
  */
 function initLogoAnimation() {
   const footerLogo = document.querySelector('.footer .headline-icon');
@@ -343,45 +355,36 @@ function initLogoAnimation() {
 }
 
 /**
- * Creates intersection observer for logo animation
+ * Creates an intersection observer for logo animation.
+ * @returns {IntersectionObserver} The configured observer.
  */
 function createLogoObserver() {
-  const observer = new IntersectionObserver((entries, obs) => {
-    handleLogoIntersection(entries, obs);
-  }, getObserverOptions());
-  return observer;
+  return new IntersectionObserver(handleLogoIntersection, { 
+    threshold: 0.5, 
+    rootMargin: '0px' 
+  });
 }
 
 /**
- * Handles logo intersection event
+ * Handles logo intersection events for animation.
+ * @param {IntersectionObserverEntry[]} entries - The observed entries.
  */
-function handleLogoIntersection(entries, observer) {
+function handleLogoIntersection(entries) {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      triggerLogoAnimation(entry.target);
-      observer.unobserve(entry.target);
+      animateLogoEntry(entry);
     }
   });
 }
 
 /**
- * Triggers logo animation by resetting and adding class
+ * Animates logo when it enters the viewport.
+ * @param {IntersectionObserverEntry} entry - The intersection entry.
  */
-function triggerLogoAnimation(element) {
-  element.classList.remove('animate-logo');
-  setTimeout(() => {
-    element.classList.add('animate-logo');
-  }, 10);
-}
-
-/**
- * Gets observer configuration options
- */
-function getObserverOptions() {
-  return {
-    threshold: 0.5,
-    rootMargin: '0px'
-  };
+function animateLogoEntry(entry) {
+  entry.target.classList.remove('animate-logo');
+  setTimeout(() => entry.target.classList.add('animate-logo'), 10);
+  entry.target.observer?.unobserve(entry.target);
 }
 
 /**
@@ -429,14 +432,12 @@ function openTab(evt, tabName) {
  * Hides all tab contents and removes active state from tab buttons.
  */
 function hideAllTabs() {
-  const tabContent = document.getElementsByClassName("tab-content");
-  for (let i = 0; i < tabContent.length; i++) {
-    tabContent[i].style.display = "none";
-  }
-  const tabButtons = document.getElementsByClassName("tab-button");
-  for (let i = 0; i < tabButtons.length; i++) {
-    tabButtons[i].classList.remove("active");
-  }
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.style.display = "none";
+  });
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.classList.remove("active");
+  });
 }
 /**
  * Displays the specified tab content.

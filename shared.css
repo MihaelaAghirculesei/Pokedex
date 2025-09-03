@@ -1,0 +1,141 @@
+/* ===============================================
+   SHARED STYLES FOR POKEDEX PAGES
+   =============================================== */
+
+/* CSS Custom Properties */
+:root {
+  --primary-color: #0a5485;
+  --secondary-color: aqua;
+  --table-border-color: black;
+  --hover-shadow: 0 0 30px -5px white, 0 0 10px -7px white,
+    0 55px 35px -20px rgba(0, 0, 0, 0.5);
+  --font-family: Arial, sans-serif;
+  --card-width: 250px;
+  --card-height: 350px;
+  --border-radius: 20px;
+  --type-color: aqua;
+  --padding: 20px;
+  --transition-duration: 0.3s;
+}
+
+/* Body base styles */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: var(--font-family);
+  background-image: url(./imgs/background/Designer.jpeg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  margin: 0;
+}
+
+/* Logo animations */
+@keyframes bounce {
+  0%, 100% { transform: rotate(0deg) scale(1.1); }
+  25% { transform: rotate(90deg) scale(1.2); }
+  50% { transform: rotate(180deg) scale(1.15); }
+  75% { transform: rotate(270deg) scale(1.2); }
+}
+
+@keyframes spinLogo {
+  0% {
+    transform: rotate(0deg) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: rotate(360deg) scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: rotate(720deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Headline icon base styles */
+.headline-icon {
+  width: 80px;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+}
+
+.header .headline-icon {
+  animation: spinLogo 2s ease-in-out;
+}
+
+.headline-icon:hover {
+  transform: rotate(360deg) scale(1.1);
+  filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8));
+  animation: bounce 0.6s ease-in-out;
+}
+
+/* Headline text */
+.headline {
+  color: white;
+}
+
+/* Footer styles */
+.footer {
+  background-color: rgb(1, 48, 9);
+  border: 2px solid var(--secondary-color);
+  border-radius: var(--border-radius);
+  color: rgb(11, 11, 11);
+  text-align: center;
+  padding: var(--padding);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.headline-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Button styles */
+.button {
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #00e6e6 100%);
+  color: black;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  border-radius: 25px;
+  margin: 5px;
+  border: 3px solid black;
+  box-shadow: 0 4px 10px rgba(0, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 255, 255, 0.5);
+  background: linear-gradient(135deg, #00e6e6 0%, var(--secondary-color) 100%);
+}
+
+.button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 255, 255, 0.3);
+}
+
+/* Logo styles */
+.logo {
+  text-decoration: none;
+}
+
+/* Headline box */
+.headline-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

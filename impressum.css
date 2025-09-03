@@ -1,33 +1,14 @@
-:root {
-  --primary-color: #aa1704;
-  --secondary-color: aqua;
-  --table-border-color: black;
-  --hover-shadow: 0 0 30px -5px white, 0 0 10px -7px white,
-    0 55px 35px -20px rgba(0, 0, 0, 0.5);
-  --font-family: Arial, sans-serif;
-  --card-width: 250px;
-  --card-height: 350px;
-  --border-radius: 20px;
-  --type-color: aqua;
-}
 body {
-  background-repeat: no-repeat;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-position: center;
-  margin: 0;
   width: 100%;
 }
 header {
   background-color: var(--primary-color);
   border: 2px solid var(--secondary-color);
+  border-radius: var(--border-radius);
   padding: var(--padding);
-  height: 144px;
+  position: sticky;
   top: 0;
   z-index: 100;
-  display: flex;
-  justify-content: center;
 }
 .header-content {
   display: flex;
@@ -35,39 +16,46 @@ header {
   justify-content: center;
   max-width: 1440px;
 }
-.logo {
-  text-decoration: none;
-}
-.headline-icon {
-  width: 80px;
+/* Footer logo animation for impressum page */
+footer .headline-icon {
+  animation: spinLogo 2s ease-in-out;
 }
 main {
   flex: 1;
   width: 100%;
-  background-image: url(./imgs/background/background-electric.jpg);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
 }
 .main-wrapper {
-  text-align: center;
-  color: rgb(158, 7, 7);
-  z-index: 2;
+  max-width: 800px;
+  margin: 10px auto;
+  padding: 0 30px;
+  background-color: rgba(0, 0, 0, 0.50);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  line-height: 1.7;
+  font-size: 1.05rem;
 }
-footer {
-  background-color: #aa1704;
-  color: rgb(11, 11, 11);
-  text-align: center;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 144px;
-  justify-content: center;
+.main-wrapper a[href^="mailto:"],
+.main-wrapper a[href*="adsimple.de"] {
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-decoration: underline;
+  transition: all 0.2s ease;
+}
+.main-wrapper a[href^="mailto:"]:hover,
+.main-wrapper a[href*="adsimple.de"]:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.footer {
+  margin-top: 0;
 }
 .headline-box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin-right: 20px;
 }
 
@@ -86,16 +74,38 @@ footer {
   background-color: rgba(0, 0, 0, 0.8);
   color: white;
 }
-.button {
-  font-size: 1rem;
-  text-align: center;
-  background-color: var(--secondary-color);
-  color: black;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin: 5px;
-  border: 1px solid black;
-  border-bottom: 5px solid black;
+
+@media (max-width: 431px) {
+  .header-content {
+    flex-direction: column;
+    padding: 5px;
+  }
+  
+  header {
+    padding: 5px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .main-wrapper {
+    margin: 5px auto;
+    padding: 0 15px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  .footer {
+    font-size: small;
+  }
+  
+  .headline-box .headline {
+    display: none;
+  }
+  
+  .button {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
 }
