@@ -469,6 +469,7 @@ function showPokemonDetails(pokemon) {
   const overlay = createOverlay();
   const detailsCard = document.createElement("div");  
   detailsCard.className = "details-card";
+  detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] || "#ffffff";
   detailsCard.innerHTML = createDetailsHTML(pokemon);
   appendNavigationButtons(detailsCard, pokemon);
   overlay.appendChild(detailsCard);
@@ -553,6 +554,7 @@ function updateDetailsCard(pokemon) {
     detailsCard.style.opacity = 0;
 
     setTimeout(() => {
+      detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] || "#ffffff";
       detailsCard.innerHTML = createDetailsHTML(pokemon);
       appendNavigationButtons(detailsCard, pokemon);
       detailsCard.style.opacity = 1;

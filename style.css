@@ -1,34 +1,3 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-main {
-  flex-grow: 1;
-}
-.header {
-  background-color: var(--primary-color);
-  border: 2px solid var(--secondary-color);
-  border-radius: var(--border-radius);
-  padding: var(--padding);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.header-content,
-.headline-box,
-.pokemon-card-footer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  box-sizing: border-box;
-}
-/* Footer logo animation override */
-.footer .headline-icon.animate-logo {
-  animation: spinLogo 2s ease-in-out;
-}
 .search-input {
   padding: 10px;
   border-radius: var(--border-radius);
@@ -132,6 +101,11 @@ main {
   filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 1.1));
   margin-bottom: 5px;
 }
+.details-card .type-button:hover {
+  background-color: var(--type-color);
+  filter: none;
+  margin-bottom: 0;
+}
 .pokemon-card img {
   width: 120px;
   height: 120px;
@@ -207,21 +181,71 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+#BaseStats {
+  padding: 10px 0;
+}
+#BaseStats .stat-row span:first-child {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+#BaseStats .stat-row span:last-child {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 .details-card {
-  background-image: url(./imgs/background/background-water.jpg);
-background-size: cover;
   padding: 1.5rem;
   border-radius: 15px;
   max-width: 90%;
   position: relative;
-  color: #333;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-height: 80vh;
   height: 900px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  border: 3px solid var(--secondary-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.details-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: var(--hover-shadow);
+}
+.details-card:hover:before,
+.details-card:hover:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 0, 0, 0.3) 36%,
+    rgba(0, 255, 0, 0.3) 43%,
+    rgba(0, 0, 255, 0.3) 50%,
+    rgba(255, 255, 0, 0.3) 57%,
+    rgba(255, 0, 255, 0.3) 64%,
+    transparent 80%
+  );
+  background-position: 50% 50%;
+  background-size: 250% 250%;
+  mix-blend-mode: color-dodge;
+  opacity: 0.88;
+  filter: brightness(0.66) contrast(1.33);
+  transition: opacity 0.5s ease;
+  border-radius: 15px;
+  pointer-events: none;
+  z-index: 1;
 }
 .details-header {
   display: flex;
@@ -229,12 +253,14 @@ background-size: cover;
   align-items: center;
 }
 .details-image {
-  background-color: url(./imgs/background/background-water.jpg);
   padding: 10px;
-  max-width: 100%;
+  max-width: 86%;
+  max-height: 431px;
+  width: auto;
   height: auto;
   display: block;
   margin: 0 auto;
+  object-fit: contain;
 }
 .details-header span {
   margin-left: auto;
@@ -249,20 +275,54 @@ background-size: cover;
   justify-content: center;
 }
 .tab-button {
-  font-size: 1.5rem;
-  text-align: center;
+  position: relative;
+  padding: 1rem 2rem;
+  margin: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--secondary-color);
   color: black;
-  border: none;
-  padding: 10px 20px;
+  border: 3px solid black;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  border-radius: 5px;
-  margin: 5px;
-  border: 1px solid black;
-  border-bottom: 5px solid black;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+  overflow: hidden;
+  z-index: 10;
+}
+.tab-button:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+.tab-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 255, 255, 0.6);
+  background-color: var(--secondary-color);
+  filter: brightness(1.1);
+}
+.tab-button:hover:before {
+  left: 100%;
 }
 .tab-button.active {
   font-weight: bold;
+  background: linear-gradient(135deg, #00ff88 0%, #00ccaa 100%);
+  border: 3px solid #00ff88;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 35px rgba(0, 255, 136, 0.4), 0 0 20px rgba(0, 255, 136, 0.3);
+  color: #000;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+.tab-button.active:before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
 }
 .no-scroll {
   overflow: hidden;
@@ -277,7 +337,7 @@ background-size: cover;
   gap: 12px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  border: 3px solid aqua;
+  border: 3px solid black;
   border-radius: 50px;
   font-size: 1.1rem;
   font-weight: 600;
@@ -349,6 +409,7 @@ background-size: cover;
   width: 40px;
   height: 60px;
   border-radius: 8px;
+  border: 3px solid black;
   font-size: 24px;
   transition: all 0.3s;
   background-color: aqua;
@@ -356,7 +417,7 @@ background-size: cover;
   cursor: pointer;
 }
 .arrow-button:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: linear-gradient(135deg, #00ff88 0%, #00ccaa 100%);
   color: #000;
 }
 .loading-indicator {
@@ -370,25 +431,7 @@ background-size: cover;
   font-size: 20px;
   z-index: 1000;
 }
-.footer {
-  margin-top: 50px;
-}
-/* Mobile Responsive Rules */
 @media (max-width: 431px) {
-  body {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  main {
-    flex: 1;
-  }
-  
-  .header-content {
-    width: auto;
-    flex-direction: column;
-  }
   .pokedex-container {
     padding: 20px;
   }
@@ -413,26 +456,6 @@ background-size: cover;
     margin-top: 3px;
     margin-bottom: 8px;
     padding-bottom: 12px;
-  }
-  .footer {
-    font-size: small;
-    justify-content: space-between;
-    padding: 12px 20px;
-    height: 75px;
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-  
-  .footer .headline-box .headline {
-    display: none;
-  }
-  
-  .footer .headline-icon {
-    width: 70px;
-  }
-  
-  .header .headline-icon {
-    width: 70px;
   }
 }
 
