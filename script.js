@@ -588,4 +588,3 @@ document.getElementById("pokedex-container").addEventListener("click", (e) => {
     showPokemonDetails(pokemon);
   }
 });
- s

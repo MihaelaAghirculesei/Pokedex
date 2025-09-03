@@ -1,7 +1,10 @@
 .search-input {
-  padding: 10px;
+  padding: 5px 10px !important;
   border-radius: var(--border-radius);
   border: 3px solid black;
+  box-sizing: border-box;
+  margin-top: -8px !important;
+  transform: translateY(-7px) !important;
 }
 .pokemon-content {
   max-width: 1440px;

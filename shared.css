@@ -134,6 +134,7 @@ main {
 
 .footer .headline-icon.animate-logo {
   animation: spinLogo 2s ease-in-out;
+  transform: translateY(17px);
 }
 
 .header .headline-icon.animate-logo {
@@ -400,5 +401,17 @@ main {
   .button {
     font-size: 0.9rem;
     padding: 10px 20px;
+  }
+}
+
+@media (min-width: 432px) and (max-width: 768px) {
+  .footer .headline-icon.animate-logo {
+    transform: translateY(-3px);
+  }
+}
+
+@media (min-width: 769px) {
+  .footer .headline-icon.animate-logo {
+    transform: translateY(-6px) !important;
   }
 }
