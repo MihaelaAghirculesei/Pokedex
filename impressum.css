@@ -1,10 +1,4 @@
-/* Impressum Page Specific Styles */
 
-.headline-box {
-  margin-right: 20px;
-}
-
-/* Specific styling for impressum content */
 .adsimple-322947329 {
   margin-bottom: 1rem;
 }
@@ -17,7 +11,11 @@
   color: #fff;
 }
 
-/* Override footer margin for impressum page */
 .footer {
   margin-top: 0;
+}
+
+
+.impressum-page .header .headline-icon.animate-logo {
+  animation: bounce 2s ease-in-out;
 }

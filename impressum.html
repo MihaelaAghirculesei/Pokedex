@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/vnd.icon" href="imgs/icons/pokemon-ball.png">
-    <title>Impressum</title>
+    <title>Legal Notice</title>
     <link rel="stylesheet" href="shared.css">
     <link rel="stylesheet" href="impressum.css">
 </head>
-<body>
-    <header>
+<body class="impressum-page">
+    <header class="header">
         <div class="header-content">
             <a class="logo" href="index.html" aria-label="Home">
                 <div class="headline-box">
@@ -19,28 +19,33 @@
                     <h1 class="headline">Pokédex</h1>
                 </div>
             </a>
+            <div id="languageToggle" class="language-toggle en" aria-label="Switch language">
+                <span class="lang-label">DE</span>
+                <div class="slider"></div>
+                <span class="lang-label active">EN</span>
+            </div>
         </div>
     </header>
     
     <main>
         <div class="main-wrapper">
-        <h1 class="adsimple-322947329">Impressum</h1>
-        <p class="adsimple-322947329">Informationen über den Diensteanbieter.</p>
+        <h1 class="adsimple-322947329">Legal Notice</h1>
+        <p class="adsimple-322947329">Information about the service provider.</p>
         <p class="adsimple-322947329">Mihaela Melania Aghirculesei</p>
         <p class="adsimple-322947329">Springwiesen, 29 <br />38446 Wolfsburg, <br />Deutschland</p>
         <p>
             <strong>Tel.:</strong> 01749627899<br />
             <strong>E-Mail:</strong> <a href="mailto:kontakt@mihaela-melania-aghirculesei.de">kontakt@mihaela-melania-aghirculesei.de</a>
         </p>
-        <h2 id="eu-streitschlichtung" class="adsimple-322947329 fusion-responsive-typography-calculated">EU-Streitschlichtung</h2>
-        <p class="adsimple-322947329">Gemäß Verordnung über Online-Streitbeilegung in Verbraucherangelegenheiten (ODR-Verordnung) möchten wir Sie über die Online-Streitbeilegungsplattform (OS-Plattform) informieren.<br />
-        Verbraucher haben die Möglichkeit, Beschwerden an die Online Streitbeilegungsplattform der Europäischen Kommission zu richten. Die dafür notwendigen Kontaktdaten finden Sie oben in unserem Impressum.</p>
-        <p class="adsimple-322947329">Wir möchten Sie jedoch darauf hinweisen, dass wir nicht bereit oder verpflichtet sind, an Streitschlichtungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
-        <h2 id="bildernachweis" class="adsimple-322947329 fusion-responsive-typography-calculated">Bildernachweis</h2>
-        <p class="adsimple-322947329">Die Bilder, Fotos und Grafiken auf dieser Webseite sind urheberrechtlich geschützt.</p>
-        <p><strong>Die Bilderrechte liegen bei:</strong><br />Images used from PokeApi.co</p>
-        <p>Alle Texte sind urheberrechtlich geschützt.</p>
-        <p style="margin-top:15px">Quelle: Erstellt mit dem <a href="https://www.adsimple.de/impressum-generator/" title="Impressum Generator Deutschland von AdSimple">Impressum Generator</a> von AdSimple</p>
+        <h2 id="eu-streitschlichtung" class="adsimple-322947329 fusion-responsive-typography-calculated">EU Dispute Resolution</h2>
+        <p class="adsimple-322947329">In accordance with the Regulation on Online Dispute Resolution in Consumer Affairs (ODR Regulation), we would like to inform you about the Online Dispute Resolution Platform (OS Platform).<br />
+        Consumers have the option of directing complaints to the European Commission's Online Dispute Resolution platform. The necessary contact details can be found above in our legal notice.</p>
+        <p class="adsimple-322947329">However, we would like to point out that we are not prepared or obliged to participate in dispute resolution procedures before a consumer arbitration board.</p>
+        <h2 id="bildernachweis" class="adsimple-322947329 fusion-responsive-typography-calculated">Image Credits</h2>
+        <p class="adsimple-322947329">The images, photos and graphics on this website are protected by copyright.</p>
+        <p><strong>The image rights belong to:</strong><br />Images used from PokeApi.co</p>
+        <p class="adsimple-322947329">All texts are protected by copyright.</p>
+        <p style="margin-top:15px">Source: Created with the <a href="https://www.adsimple.de/impressum-generator/" title="Impressum Generator Deutschland von AdSimple">Legal Notice Generator</a> by AdSimple</p>
     </div>
     </main>
 
@@ -57,5 +62,137 @@
         <a href="index.html"><button class="button">Back to Pokédex</button></a>
         
     </footer>
+    <script>
+        const translations = {
+            de: {
+                title: "Legal Notice",
+                headline: "Legal Notice",
+                info: "Informationen über den Diensteanbieter.",
+                euDispute: "EU-Streitschlichtung",
+                euText1: "Gemäß Verordnung über Online-Streitbeilegung in Verbraucherangelegenheiten (ODR-Verordnung) möchten wir Sie über die Online-Streitbeilegungsplattform (OS-Plattform) informieren.",
+                euText2: "Verbraucher haben die Möglichkeit, Beschwerden an die Online Streitbeilegungsplattform der Europäischen Kommission zu richten. Die dafür notwendigen Kontaktdaten finden Sie oben in unserem Legal Notice.",
+                euText3: "Wir möchten Sie jedoch darauf hinweisen, dass wir nicht bereit oder verpflichtet sind, an Streitschlichtungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.",
+                imageCredits: "Bildernachweis",
+                imageText1: "Die Bilder, Fotos und Grafiken auf dieser Webseite sind urheberrechtlich geschützt.",
+                imageText2: "Die Bilderrechte liegen bei:",
+                imageText3: "Alle Texte sind urheberrechtlich geschützt.",
+                backButton: "Back to Pokédex",
+                sourceText: "Quelle: Erstellt mit dem Impressum Generator von AdSimple"
+            },
+            en: {
+                title: "Legal Notice",
+                headline: "Legal Notice",
+                info: "Information about the service provider.",
+                euDispute: "EU Dispute Resolution",
+                euText1: "In accordance with the Regulation on Online Dispute Resolution in Consumer Affairs (ODR Regulation), we would like to inform you about the Online Dispute Resolution Platform (OS Platform).",
+                euText2: "Consumers have the option of directing complaints to the European Commission's Online Dispute Resolution platform. The necessary contact details can be found above in our legal notice.",
+                euText3: "However, we would like to point out that we are not prepared or obliged to participate in dispute resolution procedures before a consumer arbitration board.",
+                imageCredits: "Image Credits",
+                imageText1: "The images, photos and graphics on this website are protected by copyright.",
+                imageText2: "The image rights belong to:",
+                imageText3: "All texts are protected by copyright.",
+                backButton: "Back to Pokédex",
+                sourceText: "Source: Created with the Legal Notice Generator by AdSimple"
+            }
+        };
+
+        let currentLang = 'en';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const headerLogo = document.querySelector('header .headline-icon');
+            if (headerLogo) {
+                headerLogo.classList.add('animate-logo');
+            }
+            
+            setTimeout(() => {
+                initFooterLogoAnimation();
+            }, 1000);
+        });
+        
+        function initFooterLogoAnimation() {
+            const footerLogo = document.querySelector('.footer .headline-icon');
+            if (footerLogo) {
+                const observer = createLogoObserver();
+                observer.observe(footerLogo);
+            }
+        }
+        
+        function createLogoObserver() {
+            return new IntersectionObserver(handleLogoIntersection, { 
+                threshold: 0.5, 
+                rootMargin: '0px' 
+            });
+        }
+        
+        function handleLogoIntersection(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateLogoEntry(entry);
+                }
+            });
+        }
+        
+        function animateLogoEntry(entry) {
+            entry.target.classList.remove('animate-logo');
+            setTimeout(() => entry.target.classList.add('animate-logo'), 10);
+            entry.target.observer?.unobserve(entry.target);
+        }
+        
+        function toggleLanguage() {
+            currentLang = currentLang === 'de' ? 'en' : 'de';
+            
+            const toggle = document.getElementById('languageToggle');
+            const labels = toggle.querySelectorAll('.lang-label');
+            
+            if (currentLang === 'en') {
+                toggle.classList.add('en');
+                labels[0].classList.remove('active');
+                labels[1].classList.add('active');
+            } else {
+                toggle.classList.remove('en');
+                labels[0].classList.add('active');
+                labels[1].classList.remove('active');
+            }
+            
+            document.documentElement.lang = currentLang;
+            
+            const t = translations[currentLang];
+            
+            document.title = t.title;
+            
+            const mainHeading = document.querySelector('h1.adsimple-322947329');
+            if (mainHeading) mainHeading.textContent = t.headline;
+            
+            const infoParagraph = document.querySelector('h1.adsimple-322947329 + p.adsimple-322947329');
+            if (infoParagraph) infoParagraph.textContent = t.info;
+            
+            const euHeading = document.querySelector('#eu-streitschlichtung');
+            if (euHeading) euHeading.textContent = t.euDispute;
+            
+            const euParagraphs = document.querySelectorAll('#eu-streitschlichtung + p.adsimple-322947329');
+            if (euParagraphs[0]) euParagraphs[0].innerHTML = t.euText1 + '<br />' + t.euText2;
+            if (euParagraphs[1]) euParagraphs[1].textContent = t.euText3;
+            
+            const imageHeading = document.querySelector('#bildernachweis');
+            if (imageHeading) imageHeading.textContent = t.imageCredits;
+            
+            const imageParagraphs = document.querySelectorAll('#bildernachweis + p.adsimple-322947329');
+            if (imageParagraphs[0]) imageParagraphs[0].textContent = t.imageText1;
+            
+            const rightsStrong = document.querySelector('#bildernachweis + p.adsimple-322947329 + p strong');
+            if (rightsStrong) rightsStrong.textContent = t.imageText2;
+            
+            const copyrightP = document.querySelector('#bildernachweis + p.adsimple-322947329 + p + p.adsimple-322947329');
+            if (copyrightP) copyrightP.textContent = t.imageText3;
+            
+            const backButton = document.querySelector('.button');
+            if (backButton) backButton.textContent = t.backButton;
+            
+            const sourceP = document.querySelector('p[style*="margin-top:15px"]');
+            if (sourceP) sourceP.innerHTML = t.sourceText;
+        }
+        
+        document.getElementById('languageToggle').addEventListener('click', toggleLanguage);
+    </script>
 </body>
 </html>

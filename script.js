@@ -344,9 +344,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * Initializes logo animation for footer when it becomes visible.
+ * Initializes logo animation for header and footer.
  */
 function initLogoAnimation() {
+  // Animate header logo immediately on page load
+  const headerLogo = document.querySelector('.header .headline-icon');
+  if (headerLogo) {
+    headerLogo.classList.add('animate-logo');
+  }
+  
+  // Set up intersection observer for footer logo
   const footerLogo = document.querySelector('.footer .headline-icon');
   if (footerLogo) {
     const observer = createLogoObserver();
@@ -581,3 +588,4 @@ document.getElementById("pokedex-container").addEventListener("click", (e) => {
     showPokemonDetails(pokemon);
   }
 });
+ s
