@@ -20,13 +20,8 @@
   }
 }
 
-@media (width: 540px) and (height: 720px) {
-  .search-input {
-    transform: translateY(1px) !important;
-  }
-}
-
-@media (width: 1280px) and (height: 800px) {
+@media (width: 540px) and (height: 720px), 
+       (width: 1280px) and (height: 800px) {
   .search-input {
     transform: translateY(1px) !important;
   }
@@ -207,10 +202,29 @@
 }
 .stat-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  justify-content: space-between;
+  margin-bottom: 5px;
   font-size: 1.1rem;
+}
+
+.stat-row span:first-child {
+  flex: 1;
+  min-width: 100px;
+  margin-right: 15px;
+}
+
+.stat-row progress {
+  width: 120px;
+  height: 30px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.stat-row span:last-child {
+  width: 30px;
+  text-align: right;
+  flex-shrink: 0;
 }
 #BaseStats {
   padding: 10px 0;
@@ -225,6 +239,7 @@
   font-size: 1.2rem;
   font-weight: bold;
   color: #fff;
+  margin-right: 4px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 .details-card {
