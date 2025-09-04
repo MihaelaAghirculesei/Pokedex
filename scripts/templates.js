@@ -9,7 +9,7 @@ function createPokemonCardTemplate(pokemon) {
   return `
     <div class="pokemon-card-header">
       <h3 class="pokemon-name">${pokemon.name}</h3>
-      <p class="pokemon-number">${pokemon.id.toString().padStart(3, "0")}</p>
+      <p class="pokemon-number">${pokemon.id}</p>
     </div>
     <div class="pokemon-image-container">
       <img class="pokemon-image" src="${pokemon.sprites.other["official-artwork"].front_default || pokemon.sprites.front_default}" alt="Official artwork of ${pokemon.name}">
@@ -34,7 +34,7 @@ function detailTemplate (pokemon, height, weight, abilities) {
   return `
     <div class="details-header">
       <h2 style="display: inline-block; margin-right: 10px; text-transform: capitalize;">${pokemon.name}</h2>
-      <span style="display: inline-block;">${pokemon.id.toString().padStart(3, "0")}</span>
+      <span style="display: inline-block; font-size: 1.5rem; font-weight: bold;">${pokemon.id}</span>
     </div>
     <img src="${pokemon.sprites.other["official-artwork"].front_default}" alt="${pokemon.name}" class="details-image">
     <div class="type-button-container">
@@ -44,6 +44,7 @@ function detailTemplate (pokemon, height, weight, abilities) {
       <div class="tab-container">
         <button class="tab-button active" onclick="openTab(event, 'About')">About</button>
         <button class="tab-button" onclick="openTab(event, 'BaseStats')">Base Stats</button>
+        <button class="tab-button" onclick="openTab(event, 'Moves')">Moves</button>
       </div>
       <div id="About" class="tab-content">
         <div class="tab-table">
@@ -56,7 +57,24 @@ function detailTemplate (pokemon, height, weight, abilities) {
         </div>
       </div>
       <div id="BaseStats" class="tab-content" style="display: none;">
-        ${pokemon.stats.map(stat => createStatRow(stat)).join("")}
+        <div class="tab-table">
+          <table>
+            ${pokemon.stats.map(stat => `
+              <tr>
+                <th>${capitalizeFirstLetter(stat.stat.name)}:</th>
+                <td>
+                  <progress value="${stat.base_stat}" max="200"></progress>
+                  ${stat.base_stat}
+                </td>
+              </tr>
+            `).join("")}
+          </table>
+        </div>
+      </div>
+      <div id="Moves" class="tab-content" style="display: none;">
+        <div class="moves-container" id="moves-${pokemon.id}">
+          Loading moves...
+        </div>
       </div>
     </div>     
   `;

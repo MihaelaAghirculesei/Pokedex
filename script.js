@@ -433,6 +433,20 @@ function openTab(evt, tabName) {
   hideAllTabs();
   showActiveTab(tabName);
   evt.currentTarget.classList.add("active");
+  
+  const detailsCard = document.querySelector('.details-card');
+  if (detailsCard) {
+    if (tabName === 'Moves') {
+      detailsCard.classList.add('moves-active');
+      const movesContainer = document.querySelector('.moves-container');
+      if (movesContainer && movesContainer.innerHTML.trim() === 'Loading moves...') {
+        const pokemonId = movesContainer.id.replace('moves-', '');
+        loadPokemonMoves(pokemonId);
+      }
+    } else {
+      detailsCard.classList.remove('moves-active');
+    }
+  }
 }
 
 /**
@@ -588,3 +602,61 @@ document.getElementById("pokedex-container").addEventListener("click", (e) => {
     showPokemonDetails(pokemon);
   }
 });
+
+/**
+ * Adds soft hyphens to words for better text wrapping following English syllabification rules.
+ * @param {string} text - The text to add breaks to.
+ * @returns {string} Text with soft hyphens added.
+ */
+function addHyphenation(text) {
+  return text.split(' ').map(word => {
+    if (word.length > 6) {
+      let result = word;
+      result = result.replace(/([bcdfghjklmnpqrstvwxyz])\1/gi, '$1­$1');
+      result = result.replace(/([aeiou])([bcdfghjklmnpqrstvwxyz])([aeiou])/gi, '$1­$2$3');
+      result = result.replace(/([aeiou])([bcdfghjklmnpqrstvwxyz])([bcdfghjklmnpqrstvwxyz])([aeiou])/gi, '$1$2­$3$4');
+      result = result.replace(/(un|re|pre|dis|mis|over|under|out)([bcdfghjklmnpqrstvwxyz])/gi, '$1­$2');
+      result = result.replace(/([aeiou])ing$/gi, '$1­ing');
+      result = result.replace(/([aeiou])ed$/gi, '$1­ed');
+      return result;
+    }
+    return word;
+  }).join(' ');
+}
+
+/**
+ * Fetches and displays moves for a Pokemon
+ * @param {number} pokemonId - The Pokemon ID
+ */
+async function loadPokemonMoves(pokemonId) {
+  const movesContainer = document.getElementById(`moves-${pokemonId}`);
+  if (!movesContainer) return;
+  
+  try {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
+    const pokemon = await response.json();
+    
+    const moves = pokemon.moves.slice(0, 20).map(moveData => ({
+      name: capitalizeFirstLetter(moveData.move.name.replace('-', ' ')),
+      learnMethod: capitalizeFirstLetter(moveData.version_group_details[0]?.move_learn_method.name || 'unknown')
+    }));
+    
+    movesContainer.innerHTML = createMovesHTML(moves);
+  } catch (error) {
+    movesContainer.innerHTML = '<p>Failed to load moves</p>';
+  }
+}
+
+/**
+ * Creates HTML template for moves list
+ * @param {Array} moves - Array of move objects
+ * @returns {string} HTML string for moves
+ */
+function createMovesHTML(moves) {
+  return moves.map(move => `
+    <div class="move-item">
+      <span class="move-name" lang="en">${addHyphenation(move.name)}</span>
+      <span class="move-method">${move.learnMethod}</span>
+    </div>
+  `).join('');
+}
