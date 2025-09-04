@@ -388,7 +388,8 @@ main {
 }
 
 .tab-table table {
-  font-size: 1.1rem;
+  font-size: 12px;
+  font-family: var(--font-family);
   width: 100%;
   border-collapse: collapse;
   border: 2px solid var(--table-border-color);
@@ -405,10 +406,9 @@ main {
 }
 
 .tab-table th {
-  font-weight: bold;
+  font-weight: normal;
   background-color: url(./imgs/background/background-water.jpg);
   color: #fff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 progress {
@@ -417,15 +417,18 @@ progress {
 }
 
 .arrow-button {
-  width: 40px;
-  height: 60px;
-  border-radius: 8px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   border: 3px solid black;
   font-size: 24px;
   transition: all 0.3s;
   background-color: aqua;
   color: rgb(7, 7, 7);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .arrow-button:hover {
@@ -620,7 +623,7 @@ progress {
   .language-toggle {
     width: 60px;
     height: 30px;
-    font-size: 10px;
+    font-size: max(10px, 11px);
     padding: 0 4px;
     transform: translateY(-15px);
   }

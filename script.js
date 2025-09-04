@@ -518,11 +518,18 @@ function createOverlay() {
  * @param {Object} currentPokemon - The current Pokémon data.
  */
 function appendNavigationButtons(detailsCard, currentPokemon) {
-  const arrowDiv = document.createElement("div");
-  arrowDiv.id = "arrowDiv";
-  arrowDiv.appendChild(createButton("prev", currentPokemon));
-  arrowDiv.appendChild(createButton("next", currentPokemon));
-  detailsCard.appendChild(arrowDiv);
+  const imageSection = detailsCard.querySelector('.pokemon-image-section');
+  if (imageSection) {
+    // Crea i bottoni e li posiziona ai lati dell'immagine
+    const prevButton = createButton("prev", currentPokemon);
+    const nextButton = createButton("next", currentPokemon);
+    
+    prevButton.classList.add("arrow-left");
+    nextButton.classList.add("arrow-right");
+    
+    imageSection.appendChild(prevButton);
+    imageSection.appendChild(nextButton);
+  }
 }
 
 /**
@@ -648,15 +655,16 @@ async function loadPokemonMoves(pokemonId) {
 }
 
 /**
- * Creates HTML template for moves list
+ * Creates HTML template for moves list - grid without outer border
  * @param {Array} moves - Array of move objects
  * @returns {string} HTML string for moves
  */
 function createMovesHTML(moves) {
-  return moves.map(move => `
-    <div class="move-item">
-      <span class="move-name" lang="en">${addHyphenation(move.name)}</span>
-      <span class="move-method">${move.learnMethod}</span>
+  return `
+    <div class="moves-table-content">
+      ${moves.map(move => `
+        <span class="move-compact-tag">${addHyphenation(move.name)}</span>
+      `).join('')}
     </div>
-  `).join('');
+  `;
 }

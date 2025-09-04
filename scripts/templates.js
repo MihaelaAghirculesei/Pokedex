@@ -36,7 +36,9 @@ function detailTemplate (pokemon, height, weight, abilities) {
       <h2 style="display: inline-block; margin-right: 10px; text-transform: capitalize;">${pokemon.name}</h2>
       <span style="display: inline-block; font-size: 1.5rem; font-weight: bold;">${pokemon.id}</span>
     </div>
-    <img src="${pokemon.sprites.other["official-artwork"].front_default}" alt="${pokemon.name}" class="details-image">
+    <div class="pokemon-image-section">
+      <img src="${pokemon.sprites.other["official-artwork"].front_default}" alt="${pokemon.name}" class="details-image">
+    </div>
     <div class="type-button-container">
       ${typeButtons}
     </div>
