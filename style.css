@@ -7,25 +7,6 @@
   transform: translateY(-7px) !important;
 }
 
-@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  .search-input {
-    transform: translateY(-3px) !important;
-    margin-top: 0px !important;
-  }
-}
-
-@media (width: 768px) {
-  .search-input {
-    transform: translateY(-1px) !important;
-  }
-}
-
-@media (width: 540px) and (height: 720px), 
-       (width: 1280px) and (height: 800px) {
-  .search-input {
-    transform: translateY(1px) !important;
-  }
-}
 .pokemon-content {
   max-width: 1440px;
   margin: 0 auto;
@@ -237,8 +218,6 @@
   gap: 15px;
 }
 
-
-/* Griglia moves senza bordo esterno - padding solo sotto */
 .moves-table-content {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -376,10 +355,9 @@
   margin-left: auto;
 }
 
-/* Posizionamento frecce normale */
 .arrow-left {
   position: absolute;
-  left: -8px;
+  left: -5px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
@@ -387,22 +365,20 @@
 
 .arrow-right {
   position: absolute;
-  right: -8px;
+  right: -5px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
 }
 
-/* Posizionamento frecce specifico per moves tab - stessa posizione delle altre */
 .details-card.moves-active .arrow-left {
-  left: -8px;
+  left: -5px;
 }
 
 .details-card.moves-active .arrow-right {
-  right: -8px;
+  right: -5px;
 }
 
-/* Mantieni le stesse dimensioni dell'immagine nella tab Moves */
 .details-card.moves-active .pokemon-image-section {
   padding: 10px 0;
 }
@@ -431,6 +407,46 @@
 #About .tab-table {
   padding-top: 15px;
 }
+
+@media (max-width: 310px) {
+  .pokemon-card {
+    width: 90%;
+    height: 300px;
+  }
+  .pokemon-image {
+    width: 150px;
+    height: 150px;
+  }
+  .overlay {
+    max-width: 90vw;
+    font-size: 0.9rem;
+  }
+  table {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 365px) {
+  .pokedex-container {
+    padding: 15px;
+  }
+  .move-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .move-method {
+    font-size: max(0.7rem, 11px);
+    padding: 2px 6px;
+  }
+  .moves-container {
+    gap: 6px;
+  }
+  .move-item {
+    padding: 4px 6px;
+  }
+}
+
 @media (max-width: 431px) {
   .pokedex-container {
     padding: 20px;
@@ -477,41 +493,38 @@
   }
 }
 
-@media (max-width: 365px) {
-  .pokedex-container {
-    padding: 15px;
+@media (max-width: 480px) {
+  .arrow-right,
+  .details-card.moves-active .arrow-right {
+    right: -30px !important;
   }
-  .move-name {
-    font-size: 0.8rem;
-    font-weight: 500;
+  .arrow-left,
+  .details-card.moves-active .arrow-left {
+    left: -30px !important;
   }
-  .move-method {
-    font-size: max(0.7rem, 11px);
-    padding: 2px 6px;
-  }
-  .moves-container {
-    gap: 6px;
-  }
-  .move-item {
-    padding: 4px 6px;
+  .arrow-button {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
   }
 }
 
-@media (max-width: 310px) {
-  .pokemon-card {
-    width: 90%;
-    height: 300px;
+@media (width: 540px) and (height: 720px), 
+       (width: 1280px) and (height: 800px) {
+  .search-input {
+    transform: translateY(1px) !important;
   }
-  .pokemon-image {
-    width: 150px;
-    height: 150px;
+}
+
+@media (width: 768px) {
+  .search-input {
+    transform: translateY(-1px) !important;
   }
-  .overlay {
-    max-width: 90vw;
-    font-size: 0.9rem;
-  }
-  table {
-    display: flex;
-    flex-direction: column;
+}
+
+@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .search-input {
+    transform: translateY(-3px) !important;
+    margin-top: 0px !important;
   }
 }
