@@ -145,8 +145,7 @@ async function fetchPokemonDetails(results, cache) {
  * @returns {Promise<Object>} The Pokémon detail data.
  */
 async function fetchPokemonDetail(url) {
-  const res = await fetch(url);
-  return await res.json();
+  return (await fetch(url)).json();
 }
 
 /**
@@ -172,14 +171,19 @@ function resetFetchLoading() {
 function initSearch() {
   const searchInput = document.getElementById("search-input");
   let timeoutId;
+  searchInput.addEventListener("input", (e) => handleSearchInput(e, timeoutId));
+}
 
-  searchInput.addEventListener("input", (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    if (searchTerm.length < 3)
-      return renderPokemon(pokemonDetails.slice(0, 30));
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => handleSearch(searchTerm), 300);
-  });
+/**
+ * Handles search input events with debouncing.
+ * @param {Event} e - The input event.
+ * @param {number} timeoutId - The timeout ID for debouncing.
+ */
+function handleSearchInput(e, timeoutId) {
+  const searchTerm = e.target.value.toLowerCase();
+  if (searchTerm.length < 3) return renderPokemon(pokemonDetails.slice(0, 30));
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => handleSearch(searchTerm), 300);
 }
 
 /**
@@ -223,42 +227,18 @@ function createPokemonCard(pokemon) {
   card.dataset.name = pokemon.name;
   card.style.backgroundColor =
     typeColor[pokemon.types[0].type.name] || "#ffffff";
-  setInnerHTML(card, pokemon);
+  card.innerHTML = createPokemonCardTemplate(pokemon);
   return card;
 }
 
-/**
- * Sets the inner HTML of a Pokémon card.
- * @param {HTMLElement} card - The card element.
- * @param {Object} pokemon - The Pokémon data.
- */
-function setInnerHTML(card, pokemon) {
-  card.innerHTML = createPokemonCardTemplate(pokemon);
-}
 
-/**
- * Creates a type button element.
- * @param {Object} type - The Pokémon type.
- * @returns {string} The HTML string for the type button.
- */
-function createTypeButton(type) {
-  return `
-    <button class="type-button">
-      <img class="type-icon" src="${getTypeIconSrc(type.type.name)}" alt="${
-    type.type.name
-  }">
-      <span>${type.type.name}</span>
-    </button>
-  `;
-}
 
 /**
  * Displays an error message in the UI.
  * @param {string} message - The error message.
  */
 function displayError(message) {
-  const container = document.getElementById("pokedex-container");
-  container.innerHTML = `<div class="error-message"><p>${message}</p><button onclick="init()">Wiederholen</button></div>`;
+  document.getElementById("pokedex-container").innerHTML = errorMessageTemplate(message);
 }
 
 /**
@@ -291,9 +271,7 @@ const TYPE_ICONS = {
  * @param {string} type - The Pokémon type.
  * @returns {string} The file path of the corresponding type icon.
  */
-function getTypeIconSrc(type) {
-  return TYPE_ICONS[type] || "imgs/icons/default.png";
-}
+const getTypeIconSrc = type => TYPE_ICONS[type] || "imgs/icons/default.png";
 
 /**
  * Adds hover effects to Pokémon cards.
@@ -311,14 +289,6 @@ function addCardHoverEffects() {
  * @param {MouseEvent} e - The mouse event.
  */
 function handleHover(e) {
-  setHoverEffect.call(this, e);
-}
-
-/**
- * Sets hover effect based on mouse position.
- * @param {MouseEvent} e - The mouse event.
- */
-function setHoverEffect(e) {
   const { clientX, clientY } = e;
   const { left, top, width, height } = this.getBoundingClientRect();
   const x = (clientX - left) / width;
@@ -337,7 +307,6 @@ function resetCard() {
 
 document.addEventListener("DOMContentLoaded", () => {
   init();
-  // Delay logo animation setup to ensure footer is rendered
   setTimeout(() => {
     initLogoAnimation();
   }, 1000);
@@ -347,13 +316,11 @@ document.addEventListener("DOMContentLoaded", () => {
  * Initializes logo animation for header and footer.
  */
 function initLogoAnimation() {
-  // Animate header logo immediately on page load
   const headerLogo = document.querySelector('.header .headline-icon');
   if (headerLogo) {
     headerLogo.classList.add('animate-logo');
   }
   
-  // Set up intersection observer for footer logo
   const footerLogo = document.querySelector('.footer .headline-icon');
   if (footerLogo) {
     const observer = createLogoObserver();
@@ -406,23 +373,13 @@ function createDetailsHTML(pokemon) {
   return detailTemplate(pokemon, height, weight, abilities);
 }
 
-/**
- * Creates a row for a Pokémon's stats.
- * @param {Object} stat - The Pokémon stat data.
- * @returns {string} The HTML string for the stat row.
- */
-function createStatRow(stat) {
-  return statRowTemplate(stat);
-}
 
 /**
  * Capitalizes the first letter of a string.
- * @param {string} string - The input string.
+ * @param {string} s - The input string.
  * @returns {string} The formatted string.
  */
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
+const capitalizeFirstLetter = s => s.charAt(0).toUpperCase() + s.slice(1);
 
 /**
  * Handles tab switching functionality.
@@ -433,19 +390,33 @@ function openTab(evt, tabName) {
   hideAllTabs();
   showActiveTab(tabName);
   evt.currentTarget.classList.add("active");
-  
+  handleTabSpecificActions(tabName);
+}
+
+/**
+ * Handles tab-specific actions when switching between tabs.
+ * @param {string} tabName - The name of the tab being activated.
+ */
+function handleTabSpecificActions(tabName) {
   const detailsCard = document.querySelector('.details-card');
-  if (detailsCard) {
-    if (tabName === 'Moves') {
-      detailsCard.classList.add('moves-active');
-      const movesContainer = document.querySelector('.moves-container');
-      if (movesContainer && movesContainer.innerHTML.trim() === 'Loading moves...') {
-        const pokemonId = movesContainer.id.replace('moves-', '');
-        loadPokemonMoves(pokemonId);
-      }
-    } else {
-      detailsCard.classList.remove('moves-active');
-    }
+  if (!detailsCard) return;
+  
+  if (tabName === 'Moves') {
+    detailsCard.classList.add('moves-active');
+    loadMovesIfNeeded();
+  } else {
+    detailsCard.classList.remove('moves-active');
+  }
+}
+
+/**
+ * Loads Pokémon moves if they haven't been loaded yet.
+ */
+function loadMovesIfNeeded() {
+  const movesContainer = document.querySelector('.moves-container');
+  if (movesContainer && movesContainer.innerHTML.trim() === 'Loading moves...') {
+    const pokemonId = movesContainer.id.replace('moves-', '');
+    loadPokemonMoves(pokemonId);
   }
 }
 
@@ -460,27 +431,22 @@ function hideAllTabs() {
     button.classList.remove("active");
   });
 }
+
 /**
  * Displays the specified tab content.
  * @param {string} tabName - The name of the tab to show.
  */
-function showActiveTab(tabName) {
-  document.getElementById(tabName).style.display = "block";
-}
+const showActiveTab = tabName => document.getElementById(tabName).style.display = "block";
 
 /**
  * Shows the loading indicator.
  */
-function showLoading() {
-  loadingIndicator.removeAttribute("hidden");
-}
+const showLoading = () => loadingIndicator.removeAttribute("hidden");
 
 /**
  * Hides the loading indicator.
  */
-function hideLoading() {
-  loadingIndicator.setAttribute("hidden", "true");
-}
+const hideLoading = () => loadingIndicator.setAttribute("hidden", "true");
 
 /**
  * Displays the details of a selected Pokémon in an overlay.
@@ -488,7 +454,7 @@ function hideLoading() {
  */
 function showPokemonDetails(pokemon) {
   const overlay = createOverlay();
-  const detailsCard = document.createElement("div");  
+  const detailsCard = document.createElement("div");
   detailsCard.className = "details-card";
   detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] || "#ffffff";
   detailsCard.innerHTML = createDetailsHTML(pokemon);
@@ -496,10 +462,7 @@ function showPokemonDetails(pokemon) {
   overlay.appendChild(detailsCard);
   document.body.appendChild(overlay);
   document.body.classList.add("no-scroll");
-
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeOverlay(overlay);
-  });
+  overlay.addEventListener("click", e => e.target === overlay && closeOverlay(overlay));
 }
 
 /**
@@ -519,17 +482,16 @@ function createOverlay() {
  */
 function appendNavigationButtons(detailsCard, currentPokemon) {
   const imageSection = detailsCard.querySelector('.pokemon-image-section');
-  if (imageSection) {
-    // Crea i bottoni e li posiziona ai lati dell'immagine
-    const prevButton = createButton("prev", currentPokemon);
-    const nextButton = createButton("next", currentPokemon);
-    
-    prevButton.classList.add("arrow-left");
-    nextButton.classList.add("arrow-right");
-    
-    imageSection.appendChild(prevButton);
-    imageSection.appendChild(nextButton);
-  }
+  if (!imageSection) return;
+  
+  const prevButton = createButton("prev", currentPokemon);
+  const nextButton = createButton("next", currentPokemon);
+  
+  prevButton.classList.add("arrow-left");
+  nextButton.classList.add("arrow-right");
+  
+  imageSection.appendChild(prevButton);
+  imageSection.appendChild(nextButton);
 }
 
 /**
@@ -616,19 +578,24 @@ document.getElementById("pokedex-container").addEventListener("click", (e) => {
  * @returns {string} Text with soft hyphens added.
  */
 function addHyphenation(text) {
-  return text.split(' ').map(word => {
-    if (word.length > 6) {
-      let result = word;
-      result = result.replace(/([bcdfghjklmnpqrstvwxyz])\1/gi, '$1­$1');
-      result = result.replace(/([aeiou])([bcdfghjklmnpqrstvwxyz])([aeiou])/gi, '$1­$2$3');
-      result = result.replace(/([aeiou])([bcdfghjklmnpqrstvwxyz])([bcdfghjklmnpqrstvwxyz])([aeiou])/gi, '$1$2­$3$4');
-      result = result.replace(/(un|re|pre|dis|mis|over|under|out)([bcdfghjklmnpqrstvwxyz])/gi, '$1­$2');
-      result = result.replace(/([aeiou])ing$/gi, '$1­ing');
-      result = result.replace(/([aeiou])ed$/gi, '$1­ed');
-      return result;
-    }
-    return word;
-  }).join(' ');
+  return text.split(' ').map(word => hyphenateWord(word)).join(' ');
+}
+
+/**
+ * Applies hyphenation rules to a single word.
+ * @param {string} word - The word to hyphenate.
+ * @returns {string} The hyphenated word.
+ */
+function hyphenateWord(word) {
+  if (word.length <= 6) return word;
+  let result = word;
+  result = result.replace(/([bcdfghjklmnpqrstvwxyz])\1/gi, '$1­$1');
+  result = result.replace(/([aeiou])([bcdfghjklmnpqrstvwxyz])([aeiou])/gi, '$1­$2$3');
+  result = result.replace(/([aeiou])([bcdfghjklmnpqrstvwxyz])([bcdfghjklmnpqrstvwxyz])([aeiou])/gi, '$1$2­$3$4');
+  result = result.replace(/(un|re|pre|dis|mis|over|under|out)([bcdfghjklmnpqrstvwxyz])/gi, '$1­$2');
+  result = result.replace(/([aeiou])ing$/gi, '$1­ing');
+  result = result.replace(/([aeiou])ed$/gi, '$1­ed');
+  return result;
 }
 
 /**
@@ -648,23 +615,8 @@ async function loadPokemonMoves(pokemonId) {
       learnMethod: capitalizeFirstLetter(moveData.version_group_details[0]?.move_learn_method.name || 'unknown')
     }));
     
-    movesContainer.innerHTML = createMovesHTML(moves);
+    movesContainer.innerHTML = createMovesHTMLTemplate(moves);
   } catch (error) {
-    movesContainer.innerHTML = '<p>Failed to load moves</p>';
+    movesContainer.innerHTML = movesErrorTemplate();
   }
-}
-
-/**
- * Creates HTML template for moves list - grid without outer border
- * @param {Array} moves - Array of move objects
- * @returns {string} HTML string for moves
- */
-function createMovesHTML(moves) {
-  return `
-    <div class="moves-table-content">
-      ${moves.map(move => `
-        <span class="move-compact-tag">${addHyphenation(move.name)}</span>
-      `).join('')}
-    </div>
-  `;
 }

@@ -405,10 +405,14 @@ main {
   text-align: left;
 }
 
+.tab-table td {
+  text-align: right;
+}
+
 .tab-table th {
   font-weight: normal;
-  background-color: url(./imgs/background/background-water.jpg);
   color: #fff;
+  text-align: left;
 }
 
 progress {
@@ -437,7 +441,10 @@ progress {
 }
 
 .no-scroll {
-  overflow: hidden;
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .card-effect-gradient {
@@ -506,14 +513,17 @@ progress {
 }
 
 .load-more-btn:disabled {
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+  background: linear-gradient(135deg, #999 0%, #666 100%);
+  pointer-events: none;
 }
 
 .load-more-btn:disabled:hover {
   transform: none;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #999 0%, #666 100%);
 }
 
 .tab-button {
@@ -576,7 +586,6 @@ progress {
   display: flex;
   justify-content: center;
 }
-
 
 @media (max-width: 431px) {
   body {
