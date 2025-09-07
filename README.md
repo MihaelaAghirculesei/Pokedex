@@ -1,10 +1,11 @@
-# 🔥 **Pokédex ** - Next-Generation Interactive Experience
+# 🔥 **Pokédex** - Next-Generation Interactive Experience
 
 <div align="center">
 
 ![Pokédx Banner](imgs/readme/pokedex.png)
 
-**🚀 A cutting-edge, feature-rich Pokédex built with vanilla JavaScript and advanced PokéAPI integration**
+**🚀 A cutting-edge, feature-rich Pokémon Pokédex web app built with vanilla JavaScript and advanced PokéAPI integration**
+
 
 [![✨ Live Experience](https://img.shields.io/badge/✨_EXPERIENCE_NOW-Interactive_Demo-FF6B6B?style=for-the-badge&logo=rocket&logoColor=white)](https://mihaela-melania-aghirculesei.de/pokedex/)
 [![🔧 Vanilla JS](https://img.shields.io/badge/🔧_VANILLA_JS-Pure_Performance-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
@@ -104,7 +105,7 @@
 <table>
 <tr>
 <td align="center" width="25%">
-<img src="imgs/readme/interface.png" width="180px" alt="Main Interface" style="border-radius: 12px; border: 2px solid #4ECDC4;"/>
+<img src="imgs/readme/interface.png" width="180px" alt="Pokédex main interface grid" style="border-radius: 12px; border: 2px solid #4ECDC4;"/>
 <br/><sub><b>🎯 Main Grid View</b></sub>
 </td>
 <td align="center" width="25%">
@@ -659,11 +660,11 @@ git push origin feature/amazing-new-feature
 [![🌐 Portfolio](https://img.shields.io/badge/🌐_PORTFOLIO-Visit_Professional_Site-FF6B6B?style=for-the-badge&logo=firefox&logoColor=white)](https://mihaela-melania-aghirculesei.de/)
 [![💼 LinkedIn](https://img.shields.io/badge/💼_LINKEDIN-Professional_Profile-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/mihaela-aghirculesei-84147a23b/)
 [![🔧 GitHub](https://img.shields.io/badge/🔧_GITHUB-Source_Code-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MihaelaAghirculesei)
-[![📧 Email](https://img.shields.io/badge/📧_EMAIL-Professional_Contact-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:kontakt@mihaela-melania-aghirculesei.de)
+[![📧 Email](https://img.shields.io/badge/📧_EMAIL-Professional_Contact-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:kontakt@mihaela-melania-aghirculesei.de?subject=Pokédex%20Project)
 
 ### 🤝 **Get Support**
 
-[![📚 Documentation](https://img.shields.io/badge/📚_DOCS-Complete_Guide-4ECDC4?style=flat-square&logo=gitbook&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/blob/main/README.md)
+[![📚 Documentation](https://img.shields.io/badge/📚_DOCS-Complete_Guide-4ECDC4?style=flat-square&logo=gitbook&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex#-advanced-features)
 [![🐛 Issues](https://img.shields.io/badge/🐛_ISSUES-Report_Bugs-FF6B6B?style=flat-square&logo=github&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/issues)
 [![💡 Features](https://img.shields.io/badge/💡_FEATURES-Request_Enhancement-45B7D1?style=flat-square&logo=lightbulb&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/issues/new)
 
