@@ -1,7 +1,8 @@
-# Diese Datei darf NICHT gelöscht werden. 
-# Sie sorgt dafür, dass deine Übungsprojekte nicht bei Google gefunden werden. 
-# Somit findet niemand in der Zukunft deine ersten Anfängerprojekte. ;-)
-# Wenn du diese Datei löschst oder veränderst, wird diese Datei automatisch wieder hergestellt.
+# Pokédx Elite - Production Ready
+# Allow search engines to index this professional project
 
 User-agent: *
-Disallow: /
+Allow: /
+
+# Optional: Add sitemap when available
+# Sitemap: https://mihaela-melania-aghirculesei.de/pokedex/sitemap.xml
