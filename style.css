@@ -157,6 +157,9 @@
   opacity: 0.88;
   filter: brightness(0.66) contrast(1.33);
   transition: opacity 0.5s ease;
+  border-radius: var(--border-radius);
+  pointer-events: none;
+  z-index: 1;
 }
 .detail-overlay {
   display: flex;
@@ -292,18 +295,18 @@
   flex-direction: column;
   border: 3px solid var(--secondary-color);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform: translateZ(0);
 }
 
 .details-card.moves-active {
   padding: 1.5rem;
 }
 .details-card:hover {
-  transform: translateY(-5px) scale(1.02);
+  transform: translateY(-5px) scale(1.02) translateZ(0);
   box-shadow: var(--hover-shadow);
 }
-.details-card:hover:before,
-.details-card:hover:after {
-  content: "";
+
+.glitter-effect {
   position: absolute;
   left: 0;
   right: 0;
@@ -321,11 +324,45 @@
   );
   background-position: 50% 50%;
   background-size: 250% 250%;
+  background-attachment: local;
+  mix-blend-mode: color-dodge;
+  opacity: 0;
+  filter: brightness(0.66) contrast(1.33);
+  transition: opacity 0.5s ease;
+  border-radius: 15px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glitter-effect.active {
+  opacity: 0.88;
+}
+
+.pokemon-card:hover:before,
+.pokemon-card:hover:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+    115deg,
+    transparent 20%,
+    var(--color1) 36%,
+    var(--color2) 43%,
+    var(--color3) 50%,
+    var(--color4) 57%,
+    var(--color5) 64%,
+    transparent 80%
+  );
+  background-position: 50% 50%;
+  background-size: 250% 250%;
   mix-blend-mode: color-dodge;
   opacity: 0.88;
   filter: brightness(0.66) contrast(1.33);
   transition: opacity 0.5s ease;
-  border-radius: 15px;
+  border-radius: var(--border-radius);
   pointer-events: none;
   z-index: 1;
 }
@@ -480,10 +517,6 @@
     background-position: 50% 50%;
     background-size: 250% 250%;
     background-attachment: local;
-  }
-  .details-card:hover:before,
-  .details-card:hover:after {
-    display: none;
   }
   .search-input {
     margin: 3px;

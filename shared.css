@@ -35,7 +35,7 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  background-attachment: fixed;
+  background-attachment: scroll;
   margin: 0;
 }
 
@@ -716,6 +716,38 @@ progress {
     transform: none;
     margin: 10px;
   }
+
+  .pokemon-card:hover:before,
+  .pokemon-card:hover:after {
+    mix-blend-mode: normal;
+    opacity: 0.3;
+    background-image: linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 215, 0, 0.6) 36%,
+      rgba(255, 255, 255, 0.8) 43%,
+      rgba(255, 215, 0, 0.7) 50%,
+      rgba(255, 255, 255, 0.6) 57%,
+      rgba(255, 215, 0, 0.5) 64%,
+      transparent 80%
+    );
+  }
+
+  .details-card:hover:before,
+  .details-card:hover:after {
+    mix-blend-mode: normal;
+    opacity: 0.3;
+    background-image: linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 215, 0, 0.6) 36%,
+      rgba(255, 255, 255, 0.8) 43%,
+      rgba(255, 215, 0, 0.7) 50%,
+      rgba(255, 255, 255, 0.6) 57%,
+      rgba(255, 215, 0, 0.5) 64%,
+      transparent 80%
+    );
+  }
 }
 
 @media (min-width: 432px) and (max-width: 768px) {
@@ -733,6 +765,82 @@ progress {
 
   .arrow-button {
     background-color: aqua;
+  }
+}
+
+@media (min-width: 432px) and (max-width: 1400px) {
+  .glitter-effect {
+    mix-blend-mode: normal;
+    opacity: 0;
+    background-image: linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 215, 0, 0.6) 36%,
+      rgba(255, 255, 255, 0.8) 43%,
+      rgba(255, 215, 0, 0.7) 50%,
+      rgba(255, 255, 255, 0.6) 57%,
+      rgba(255, 215, 0, 0.5) 64%,
+      transparent 80%
+    );
+    background-attachment: local;
+  }
+
+  .glitter-effect.active {
+    opacity: 0.4;
+  }
+
+  .details-card:hover:before,
+  .details-card:hover:after {
+    mix-blend-mode: normal;
+    opacity: 0.3;
+    background-image: linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 215, 0, 0.6) 36%,
+      rgba(255, 255, 255, 0.8) 43%,
+      rgba(255, 215, 0, 0.7) 50%,
+      rgba(255, 255, 255, 0.6) 57%,
+      rgba(255, 215, 0, 0.5) 64%,
+      transparent 80%
+    );
+  }
+}
+
+@media (min-width: 1401px) {
+  .glitter-effect {
+    mix-blend-mode: normal;
+    opacity: 0;
+    background-image: linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 215, 0, 0.7) 36%,
+      rgba(255, 255, 255, 0.9) 43%,
+      rgba(255, 215, 0, 0.8) 50%,
+      rgba(255, 255, 255, 0.7) 57%,
+      rgba(255, 215, 0, 0.6) 64%,
+      transparent 80%
+    );
+    background-attachment: local;
+  }
+
+  .glitter-effect.active {
+    opacity: 0.5;
+  }
+
+  .details-card:hover:before,
+  .details-card:hover:after {
+    mix-blend-mode: normal;
+    opacity: 0.4;
+    background-image: linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 215, 0, 0.7) 36%,
+      rgba(255, 255, 255, 0.9) 43%,
+      rgba(255, 215, 0, 0.8) 50%,
+      rgba(255, 255, 255, 0.7) 57%,
+      rgba(255, 215, 0, 0.6) 64%,
+      transparent 80%
+    );
   }
 }
 

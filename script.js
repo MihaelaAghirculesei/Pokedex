@@ -358,7 +358,6 @@ function handleLogoIntersection(entries) {
 function animateLogoEntry(entry) {
   entry.target.classList.remove('animate-logo');
   setTimeout(() => entry.target.classList.add('animate-logo'), 10);
-  entry.target.observer?.unobserve(entry.target);
 }
 
 /**
@@ -391,6 +390,13 @@ function openTab(evt, tabName) {
   showActiveTab(tabName);
   evt.currentTarget.classList.add("active");
   handleTabSpecificActions(tabName);
+  
+  const detailsCard = document.querySelector('.details-card');
+  if (detailsCard) {
+    setTimeout(() => {
+      addGlitterEffect(detailsCard);
+    }, 100);
+  }
 }
 
 /**
@@ -459,6 +465,7 @@ function showPokemonDetails(pokemon) {
   detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] || "#ffffff";
   detailsCard.innerHTML = createDetailsHTML(pokemon);
   appendNavigationButtons(detailsCard, pokemon);
+  addGlitterEffect(detailsCard);
   overlay.appendChild(detailsCard);
   document.body.appendChild(overlay);
   document.body.classList.add("no-scroll");
@@ -547,9 +554,53 @@ function updateDetailsCard(pokemon) {
       detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] || "#ffffff";
       detailsCard.innerHTML = createDetailsHTML(pokemon);
       appendNavigationButtons(detailsCard, pokemon);
+      addGlitterEffect(detailsCard);
       detailsCard.style.opacity = 1;
     }, 300);
   }
+}
+
+/**
+ * Creates and returns glitter DOM elements.
+ * @returns {HTMLElement[]} Array of glitter elements.
+ */
+function createGlitterElements() {
+  const glitter1 = document.createElement('div');
+  const glitter2 = document.createElement('div');
+  glitter1.className = 'glitter-effect glitter-1';
+  glitter2.className = 'glitter-effect glitter-2';
+  return [glitter1, glitter2];
+}
+
+/**
+ * Adds glitter effect to a details card using DOM elements.
+ * @param {HTMLElement} detailsCard - The details card element.
+ */
+function addGlitterEffect(detailsCard) {
+  const existingGlitter = detailsCard.querySelectorAll('.glitter-effect');
+  existingGlitter.forEach(el => el.remove());
+  const [glitter1, glitter2] = createGlitterElements();
+  detailsCard.appendChild(glitter1);
+  detailsCard.appendChild(glitter2);
+  attachGlitterListeners(detailsCard, glitter1, glitter2);
+}
+
+/**
+ * Attaches hover listeners to glitter elements.
+ * @param {HTMLElement} detailsCard - The details card element.
+ * @param {HTMLElement} glitter1 - First glitter element.
+ * @param {HTMLElement} glitter2 - Second glitter element.
+ */
+function attachGlitterListeners(detailsCard, glitter1, glitter2) {
+  detailsCard.addEventListener('mouseenter', () => {
+    glitter1.classList.add('active');
+    glitter2.classList.add('active');
+  });
+  
+  detailsCard.addEventListener('mouseleave', () => {
+    glitter1.classList.remove('active');
+    glitter2.classList.remove('active');
+  });
 }
 
 /**
