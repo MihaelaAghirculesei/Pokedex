@@ -144,11 +144,11 @@
   background-image: linear-gradient(
     115deg,
     transparent 20%,
-    var(--color1) 36%,
-    var(--color2) 43%,
-    var(--color3) 50%,
-    var(--color4) 57%,
-    var(--color5) 64%,
+    #ff000045 36%,
+    #00ff0048 43%,
+    #0000ff57 50%,
+    #ffff0063 57%,
+    #ff00ff7b 64%,
     transparent 80%
   );
   background-position: 50% 50%;
@@ -239,9 +239,6 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.1);
   hyphens: manual;
-  -webkit-hyphens: manual;
-  -moz-hyphens: manual;
-  -ms-hyphens: manual;
   word-break: break-word;
   line-height: 1.3;
   transition: all 0.2s ease;
@@ -336,35 +333,6 @@
 
 .glitter-effect.active {
   opacity: 0.88;
-}
-
-.pokemon-card:hover:before,
-.pokemon-card:hover:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background-image: linear-gradient(
-    115deg,
-    transparent 20%,
-    var(--color1) 36%,
-    var(--color2) 43%,
-    var(--color3) 50%,
-    var(--color4) 57%,
-    var(--color5) 64%,
-    transparent 80%
-  );
-  background-position: 50% 50%;
-  background-size: 250% 250%;
-  mix-blend-mode: color-dodge;
-  opacity: 0.88;
-  filter: brightness(0.66) contrast(1.33);
-  transition: opacity 0.5s ease;
-  border-radius: var(--border-radius);
-  pointer-events: none;
-  z-index: 1;
 }
 .details-header {
   display: flex;

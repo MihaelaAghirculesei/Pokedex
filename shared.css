@@ -11,12 +11,6 @@
   --type-color: aqua;
   --padding: 20px;
   --transition-duration: 0.3s;
-
-  --color1: #ff000045;
-  --color2: #00ff0048;
-  --color3: #0000ff57;
-  --color4: #ffff0063;
-  --color5: #ff00ff7b;
 }
 
 * {
@@ -35,7 +29,7 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  background-attachment: scroll;
+  background-attachment: fixed;
   margin: 0;
 }
 
@@ -442,20 +436,17 @@ progress {
 
 .no-scroll {
   overflow: hidden !important;
-  position: fixed !important;
-  width: 100% !important;
-  height: 100% !important;
 }
 
 .card-effect-gradient {
   background-image: linear-gradient(
     115deg,
     transparent 20%,
-    var(--color1) 36%,
-    var(--color2) 43%,
-    var(--color3) 50%,
-    var(--color4) 57%,
-    var(--color5) 64%,
+    #ff000045 36%,
+    #00ff0048 43%,
+    #0000ff57 50%,
+    #ffff0063 57%,
+    #ff00ff7b 64%,
     transparent 80%
   );
   background-position: 50% 50%;
@@ -588,10 +579,20 @@ progress {
 }
 
 @media (max-width: 431px) {
+  html {
+    background-image: url(./imgs/background/Designer.jpeg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100%;
+  }
+  
   body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    background: transparent;
   }
   
   main {
