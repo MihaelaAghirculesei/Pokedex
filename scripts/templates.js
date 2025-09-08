@@ -11,7 +11,7 @@ function createPokemonCardTemplate(pokemon) {
       <p class="pokemon-number">${pokemon.id}</p>
     </div>
     <div class="pokemon-image-container">
-      <img class="pokemon-image" src="${pokemon.sprites.other["official-artwork"].front_default || pokemon.sprites.front_default}" alt="Official artwork of ${pokemon.name}">
+      <img class="pokemon-image" src="${pokemon.sprites.other["official-artwork"].front_default || pokemon.sprites.front_default}" alt="Official artwork of ${pokemon.name}" loading="lazy">
     </div>
     <div class="pokemon-card-footer">${typesButtons}</div>
   `;
@@ -55,7 +55,7 @@ function createDetailsHeader(pokemon) {
  */
 function createImageSection(pokemon) {
   return `<div class="pokemon-image-section">
-      <img src="${pokemon.sprites.other["official-artwork"].front_default}" alt="${pokemon.name}" class="details-image">
+      <img src="${pokemon.sprites.other["official-artwork"].front_default}" alt="${pokemon.name}" class="details-image" loading="lazy">
     </div>`;
 }
 
