@@ -37,16 +37,12 @@ const STATIC_RESOURCES = [
 ];
 
 self.addEventListener('install', event => {
-  console.log('🚀 Service Worker installing...');
-  
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then(cache => {
-        console.log('📦 Caching static resources');
         return cache.addAll(STATIC_RESOURCES);
       })
       .then(() => {
-        console.log('✅ Static resources cached');
         return self.skipWaiting();
       })
       .catch(err => {
@@ -56,8 +52,6 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  console.log('🔄 Service Worker activating...');
-  
   event.waitUntil(
     caches.keys()
       .then(cacheNames => {
@@ -66,14 +60,12 @@ self.addEventListener('activate', event => {
             if (cacheName !== STATIC_CACHE && 
                 cacheName !== API_CACHE && 
                 cacheName !== IMAGE_CACHE) {
-              console.log('🗑️ Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
           })
         );
       })
       .then(() => {
-        console.log('✅ Service Worker activated');
         return self.clients.claim();
       })
   );
@@ -103,17 +95,14 @@ async function handleApiRequest(request) {
     const cachedResponse = await cache.match(request);
     
     if (cachedResponse) {
-      console.log('📦 Serving API from cache:', request.url);
       return cachedResponse;
     }
     
-    console.log('🌐 Fetching API from network:', request.url);
     const networkResponse = await fetch(request);
     
     if (networkResponse.ok) {
       const responseClone = networkResponse.clone();
       await cache.put(request, responseClone);
-      console.log('💾 Cached API response:', request.url);
     }
     
     return networkResponse;
@@ -141,17 +130,14 @@ async function handleImageRequest(request) {
     const cachedResponse = await cache.match(request);
     
     if (cachedResponse) {
-      console.log('🖼️ Serving image from cache:', request.url);
       return cachedResponse;
     }
     
-    console.log('🌐 Fetching image from network:', request.url);
     const networkResponse = await fetch(request);
     
     if (networkResponse.ok) {
       const responseClone = networkResponse.clone();
       await cache.put(request, responseClone);
-      console.log('💾 Cached image:', request.url);
     }
     
     return networkResponse;
@@ -197,5 +183,4 @@ async function handleStaticRequest(request) {
 }
 
 self.addEventListener('sync', event => {
-  console.log('🔄 Background sync triggered:', event.tag);
 });

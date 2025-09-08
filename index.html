@@ -7,9 +7,11 @@
     <title>Pokédex</title>
     
     <link rel="dns-prefetch" href="https://pokeapi.co">
+    <link rel="preconnect" href="https://raw.githubusercontent.com">
     
     <link rel="preload" as="image" href="./imgs/icons/pokemon-ball.png">
     <link rel="preload" as="image" href="./imgs/icons/icon-pokemon.png">
+    <link rel="preload" as="image" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png">
     
     <link rel="stylesheet" href="shared.css">
     <link rel="stylesheet" href="style.css">
@@ -65,10 +67,7 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                        console.log('✅ Service Worker registered:', registration);
-                        
                         registration.addEventListener('updatefound', () => {
-                            console.log('🔄 Service Worker update found');
                         });
                     })
                     .catch(error => {
