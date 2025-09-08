@@ -240,8 +240,6 @@ function createPokemonCard(pokemon) {
   return card;
 }
 
-
-
 /**
  * Displays an error message in the UI.
  * @param {string} message - The error message.
