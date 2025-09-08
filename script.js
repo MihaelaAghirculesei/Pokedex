@@ -58,6 +58,12 @@ const loadingIndicator = document.getElementById("loading");
 const loadMoreButton = document.getElementById("load-more");
 
 /**
+ * Cached pokedex container element.
+ * @constant {HTMLElement}
+ */
+const pokedexContainer = document.getElementById("pokedex-container");
+
+/**
  * Initializes the application by fetching Pokémon data and setting up search functionality.
  * @async
  */
@@ -153,7 +159,6 @@ async function fetchPokemonDetail(url) {
  * @param {Error} error - The error object.
  */
 function handleFetchError(error) {
-  console.error("Fetch error:", error);
   showError("Failed to load Pokémon data. Please try again later.");
 }
 
@@ -166,24 +171,28 @@ function resetFetchLoading() {
 }
 
 /**
+ * Timeout ID for search debouncing.
+ * @type {number|null}
+ */
+let searchTimeoutId = null;
+
+/**
  * Initializes search functionality for filtering Pokémon.
  */
 function initSearch() {
   const searchInput = document.getElementById("search-input");
-  let timeoutId;
-  searchInput.addEventListener("input", (e) => handleSearchInput(e, timeoutId));
+  searchInput.addEventListener("input", handleSearchInput);
 }
 
 /**
  * Handles search input events with debouncing.
  * @param {Event} e - The input event.
- * @param {number} timeoutId - The timeout ID for debouncing.
  */
-function handleSearchInput(e, timeoutId) {
+function handleSearchInput(e) {
   const searchTerm = e.target.value.toLowerCase();
   if (searchTerm.length < 3) return renderPokemon(pokemonDetails.slice(0, 30));
-  clearTimeout(timeoutId);
-  timeoutId = setTimeout(() => handleSearch(searchTerm), 300);
+  clearTimeout(searchTimeoutId);
+  searchTimeoutId = setTimeout(() => handleSearch(searchTerm), 300);
 }
 
 /**
@@ -206,7 +215,7 @@ function handleSearch(searchTerm) {
  * @param {Array} [pokemonArray=pokemonDetails] - Array of Pokémon to render.
  */
 function renderPokemon(pokemonArray = pokemonDetails) {
-  const pokedexContainer = document.getElementById("pokedex-container");
+  removeCardHoverEffects();
   const fragment = document.createDocumentFragment();
 
   pokemonArray.forEach((pokemon) =>
@@ -238,7 +247,7 @@ function createPokemonCard(pokemon) {
  * @param {string} message - The error message.
  */
 function displayError(message) {
-  document.getElementById("pokedex-container").innerHTML = errorMessageTemplate(message);
+  pokedexContainer.innerHTML = errorMessageTemplate(message);
 }
 
 /**
@@ -272,6 +281,17 @@ const TYPE_ICONS = {
  * @returns {string} The file path of the corresponding type icon.
  */
 const getTypeIconSrc = type => TYPE_ICONS[type] || "imgs/icons/default.png";
+
+/**
+ * Removes existing hover event listeners from Pokémon cards.
+ */
+function removeCardHoverEffects() {
+  const cards = document.querySelectorAll(".pokemon-card");
+  cards.forEach((card) => {
+    card.removeEventListener("mousemove", handleHover);
+    card.removeEventListener("mouseleave", resetCard);
+  });
+}
 
 /**
  * Adds hover effects to Pokémon cards.
@@ -612,10 +632,8 @@ function closeOverlay(overlay) {
   document.body.classList.remove("no-scroll");
 }
 
-document
-  .getElementById("load-more")
-  .addEventListener("click", fetchPokemonData);
-document.getElementById("pokedex-container").addEventListener("click", (e) => {
+loadMoreButton.addEventListener("click", fetchPokemonData);
+pokedexContainer.addEventListener("click", (e) => {
   if (e.target.closest(".pokemon-card")) {
     const pokemonName = e.target.closest(".pokemon-card").dataset.name;
     const pokemon = pokemonDetails.find((p) => p.name === pokemonName);
