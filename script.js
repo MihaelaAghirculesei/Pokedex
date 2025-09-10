@@ -579,15 +579,13 @@ function updateDetailsCard(pokemon) {
 }
 
 /**
- * Creates and returns glitter DOM elements.
- * @returns {HTMLElement[]} Array of glitter elements.
+ * Creates and returns glitter DOM element.
+ * @returns {HTMLElement} Single glitter element.
  */
 function createGlitterElements() {
-  const glitter1 = document.createElement('div');
-  const glitter2 = document.createElement('div');
-  glitter1.className = 'glitter-effect glitter-1';
-  glitter2.className = 'glitter-effect glitter-2';
-  return [glitter1, glitter2];
+  const glitter = document.createElement('div');
+  glitter.className = 'glitter-effect';
+  return glitter;
 }
 
 /**
@@ -597,27 +595,23 @@ function createGlitterElements() {
 function addGlitterEffect(detailsCard) {
   const existingGlitter = detailsCard.querySelectorAll('.glitter-effect');
   existingGlitter.forEach(el => el.remove());
-  const [glitter1, glitter2] = createGlitterElements();
-  detailsCard.appendChild(glitter1);
-  detailsCard.appendChild(glitter2);
-  attachGlitterListeners(detailsCard, glitter1, glitter2);
+  const glitter = createGlitterElements();
+  detailsCard.appendChild(glitter);
+  attachGlitterListeners(detailsCard, glitter);
 }
 
 /**
- * Attaches hover listeners to glitter elements.
+ * Attaches hover listeners to glitter element.
  * @param {HTMLElement} detailsCard - The details card element.
- * @param {HTMLElement} glitter1 - First glitter element.
- * @param {HTMLElement} glitter2 - Second glitter element.
+ * @param {HTMLElement} glitter - The glitter element.
  */
-function attachGlitterListeners(detailsCard, glitter1, glitter2) {
+function attachGlitterListeners(detailsCard, glitter) {
   detailsCard.addEventListener('mouseenter', () => {
-    glitter1.classList.add('active');
-    glitter2.classList.add('active');
+    glitter.classList.add('active');
   });
   
   detailsCard.addEventListener('mouseleave', () => {
-    glitter1.classList.remove('active');
-    glitter2.classList.remove('active');
+    glitter.classList.remove('active');
   });
 }
 

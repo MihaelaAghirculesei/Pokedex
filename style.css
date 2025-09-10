@@ -293,13 +293,25 @@
   border: 3px solid var(--secondary-color);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   transform: translateZ(0);
+  background-image: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 0, 0, 0.2) 36%,
+    rgba(0, 255, 0, 0.2) 43%,
+    rgba(0, 0, 255, 0.2) 50%,
+    rgba(255, 255, 0, 0.2) 57%,
+    rgba(255, 0, 255, 0.2) 64%,
+    transparent 80%
+  );
+  background-position: 50% 50%;
+  background-size: 200% 200%;
 }
 
 .details-card.moves-active {
   padding: 1.5rem;
 }
 .details-card:hover {
-  transform: translateY(-5px) scale(1.02) translateZ(0);
+  transform: scale(1.05);
   box-shadow: var(--hover-shadow);
 }
 
@@ -312,16 +324,15 @@
   background-image: linear-gradient(
     115deg,
     transparent 20%,
-    rgba(255, 0, 0, 0.3) 36%,
-    rgba(0, 255, 0, 0.3) 43%,
-    rgba(0, 0, 255, 0.3) 50%,
-    rgba(255, 255, 0, 0.3) 57%,
-    rgba(255, 0, 255, 0.3) 64%,
+    rgba(255, 0, 0, 10.5) 36%,
+    rgba(0, 255, 0, 10.5) 43%,
+    rgba(0, 0, 255, 10.5) 50%,
+    rgba(255, 255, 0, 10.5) 57%,
+    rgba(255, 0, 255, 10.5) 64%,
     transparent 80%
   );
   background-position: 50% 50%;
-  background-size: 250% 250%;
-  background-attachment: local;
+  background-size: 150% 150%;
   mix-blend-mode: color-dodge;
   opacity: 0;
   filter: brightness(0.66) contrast(1.33);
@@ -332,7 +343,7 @@
 }
 
 .glitter-effect.active {
-  opacity: 0.88;
+  opacity: 0;
 }
 .details-header {
   display: flex;
@@ -470,21 +481,6 @@
     display: flex;
     flex-direction: column;
     transition: opacity 0.3s ease;
-  }
-  .details-card {
-    background-image: linear-gradient(
-      115deg,
-      transparent 20%,
-      rgba(255, 0, 0, 0.15) 36%,
-      rgba(0, 255, 0, 0.15) 43%,
-      rgba(0, 0, 255, 0.15) 50%,
-      rgba(255, 255, 0, 0.15) 57%,
-      rgba(255, 0, 255, 0.15) 64%,
-      transparent 80%
-    );
-    background-position: 50% 50%;
-    background-size: 250% 250%;
-    background-attachment: local;
   }
   .search-input {
     margin: 3px;
