@@ -63,10 +63,6 @@
   height: 200px;
 }
 .pokemon-image {
-  width: auto;
-  height: auto;
-}
-.pokemon-image {
   width: 240px !important;
   height: 240px !important;
   transition: transform 0.3s ease;
@@ -87,10 +83,7 @@
   text-transform: capitalize;
   color: black;
   background-color: var(--type-color);
-  cursor: pointer;
-  transition: background-color 0.3s, filter 0.3s;
-  max-width: 120px;
-  min-width: 90px;
+  width: 120px;
   height: 50px;
 }
 .type-button-container {
@@ -98,16 +91,6 @@
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 5px;
-}
-.type-button:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-  filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 1.1));
-  margin-bottom: 5px;
-}
-.details-card .type-button:hover {
-  background-color: var(--type-color);
-  filter: none;
-  margin-bottom: 0;
 }
 .pokemon-card img {
   width: 120px;
@@ -305,6 +288,27 @@
   );
   background-position: 50% 50%;
   background-size: 200% 200%;
+}
+
+.details-card::-webkit-scrollbar {
+  width: 12px;
+}
+
+.details-card::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px 0;
+}
+
+.details-card::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.details-card::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+  background-clip: content-box;
 }
 
 .details-card.moves-active {

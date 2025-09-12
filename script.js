@@ -23,6 +23,30 @@ let offset = 0;
 const limit = 30;
 
 /**
+ * Minimum search term length before filtering starts.
+ * @constant {number}
+ */
+const MIN_SEARCH_LENGTH = 3;
+
+/**
+ * Debounce delay for search input in milliseconds.
+ * @constant {number}
+ */
+const SEARCH_DEBOUNCE_DELAY = 300;
+
+/**
+ * Maximum number of Pokémon to show in search results.
+ * @constant {number}
+ */
+const MAX_SEARCH_RESULTS = 10;
+
+/**
+ * Default number of Pokémon to show when search is cleared.
+ * @constant {number}
+ */
+const DEFAULT_DISPLAY_COUNT = 30;
+
+/**
  * Mapping of Pokémon types to their respective colors.
  * @constant {Object}
  */
@@ -190,9 +214,9 @@ function initSearch() {
  */
 function handleSearchInput(e) {
   const searchTerm = e.target.value.toLowerCase();
-  if (searchTerm.length < 3) return renderPokemon(pokemonDetails.slice(0, 30));
+  if (searchTerm.length < MIN_SEARCH_LENGTH) return renderPokemon(pokemonDetails.slice(0, DEFAULT_DISPLAY_COUNT));
   clearTimeout(searchTimeoutId);
-  searchTimeoutId = setTimeout(() => handleSearch(searchTerm), 300);
+  searchTimeoutId = setTimeout(() => handleSearch(searchTerm), SEARCH_DEBOUNCE_DELAY);
 }
 
 /**
@@ -202,7 +226,7 @@ function handleSearchInput(e) {
 function handleSearch(searchTerm) {
   const filtered = pokemonDetails
     .filter((pokemon) => pokemon.name.toLowerCase().startsWith(searchTerm))
-    .slice(0, 10);
+    .slice(0, MAX_SEARCH_RESULTS);
   renderPokemon(
     filtered.length
       ? filtered
