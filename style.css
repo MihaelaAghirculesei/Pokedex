@@ -438,9 +438,6 @@
 }
 
 @media (max-width: 431px) {
-  .pokedex-container {
-    padding: 20px;
-  }
   #About .tab-table table {
     font-size: 12px;
   }
@@ -480,22 +477,8 @@
   }
 }
 
-@media (width: 540px) and (height: 720px), 
-       (width: 1280px) and (height: 800px) {
+@media (min-width: 540px) and (max-width: 1024px) {
   .search-input {
-    transform: translateY(1px) !important;
-  }
-}
-
-@media (width: 768px) {
-  .search-input {
-    transform: translateY(-1px) !important;
-  }
-}
-
-@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  .search-input {
-    transform: translateY(-3px) !important;
-    margin-top: 0px !important;
+    transform: translateY(-2px) !important;
   }
 }

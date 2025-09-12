@@ -435,8 +435,7 @@ function openTab(evt, tabName) {
   
   const detailsCard = document.querySelector('.details-card');
   if (detailsCard) {
-    setTimeout(() => {
-        }, 100);
+    // Placeholder for future enhancements
   }
 }
 
