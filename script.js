@@ -412,8 +412,7 @@ function openTab(evt, tabName) {
   const detailsCard = document.querySelector('.details-card');
   if (detailsCard) {
     setTimeout(() => {
-      addGlitterEffect(detailsCard);
-    }, 100);
+        }, 100);
   }
 }
 
@@ -483,7 +482,6 @@ function showPokemonDetails(pokemon) {
   detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] || "#ffffff";
   detailsCard.innerHTML = createDetailsHTML(pokemon);
   appendNavigationButtons(detailsCard, pokemon);
-  addGlitterEffect(detailsCard);
   overlay.appendChild(detailsCard);
   document.body.appendChild(overlay);
   document.body.classList.add("no-scroll");
@@ -572,48 +570,11 @@ function updateDetailsCard(pokemon) {
       detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] || "#ffffff";
       detailsCard.innerHTML = createDetailsHTML(pokemon);
       appendNavigationButtons(detailsCard, pokemon);
-      addGlitterEffect(detailsCard);
-      detailsCard.style.opacity = 1;
+          detailsCard.style.opacity = 1;
     }, 300);
   }
 }
 
-/**
- * Creates and returns glitter DOM element.
- * @returns {HTMLElement} Single glitter element.
- */
-function createGlitterElements() {
-  const glitter = document.createElement('div');
-  glitter.className = 'glitter-effect';
-  return glitter;
-}
-
-/**
- * Adds glitter effect to a details card using DOM elements.
- * @param {HTMLElement} detailsCard - The details card element.
- */
-function addGlitterEffect(detailsCard) {
-  const existingGlitter = detailsCard.querySelectorAll('.glitter-effect');
-  existingGlitter.forEach(el => el.remove());
-  const glitter = createGlitterElements();
-  detailsCard.appendChild(glitter);
-  attachGlitterListeners(detailsCard, glitter);
-}
-
-/**
- * Attaches hover listeners to glitter element.
- * @param {HTMLElement} detailsCard - The details card element.
- * @param {HTMLElement} glitter - The glitter element.
- */
-function attachGlitterListeners(detailsCard, glitter) {
-  detailsCard.addEventListener('mouseenter', () => {
-    glitter.classList.add('active');
-  });
-  
-  detailsCard.addEventListener('mouseleave', () => {
-    glitter.classList.remove('active');
-  });
-}
 
 /**
  * Closes the Pokémon details overlay.

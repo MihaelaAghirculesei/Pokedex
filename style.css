@@ -315,36 +315,6 @@
   box-shadow: var(--hover-shadow);
 }
 
-.glitter-effect {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background-image: linear-gradient(
-    115deg,
-    transparent 20%,
-    rgba(255, 0, 0, 10.5) 36%,
-    rgba(0, 255, 0, 10.5) 43%,
-    rgba(0, 0, 255, 10.5) 50%,
-    rgba(255, 255, 0, 10.5) 57%,
-    rgba(255, 0, 255, 10.5) 64%,
-    transparent 80%
-  );
-  background-position: 50% 50%;
-  background-size: 150% 150%;
-  mix-blend-mode: color-dodge;
-  opacity: 0;
-  filter: brightness(0.66) contrast(1.33);
-  transition: opacity 0.5s ease;
-  border-radius: 15px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.glitter-effect.active {
-  opacity: 0;
-}
 .details-header {
   display: flex;
   justify-content: space-between;
