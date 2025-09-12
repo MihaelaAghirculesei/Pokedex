@@ -227,11 +227,12 @@ function handleSearch(searchTerm) {
   const filtered = pokemonDetails
     .filter((pokemon) => pokemon.name.toLowerCase().startsWith(searchTerm))
     .slice(0, MAX_SEARCH_RESULTS);
-  renderPokemon(
-    filtered.length
-      ? filtered
-      : displayError(`Keine Pokémon gefunden für "${searchTerm}".`)
-  );
+  
+  if (filtered.length > 0) {
+    renderPokemon(filtered);
+  } else {
+    displayError(`No Pokémon found for "${searchTerm}".`);
+  }
 }
 
 /**

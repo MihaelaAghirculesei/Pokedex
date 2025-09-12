@@ -1,80 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-    <link rel="icon" type="image/vnd.icon" href="imgs/icons/pokemon-ball.png">
-    <title>Pokédex</title>
-    
-    <link rel="dns-prefetch" href="https://pokeapi.co">
-    <link rel="preconnect" href="https://raw.githubusercontent.com">
-    
-    <link rel="preload" as="image" href="./imgs/icons/pokemon-ball.png">
-    <link rel="preload" as="image" href="./imgs/icons/icon-pokemon.png">
-    <link rel="preload" as="image" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/other/official-artwork/1.png">
-    
-    <link rel="stylesheet" href="shared.min.css">
-    <link rel="stylesheet" href="style.min.css">
-    <script src="script.min.js" defer></script>
-    <script src="scripts/templates.min.js"></script>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+ <link rel="icon" type="image/vnd.icon" href="imgs/icons/pokemon-ball.png">
+ <title>Pokédex</title>
+ 
+ <link rel="dns-prefetch" href="https://pokeapi.co">
+ <link rel="preconnect" href="https://raw.githubusercontent.com">
+ 
+ <link rel="preload" as="image" href="./imgs/icons/pokemon-ball.png">
+ <link rel="preload" as="image" href="./imgs/icons/icon-pokemon.png">
+ <link rel="preload" as="image" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png">
+ 
+ <link rel="stylesheet" href="shared.min.css">
+ <link rel="stylesheet" href="style.min.css">
+ <script src="script.min.js" defer></script>
+ <script src="scripts/templates.min.js" defer></script>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <a class="logo" href="#" aria-label="Home">
-                <div class="headline-box">
-                    <img class="headline-icon" 
-                         src="./imgs/icons/pokemon-ball.png" 
-                         alt="Pokéball Icon"
-                         aria-hidden="true">
-                    <h1 class="headline">Pokédex</h1>
-                </div>
-            </a>
-            <input class="search-input" 
-                   id="search-input" 
-                   type="text" 
-                   placeholder="Search"
-                   aria-label="Search Pokémon"
-                   autocomplete="off">
-        </div>
-    </header>
-
-    <main class="pokemon-content">
-        <div id="loading" class="loading-indicator">Loading...</div>
-        <div id="pokedex-container" class="pokedex-container" aria-live="polite">
-        </div>
-        <div id="error-message" class="error-message" hidden></div>
-        <button id="load-more" class="load-more-btn">
-            <span>⚡ Load More Pokémon</span>
-        </button>
-    </main>
-
-    <footer class="footer">
-        <a class="logo" href="#" aria-label="Back to top">
-            <div class="headline-box">
-                <img class="headline-icon" 
-                     src="./imgs/icons/icon-pokemon.png" 
-                     alt="Pokémon Logo"
-                     aria-hidden="true">
-                <h2 class="headline">Pokédex</h2>
-            </div>
-        </a>
-        <a href="impressum.html"><button class="button">Legal Notice</button></a>
-    </footer>
-    
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        registration.addEventListener('updatefound', () => {
-                        });
-                    })
-                    .catch(error => {
-                        console.error('❌ Service Worker registration failed:', error);
-                    });
-            });
-        }
-    </script>
+ <header class="header">
+ <div class="header-content">
+ <a class="logo" href="#" aria-label="Home">
+ <div class="headline-box">
+ <img class="headline-icon" 
+ src="./imgs/icons/pokemon-ball.png" 
+ alt="Pokéball Icon"
+ aria-hidden="true">
+ <h1 class="headline">Pokédex</h1>
+ </div>
+ </a>
+ <input class="search-input" 
+ id="search-input" 
+ type="text" 
+ placeholder="Search"
+ aria-label="Search Pokémon"
+ autocomplete="off">
+ </div>
+ </header>
+ <main class="pokemon-content">
+ <div id="loading" class="loading-indicator">Loading...</div>
+ <div id="pokedex-container" class="pokedex-container" aria-live="polite">
+ </div>
+ <div id="error-message" class="error-message" hidden></div>
+ <button id="load-more" class="load-more-btn">
+ <span>⚡ Load More Pokémon</span>
+ </button>
+ </main>
+ <footer class="footer">
+ <a class="logo" href="#" aria-label="Back to top">
+ <div class="headline-box">
+ <img class="headline-icon" 
+ src="./imgs/icons/icon-pokemon.png" 
+ alt="Pokémon Logo"
+ aria-hidden="true">
+ <h2 class="headline">Pokédex</h2>
+ </div>
+ </a>
+ <a href="impressum.html"><button class="button">Legal Notice</button></a>
+ </footer>
+ 
+ <script>
+ if ('serviceWorker' in navigator) {
+ window.addEventListener('load', () => {
+ navigator.serviceWorker.register('/sw.js')
+ .then(registration => {
+ registration.addEventListener('updatefound', () => {
+ });
+ })
+ .catch(error => {
+ console.error('❌ Service Worker registration failed:', error);
+ });
+ });
+ }
+ </script>
 </body>
 </html>

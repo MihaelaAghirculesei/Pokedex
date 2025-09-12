@@ -152,7 +152,7 @@ function createMovesTab(pokemon) {
  * @returns {string} The HTML template for the error message.
  */
 function errorMessageTemplate(message) {
-  return `<div class="error-message"><p>${message}</p><button onclick="init()">Wiederholen</button></div>`;
+  return `<div class="error-message"><p>${message}</p><button class="button" onclick="init()">Try Again</button></div>`;
 }
 
 /**
