@@ -1,0 +1,61 @@
+{
+  "name": "Pokédex - Interactive Pokemon Encyclopedia",
+  "short_name": "Pokédex",
+  "description": "Enterprise-level Progressive Web App with complete Pokemon database, offline support, and advanced search capabilities",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#e94560",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["entertainment", "education", "games"],
+  "icons": [
+    {
+      "src": "/imgs/icons/pokemon-ball.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/imgs/icons/icon-pokemon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/imgs/readme/interface.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Pokédex Main Interface"
+    },
+    {
+      "src": "/imgs/readme/detailed_view.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Pokemon Detail View"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Search Pokemon",
+      "short_name": "Search",
+      "description": "Quick search for any Pokemon",
+      "url": "/?search=true",
+      "icons": [
+        {
+          "src": "/imgs/icons/pokemon-ball.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7"
+}
