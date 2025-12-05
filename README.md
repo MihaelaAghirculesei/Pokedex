@@ -4,13 +4,14 @@
 
 ![Pokédex Banner](imgs/readme/pokedex.png)
 
-**🚀 A cutting-edge, feature-rich Pokémon Pokédex web app built with vanilla JavaScript and advanced PokéAPI integration**
+**🚀 A cutting-edge, feature-rich Pokémon Pokédex Progressive Web App built with vanilla JavaScript and advanced PokéAPI integration**
 
-[![✨ Live Experience](https://img.shields.io/badge/✨_LIVE_EXPERIENCE-Interactive_Demo-FF6B6B?style=for-the-badge&logo=rocket&logoColor=white)](https://mihaela-melania-aghirculesei.de/pokedex/)
+[![✨ Live Experience](https://img.shields.io/badge/✨_LIVE_EXPERIENCE-Interactive_Demo-FF6B6B?style=for-the-badge&logo=rocket&logoColor=white)](https://pokedex.mihaela-melania-aghirculesei.de/)
+[![📱 PWA Ready](https://img.shields.io/badge/📱_PWA-Installable_App-4ECDC4?style=for-the-badge&logo=pwa&logoColor=white)](https://pokedex.mihaela-melania-aghirculesei.de/)
 [![🔧 Vanilla JS](https://img.shields.io/badge/🔧_VANILLA_JS-Zero_Dependencies-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![⚡ Professional Grade](https://img.shields.io/badge/⚡_PROFESSIONAL-Grade_Performance-00D9FF?style=for-the-badge&logo=lightning&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex)
 
-**[🎮 Launch App](https://mihaela-melania-aghirculesei.de/pokedex/) • [🚀 Quick Start](#-lightning-fast-setup) • [🎯 Advanced Features](#-advanced-features) • [📊 Performance](#-performance-excellence)**
+**[🎮 Launch App](https://pokedex.mihaela-melania-aghirculesei.de/) • [📱 Install as PWA](#-progressive-web-app-pwa) • [🚀 Quick Start](#-lightning-fast-setup) • [🎯 Advanced Features](#-advanced-features) • [📊 Performance](#-performance-excellence)**
 
 </div>
 
@@ -39,15 +40,15 @@ open index.html  # or use any HTTP server
 
 | **⚡ Quick Access** | **🎯 Features** | **🔧 Technical** | **🤝 Community** |
 |---------------------|------------------|------------------|-------------------|
-| [🚀 Live Demo](https://mihaela-melania-aghirculesei.de/pokedex/) | [🎮 Core Features](#-what-sets-this-apart) | [🏗️ Architecture](#-advanced-tech-stack) | [🤝 Contributing](#-contributing) |
-| [📱 Screenshots](#-visual-excellence) | [🎭 Advanced Details](#-advanced-features) | [⚡ Performance](#-performance-excellence) | [📞 Contact](#-connect--support) |
-| [🎮 User Guide](#-user-guide) | [🎨 Design System](#-design-excellence) | [🌐 Compatibility](#-compatibility--support) | [🙏 Credits](#-acknowledgments) |
+| [🚀 Live Demo](https://pokedex.mihaela-melania-aghirculesei.de/) | [🎮 Core Features](#-what-sets-this-apart) | [🏗️ Architecture](#-advanced-tech-stack) | [🤝 Contributing](#-contributing) |
+| [📱 Install PWA](#-progressive-web-app-pwa) | [🎭 Advanced Details](#-advanced-features) | [⚡ Performance](#-performance-excellence) | [📞 Contact](#-connect--support) |
+| [📸 Screenshots](#-visual-excellence) | [🎮 User Guide](#-user-guide) | [🌐 Cross-Platform](#-progressive-web-app-pwa) | [👩‍💻 Developer](#-about-the-developer) |
 
 </div>
 
 ---
 
-## 🌟 **Revolutionary Pokédx Experience**
+## 🌟 **Revolutionary Pokédex Experience**
 
 **Pokédex** redefines what a web-based Pokédex can be. Built with cutting-edge vanilla JavaScript and powered by comprehensive PokéAPI integration, this application delivers an unparalleled interactive experience.
 
@@ -84,6 +85,59 @@ open index.html  # or use any HTTP server
 
 ---
 
+## 📱 **Progressive Web App (PWA)**
+
+**Install Pokédex as a native app on any device!** This application is a fully-functional Progressive Web App with cross-platform support.
+
+### 🚀 **PWA Features**
+
+<table>
+<tr>
+<td width="50%">
+
+#### ✅ **Cross-Platform Installation**
+- **🖥️ Desktop:** Windows, macOS, Linux
+- **📱 Mobile:** Android, iOS
+- **🌐 Web:** Any modern browser
+- **⚡ Standalone Mode:** Runs like a native app
+- **🎨 Custom Theme:** Branded app experience
+
+</td>
+<td width="50%">
+
+#### 🔧 **Offline-First Architecture**
+- **📦 Service Worker Caching:** Complete offline support
+- **🔄 Smart Sync:** Data persists across sessions
+- **⚡ Instant Loading:** Pre-cached resources
+- **📊 API Caching:** Previously viewed Pokémon available offline
+- **🖼️ Image Caching:** Optimized asset delivery
+
+</td>
+</tr>
+</table>
+
+### 📲 **How to Install**
+
+#### **Desktop (Chrome/Edge):**
+1. Visit [pokedex.mihaela-melania-aghirculesei.de](https://pokedex.mihaela-melania-aghirculesei.de/)
+2. Look for the **Install** icon (🖥️ or ➕) in the address bar
+3. Click **Install** → App opens in standalone window
+4. Access from Start Menu/Applications folder
+
+#### **Mobile (Android):**
+1. Open in **Chrome** browser
+2. Tap **Menu (⋮)** → **"Add to Home screen"** or **"Install app"**
+3. App icon appears on your home screen
+4. Tap to launch as native app
+
+#### **Mobile (iOS/Safari):**
+1. Open in **Safari** browser
+2. Tap **Share** button (square with arrow)
+3. Scroll and tap **"Add to Home Screen"**
+4. App icon appears on home screen
+
+---
+
 ## 🎯 **Advanced Features**
 
 <table>
@@ -103,13 +157,13 @@ open index.html  # or use any HTTP server
 
 #### 🎯 **Advanced Technical Features**
 - 🗂️ **Tabbed Interface** - About, Stats, and **Moves** sections
-- 📊 **Visual Stats Display** - Progress bars with dynamic colors  
+- 📊 **Visual Stats Display** - Progress bars with dynamic colors
 - 🎮 **Complete Move Database** - Full moveset with type indicators
 - 🏷️ **Comprehensive Type System** - 18 types with custom icons
 - 🔄 **Seamless Navigation** - Previous/Next Pokémon browsing
 - 🎭 **Full-Screen Overlays** - Detailed Pokemon information views
 - ✨ **Glitter Effects** - Animated particle effects on hover
-- 🔧 **PWA Support** - Offline functionality with Service Worker
+- 📱 **Full PWA Support** - Installable app with offline-first architecture
 
 </td>
 </tr>
@@ -146,7 +200,8 @@ open index.html  # or use any HTTP server
 
 ### 🎥 **Experience It Live**
 
-[![🚀 Launch Pokédex](https://img.shields.io/badge/🚀_LAUNCH_POKÉDEX-Experience_Now-success?style=for-the-badge&labelColor=FF6B6B&color=4ECDC4&logoColor=white&logo=rocket)](https://mihaela-melania-aghirculesei.de/pokedex/)
+[![🚀 Launch Pokédex](https://img.shields.io/badge/🚀_LAUNCH_POKÉDEX-Experience_Now-success?style=for-the-badge&labelColor=FF6B6B&color=4ECDC4&logoColor=white&logo=rocket)](https://pokedex.mihaela-melania-aghirculesei.de/)
+[![📱 Install PWA](https://img.shields.io/badge/📱_INSTALL_AS_APP-Cross_Platform-success?style=for-the-badge&labelColor=4ECDC4&color=FF6B6B&logoColor=white&logo=pwa)](https://pokedex.mihaela-melania-aghirculesei.de/)
 
 </div>
 
@@ -297,7 +352,7 @@ git push origin feature/awesome-enhancement
 - 🎮 **Comparison Engine** - Side-by-side analysis tool
 - 📊 **Battle Calculator** - Damage and effectiveness computation
 - 🎨 **Theme System** - Multiple visual themes
-- 📱 **Enhanced PWA** - Advanced offline capabilities
+- 🔔 **Push Notifications** - Pokemon updates and reminders
 
 </td>
 </tr>
