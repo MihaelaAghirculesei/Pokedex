@@ -6,9 +6,10 @@ const IMAGE_CACHE = 'pokedex-images-v1';
 const STATIC_RESOURCES = [
   '/',
   '/index.html',
+  '/manifest.json',
   '/shared.min.css',
   '/style.min.css',
-  '/impressum.min.css', 
+  '/impressum.min.css',
   '/script.min.js',
   '/scripts/templates.min.js',
   '/imgs/icons/pokemon-ball.png',
