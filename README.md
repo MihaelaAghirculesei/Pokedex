@@ -416,7 +416,12 @@ git push origin feature/awesome-enhancement
 
 ## 📄 **License & Legal**
 
-**This professional project is open source and available for educational and personal use. Commercial usage requires permission.**
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+**You are free to:**
+- ✅ Use this code for personal, educational, or commercial projects
+- ✅ Modify and distribute the code
+- ✅ Use it without asking permission
 
 **PokéAPI Terms:** This project uses the PokéAPI service. Please review their [terms of service](https://pokeapi.co/docs/v2).
 
