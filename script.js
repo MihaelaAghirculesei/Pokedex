@@ -183,7 +183,7 @@ async function fetchPokemonDetail(url) {
  * @param {Error} error - The error object.
  */
 function handleFetchError(error) {
-  showError("Failed to load Pokémon data. Please try again later.");
+  displayError("Failed to load Pokémon data. Please try again later.");
 }
 
 /**
