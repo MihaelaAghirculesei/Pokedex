@@ -433,11 +433,6 @@ function openTab(evt, tabName) {
   showActiveTab(tabName);
   evt.currentTarget.classList.add("active");
   handleTabSpecificActions(tabName);
-  
-  const detailsCard = document.querySelector('.details-card');
-  if (detailsCard) {
-    // Placeholder for future enhancements
-  }
 }
 
 /**
@@ -496,10 +491,47 @@ const showLoading = () => loadingIndicator.removeAttribute("hidden");
 const hideLoading = () => loadingIndicator.setAttribute("hidden", "true");
 
 /**
+ * Stores the previously focused element before opening overlay.
+ * @type {HTMLElement|null}
+ */
+let previouslyFocusedElement = null;
+
+/**
+ * Stores the current Pokemon being displayed in the overlay.
+ * @type {Object|null}
+ */
+let currentOverlayPokemon = null;
+
+/**
+ * Handles keyboard events in the overlay.
+ * @param {KeyboardEvent} e - The keyboard event.
+ * @param {HTMLElement} overlay - The overlay element.
+ */
+function handleOverlayKeydown(e, overlay) {
+  if (e.key === 'Escape') {
+    closeOverlay(overlay);
+    return;
+  }
+
+  if (!currentOverlayPokemon) return;
+
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    showPreviousPokemon(currentOverlayPokemon);
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    showNextPokemon(currentOverlayPokemon);
+  }
+}
+
+/**
  * Displays the details of a selected Pokémon in an overlay.
  * @param {Object} pokemon - The Pokémon data.
  */
 function showPokemonDetails(pokemon) {
+  previouslyFocusedElement = document.activeElement;
+  currentOverlayPokemon = pokemon;
+
   const overlay = createOverlay();
   const detailsCard = document.createElement("div");
   detailsCard.className = "details-card";
@@ -509,7 +541,16 @@ function showPokemonDetails(pokemon) {
   overlay.appendChild(detailsCard);
   document.body.appendChild(overlay);
   document.body.classList.add("no-scroll");
+
+  const keydownHandler = (e) => handleOverlayKeydown(e, overlay);
+  overlay.addEventListener("keydown", keydownHandler);
   overlay.addEventListener("click", e => e.target === overlay && closeOverlay(overlay));
+
+  overlay._keydownHandler = keydownHandler;
+
+  setTimeout(() => {
+    overlay.focus();
+  }, 100);
 }
 
 /**
@@ -519,6 +560,10 @@ function showPokemonDetails(pokemon) {
 function createOverlay() {
   const overlay = document.createElement("div");
   overlay.className = "overlay";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-labelledby", "pokemon-details-title");
+  overlay.setAttribute("tabindex", "-1");
   return overlay;
 }
 
@@ -568,7 +613,7 @@ function showPreviousPokemon(currentPokemon) {
   const currentIndex = pokemonDetails.indexOf(currentPokemon);
   const prevIndex =
     (currentIndex - 1 + pokemonDetails.length) % pokemonDetails.length;
-  updateDetailsCard(pokemonDetails[prevIndex]);
+  updateDetailsCard(pokemonDetails[prevIndex], 'prev');
 }
 
 /**
@@ -578,25 +623,46 @@ function showPreviousPokemon(currentPokemon) {
 function showNextPokemon(currentPokemon) {
   const currentIndex = pokemonDetails.indexOf(currentPokemon);
   const nextIndex = (currentIndex + 1) % pokemonDetails.length;
-  updateDetailsCard(pokemonDetails[nextIndex]);
+  updateDetailsCard(pokemonDetails[nextIndex], 'next');
 }
 
 /**
- * Updates the Pokémon details card with new data.
+ * Updates the Pokémon details card with new data and smooth animation.
  * @param {Object} pokemon - The Pokémon data.
+ * @param {string} direction - The animation direction ('prev' or 'next').
  */
-function updateDetailsCard(pokemon) {
+function updateDetailsCard(pokemon, direction = 'next') {
+  currentOverlayPokemon = pokemon;
+
   const detailsCard = document.querySelector(".details-card");
-  if (detailsCard) {
-    detailsCard.style.opacity = 0;
+  if (!detailsCard) return;
+
+  const overlay = document.querySelector(".overlay");
+
+  const slideOutDirection = direction === 'next' ? '-100%' : '100%';
+  const slideInDirection = direction === 'next' ? '100%' : '-100%';
+
+  detailsCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+  detailsCard.style.transform = `translateX(${slideOutDirection})`;
+  detailsCard.style.opacity = '0';
+
+  setTimeout(() => {
+    detailsCard.style.transition = 'none';
+    detailsCard.style.transform = `translateX(${slideInDirection})`;
+    detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] || "#ffffff";
+    detailsCard.innerHTML = createDetailsHTML(pokemon);
+    appendNavigationButtons(detailsCard, pokemon);
 
     setTimeout(() => {
-      detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] || "#ffffff";
-      detailsCard.innerHTML = createDetailsHTML(pokemon);
-      appendNavigationButtons(detailsCard, pokemon);
-          detailsCard.style.opacity = 1;
-    }, 300);
-  }
+      detailsCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+      detailsCard.style.transform = 'translateX(0)';
+      detailsCard.style.opacity = '1';
+
+      if (overlay) {
+        overlay.focus();
+      }
+    }, 50);
+  }, 300);
 }
 
 
@@ -605,8 +671,18 @@ function updateDetailsCard(pokemon) {
  * @param {HTMLElement} overlay - The overlay element to be removed.
  */
 function closeOverlay(overlay) {
+  if (overlay._keydownHandler) {
+    overlay.removeEventListener("keydown", overlay._keydownHandler);
+  }
+
   document.body.removeChild(overlay);
   document.body.classList.remove("no-scroll");
+
+  currentOverlayPokemon = null;
+
+  if (previouslyFocusedElement && previouslyFocusedElement.focus) {
+    previouslyFocusedElement.focus();
+  }
 }
 
 loadMoreButton.addEventListener("click", fetchPokemonData);
