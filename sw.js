@@ -1,17 +1,17 @@
-const CACHE_NAME = 'pokedex-v1';
-const STATIC_CACHE = 'pokedex-static-v1';
-const API_CACHE = 'pokedex-api-v1';
-const IMAGE_CACHE = 'pokedex-images-v1';
+const CACHE_NAME = 'pokedex-v2';
+const STATIC_CACHE = 'pokedex-static-v2';
+const API_CACHE = 'pokedex-api-v2';
+const IMAGE_CACHE = 'pokedex-images-v2';
 
 const STATIC_RESOURCES = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/shared.min.css',
-  '/style.min.css',
+  '/shared.css',
+  '/style.css',
   '/impressum.min.css',
-  '/script.min.js',
-  '/scripts/templates.min.js',
+  '/script.js',
+  '/scripts/templates.js',
   '/imgs/icons/pokemon-ball.png',
   '/imgs/icons/icon-pokemon.png',
   '/imgs/icons/arrow-left-circle-fill.svg',
