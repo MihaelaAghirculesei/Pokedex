@@ -36,9 +36,17 @@
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.pokemon-card:hover {
+.pokemon-card:hover,
+.pokemon-card:focus-visible {
   transform: translateY(-5px) scale(1.2);
   box-shadow: var(--hover-shadow);
+}
+.keyboard-nav .pokemon-card:hover:not(:focus-visible) {
+  transform: none;
+  box-shadow: none;
+}
+.pokemon-card:focus-visible {
+  outline: none;
 }
 .pokemon-card-header {
   display: flex;
@@ -67,9 +75,13 @@
   height: 240px !important;
   transition: transform 0.3s ease;
 }
-.pokemon-card:hover .pokemon-image {
+.pokemon-card:hover .pokemon-image,
+.pokemon-card:focus-visible .pokemon-image {
   transform: scale(1.1);
   cursor: pointer;
+}
+.keyboard-nav .pokemon-card:hover:not(:focus-visible) .pokemon-image {
+  transform: none;
 }
 .type-button {
   display: flex;
@@ -117,7 +129,9 @@
   background-color: var(--type-color);
 }
 .pokemon-card:hover:before,
-.pokemon-card:hover:after {
+.pokemon-card:hover:after,
+.pokemon-card:focus-visible:before,
+.pokemon-card:focus-visible:after {
   content: "";
   position: absolute;
   left: 0;

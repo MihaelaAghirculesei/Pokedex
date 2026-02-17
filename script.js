@@ -104,12 +104,20 @@ async function init() {
  */
 async function fetchPokemonData() {
   const pokemonCache = {};
+  const previousCount = pokemonDetails.length;
   try {
     await manageFetchLoading();
     const newPokemonDetails = await fetchAndProcessPokemonData(pokemonCache);
     pokemonDetails.push(...newPokemonDetails);
     offset += limit;
     renderPokemon();
+    if (previousCount > 0) {
+      const cards = pokedexContainer.querySelectorAll(".pokemon-card");
+      if (cards[previousCount]) {
+        cards[previousCount].focus();
+        cards[previousCount].scrollIntoView({ block: "center" });
+      }
+    }
   } catch (error) {
     handleFetchError(error);
   } finally {
@@ -259,6 +267,9 @@ function createPokemonCard(pokemon) {
   const card = document.createElement("div");
   card.className = "pokemon-card";
   card.dataset.name = pokemon.name;
+  card.setAttribute("tabindex", "0");
+  card.setAttribute("role", "button");
+  card.setAttribute("aria-label", `Show details for ${pokemon.name}`);
   card.style.backgroundColor =
     typeColor[pokemon.types[0].type.name] || "#ffffff";
   card.innerHTML = createPokemonCardTemplate(pokemon);
@@ -503,13 +514,20 @@ let previouslyFocusedElement = null;
 let currentOverlayPokemon = null;
 
 /**
- * Handles keyboard events in the overlay.
+ * Handles keyboard events globally when overlay is open (ESC, Tab, Arrow keys).
  * @param {KeyboardEvent} e - The keyboard event.
- * @param {HTMLElement} overlay - The overlay element.
  */
-function handleOverlayKeydown(e, overlay) {
+function handleOverlayKeydown(e) {
+  const overlay = document.querySelector(".overlay");
+  if (!overlay) return;
+
   if (e.key === 'Escape') {
     closeOverlay(overlay);
+    return;
+  }
+
+  if (e.key === 'Tab') {
+    trapFocus(e, overlay);
     return;
   }
 
@@ -525,10 +543,45 @@ function handleOverlayKeydown(e, overlay) {
 }
 
 /**
+ * Traps Tab/Shift+Tab focus within the overlay.
+ * @param {KeyboardEvent} e - The keyboard event.
+ * @param {HTMLElement} overlay - The overlay element.
+ */
+function trapFocus(e, overlay) {
+  const focusableElements = overlay.querySelectorAll(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  );
+  if (focusableElements.length === 0) {
+    e.preventDefault();
+    return;
+  }
+
+  const firstEl = focusableElements[0];
+  const lastEl = focusableElements[focusableElements.length - 1];
+
+  if (e.shiftKey) {
+    if (document.activeElement === firstEl || document.activeElement === overlay) {
+      e.preventDefault();
+      lastEl.focus();
+    }
+  } else {
+    if (document.activeElement === lastEl) {
+      e.preventDefault();
+      firstEl.focus();
+    }
+  }
+}
+
+document.addEventListener("keydown", handleOverlayKeydown);
+
+/**
  * Displays the details of a selected Pokémon in an overlay.
  * @param {Object} pokemon - The Pokémon data.
  */
 function showPokemonDetails(pokemon) {
+  const existingOverlay = document.querySelector(".overlay");
+  if (existingOverlay) return;
+
   previouslyFocusedElement = document.activeElement;
   currentOverlayPokemon = pokemon;
 
@@ -542,11 +595,7 @@ function showPokemonDetails(pokemon) {
   document.body.appendChild(overlay);
   document.body.classList.add("no-scroll");
 
-  const keydownHandler = (e) => handleOverlayKeydown(e, overlay);
-  overlay.addEventListener("keydown", keydownHandler);
   overlay.addEventListener("click", e => e.target === overlay && closeOverlay(overlay));
-
-  overlay._keydownHandler = keydownHandler;
 
   setTimeout(() => {
     overlay.focus();
@@ -671,11 +720,7 @@ function updateDetailsCard(pokemon, direction = 'next') {
  * @param {HTMLElement} overlay - The overlay element to be removed.
  */
 function closeOverlay(overlay) {
-  if (overlay._keydownHandler) {
-    overlay.removeEventListener("keydown", overlay._keydownHandler);
-  }
-
-  document.body.removeChild(overlay);
+  overlay.remove();
   document.body.classList.remove("no-scroll");
 
   currentOverlayPokemon = null;
@@ -686,13 +731,80 @@ function closeOverlay(overlay) {
 }
 
 loadMoreButton.addEventListener("click", fetchPokemonData);
-pokedexContainer.addEventListener("click", (e) => {
-  if (e.target.closest(".pokemon-card")) {
-    const pokemonName = e.target.closest(".pokemon-card").dataset.name;
-    const pokemon = pokemonDetails.find((p) => p.name === pokemonName);
-    showPokemonDetails(pokemon);
+
+function openCardOverlay(e) {
+  const card = e.target.closest(".pokemon-card");
+  if (!card) return;
+  const pokemon = pokemonDetails.find((p) => p.name === card.dataset.name);
+  if (pokemon) showPokemonDetails(pokemon);
+}
+
+pokedexContainer.addEventListener("click", openCardOverlay);
+pokedexContainer.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    openCardOverlay(e);
   }
 });
+
+document.addEventListener("keydown", (e) => {
+  if (document.querySelector(".overlay")) return;
+  if (document.activeElement.tagName === "INPUT") return;
+
+  if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
+    e.preventDefault();
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      document.body.classList.add("keyboard-nav");
+      navigateCards(e.key);
+    }
+  }
+});
+
+document.addEventListener("mousemove", () => {
+  document.body.classList.remove("keyboard-nav");
+  const focused = document.activeElement;
+  if (focused && focused.classList.contains("pokemon-card")) {
+    focused.blur();
+  }
+}, { once: false });
+
+/**
+ * Navigates between Pokémon cards using left/right arrow keys.
+ * @param {string} key - The pressed arrow key.
+ */
+function navigateCards(key) {
+  const cards = Array.from(pokedexContainer.querySelectorAll(".pokemon-card"));
+  if (cards.length === 0) return;
+
+  const currentIndex = cards.indexOf(document.activeElement);
+  if (currentIndex === -1) {
+    const target = key === "ArrowLeft" ? cards[cards.length - 1] : cards[0];
+    target.focus();
+    target.scrollIntoView({ block: "center" });
+    return;
+  }
+
+  let target = null;
+
+  if (key === "ArrowRight" && currentIndex + 1 < cards.length) {
+    target = cards[currentIndex + 1];
+  } else if (key === "ArrowRight" && currentIndex + 1 >= cards.length) {
+    loadMoreButton.focus();
+    loadMoreButton.scrollIntoView({ block: "center" });
+    return;
+  } else if (key === "ArrowLeft" && currentIndex - 1 >= 0) {
+    target = cards[currentIndex - 1];
+  } else if (key === "ArrowLeft" && currentIndex === 0) {
+    loadMoreButton.focus();
+    loadMoreButton.scrollIntoView({ block: "center" });
+    return;
+  }
+
+  if (target) {
+    target.focus();
+    target.scrollIntoView({ block: "center" });
+  }
+}
 
 /**
  * Adds soft hyphens to words for better text wrapping following English syllabification rules.
