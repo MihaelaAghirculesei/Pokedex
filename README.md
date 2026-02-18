@@ -162,6 +162,7 @@ open index.html  # or use any HTTP server
 - 🏷️ **Comprehensive Type System** - 18 types with custom icons
 - 🔄 **Seamless Navigation** - Previous/Next Pokémon browsing
 - 🎭 **Full-Screen Overlays** - Detailed Pokemon information views
+- ⌨️ **Full Keyboard Navigation** - Arrow keys, focus trap, WCAG compliant
 - ✨ **Glitter Effects** - Animated particle effects on hover
 - 📱 **Full PWA Support** - Installable app with offline-first architecture
 
@@ -234,7 +235,7 @@ open index.html  # or use any HTTP server
 🚀 Advanced Feature Set  
 ├── 🔍 Smart Search Algorithm with 300ms Debouncing
 ├── 📊 Dynamic Data Visualization System
-├── 🎭 Modal Overlay System with Keyboard Navigation
+├── 🎭 Modal Overlay System with Full Keyboard Navigation (WCAG)
 ├── 🗂️ Tabbed Content Management (About, Stats, Moves)
 ├── ✨ Particle Effects System (Glitter animations)
 ├── 🖼️ Intelligent Lazy Loading
@@ -312,6 +313,24 @@ function renderPokemon(pokemonArray = pokemonDetails) {
 </td>
 </tr>
 </table>
+
+### ⌨️ **Keyboard Accessibility**
+
+Full keyboard navigation support following WCAG guidelines:
+
+| Key | Context | Action |
+|-----|---------|--------|
+| **Arrow Left / Right** | Card Grid | Navigate between Pokémon cards |
+| **Enter / Space** | Focused Card | Open detail overlay |
+| **ESC** | Overlay | Close the overlay |
+| **Arrow Left / Right** | Overlay | Browse to previous/next Pokémon |
+| **Tab / Shift+Tab** | Overlay | Cycle through overlay controls (focus trap) |
+
+- After the last card, **Arrow Right** moves focus to the **Load More** button
+- From the **Load More** button, **Arrow Right** cycles back to the first card, **Arrow Left** to the last card
+- After loading more Pokémon, focus automatically moves to the first new card
+- Cards receive a zoom effect on focus, matching the hover animation
+- Mouse and keyboard focus never overlap - moving the mouse clears keyboard focus
 
 ---
 
@@ -396,6 +415,7 @@ git push origin feature/awesome-enhancement
 - ✅ **Performance Engineering** - Enterprise-grade optimization
 - ✅ **Clean Architecture** - Maintainable code patterns
 - ✅ **UX Design Excellence** - Intuitive interface design
+- ✅ **Keyboard Accessibility** - WCAG compliant navigation
 
 </td>
 <td width="50%">
