@@ -16,7 +16,13 @@
       "src": "/imgs/icons/pokemon-ball.png",
       "sizes": "any",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
+    },
+    {
+      "src": "/imgs/icons/pokemon-ball.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/imgs/icons/icon-pokemon.png",

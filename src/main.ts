@@ -8,6 +8,8 @@ import {
   createMovesHTMLTemplate,
 } from './templates.js';
 import type { Pokemon, PokemonListResponse } from './types.js';
+import { initLogoAnimation } from './logo.js';
+import { getLang, setLang, applyLangToggleUI, t, type Language } from './i18n.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -46,14 +48,13 @@ let fetchAbortController: AbortController | null = null;
 let searchTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let previouslyFocusedElement: HTMLElement | null = null;
 let currentOverlayPokemon: Pokemon | null = null;
-let footerLogoObserver: IntersectionObserver | null = null;
 let mousemoveRafPending = false;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function setHTML(element: Element, html: string): void {
   element.innerHTML = DOMPurify.sanitize(html, {
-    ADD_ATTR: ['data-tab', 'data-loaded'],
+    ADD_ATTR: ['data-tab', 'data-loaded', 'data-pokemon-id'],
   });
 }
 
@@ -63,8 +64,31 @@ const hideLoading = (): void => { loadingIndicator.setAttribute('hidden', 'true'
 function announceSearchResults(count: number, searchTerm: string): void {
   searchResultsStatus.textContent =
     count > 0
-      ? `${count} Pokémon found for "${searchTerm}"`
-      : `No Pokémon found for "${searchTerm}". Try loading more.`;
+      ? t().searchFound(count, searchTerm)
+      : t().searchNotFound(searchTerm);
+}
+
+// ─── i18n ─────────────────────────────────────────────────────────────────────
+
+function applyMainTranslations(): void {
+  const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+  if (searchInput) searchInput.placeholder = t().searchPlaceholder;
+  const loadMoreSpan = loadMoreButton.querySelector('span');
+  if (loadMoreSpan) loadMoreSpan.textContent = t().loadMore;
+  loadingIndicator.textContent = t().loading;
+  document.documentElement.lang = getLang();
+}
+
+function initLanguageToggle(): void {
+  const toggle = document.getElementById('languageToggle');
+  if (!toggle) return;
+  applyLangToggleUI(getLang(), toggle);
+  toggle.addEventListener('click', () => {
+    const newLang: Language = getLang() === 'de' ? 'en' : 'de';
+    setLang(newLang);
+    applyMainTranslations();
+    applyLangToggleUI(newLang, toggle);
+  });
 }
 
 // ─── Fetch ───────────────────────────────────────────────────────────────────
@@ -145,10 +169,10 @@ function handleFetchError(error: Error): void {
   const isRateLimit = error.message.includes('429');
   const isServer = /5\d\d/.exec(error.message);
   const message = isRateLimit
-    ? 'Too many requests. Please wait a moment and try again.'
+    ? t().errorRateLimit
     : isServer
-    ? 'The Pokémon API is temporarily unavailable. Please try again later.'
-    : 'Failed to load Pokémon data. Check your connection and try again.';
+    ? t().errorServer
+    : t().errorNetwork;
 
   displayError(message);
 }
@@ -176,7 +200,7 @@ function handleSearch(searchTerm: string): void {
   if (filtered.length > 0) {
     renderPokemon(filtered);
   } else {
-    displayError(`No Pokémon found for "${searchTerm}". Try loading more Pokémon first.`);
+    displayError(t().errorNotFound(searchTerm));
   }
   announceSearchResults(filtered.length, searchTerm);
 }
@@ -203,36 +227,6 @@ function createPokemonCard(pokemon: Pokemon): HTMLElement {
 
 function displayError(message: string): void {
   setHTML(pokedexContainer, errorMessageTemplate(message));
-}
-
-// ─── Logo animation ───────────────────────────────────────────────────────────
-
-function initLogoAnimation(): void {
-  const headerLogo = document.querySelector<HTMLElement>('.header .headline-icon');
-  if (headerLogo) headerLogo.classList.add('animate-logo');
-
-  const footerLogo = document.querySelector<HTMLElement>('.footer .headline-icon');
-  if (footerLogo) {
-    footerLogoObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const el = entry.target as HTMLElement;
-            el.classList.remove('animate-logo');
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                el.classList.add('animate-logo');
-              });
-            });
-            // animate once, then stop watching
-            footerLogoObserver?.unobserve(el);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-    footerLogoObserver.observe(footerLogo);
-  }
 }
 
 // ─── Overlay ─────────────────────────────────────────────────────────────────
@@ -329,9 +323,9 @@ function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' = 'next'
   const overlay = document.querySelector<HTMLElement>('.overlay');
   const slideOut = direction === 'next' ? '-100%' : '100%';
   const slideIn = direction === 'next' ? '100%' : '-100%';
-  const t = `${SLIDE_DURATION_MS / 1000}s`;
+  const dur = `${SLIDE_DURATION_MS / 1000}s`;
 
-  detailsCard.style.transition = `transform ${t} ease-out, opacity ${t} ease-out`;
+  detailsCard.style.transition = `transform ${dur} ease-out, opacity ${dur} ease-out`;
   detailsCard.style.transform = `translateX(${slideOut})`;
   detailsCard.style.opacity = '0';
 
@@ -348,7 +342,7 @@ function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' = 'next'
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        detailsCard.style.transition = `transform ${t} ease-out, opacity ${t} ease-out`;
+        detailsCard.style.transition = `transform ${dur} ease-out, opacity ${dur} ease-out`;
         detailsCard.style.transform = 'translateX(0)';
         detailsCard.style.opacity = '1';
         overlay?.focus();
@@ -376,7 +370,8 @@ function openTab(evt: Event, tabName: string): void {
     detailsCard.classList.add('moves-active');
     const movesContainer = document.querySelector<HTMLElement>('.moves-container');
     if (movesContainer?.dataset.loaded === 'false') {
-      loadPokemonMoves(movesContainer.id.replace('moves-', ''));
+      const pokemonId = movesContainer.dataset.pokemonId ?? '';
+      if (pokemonId) loadPokemonMoves(pokemonId);
     }
   } else {
     detailsCard.classList.remove('moves-active');
@@ -544,6 +539,8 @@ loadMoreButton.addEventListener('click', () => { void fetchPokemonData(); });
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
+  applyMainTranslations();
+  initLanguageToggle();
   void init();
   setTimeout(initLogoAnimation, LOGO_ANIMATION_DELAY_MS);
 });

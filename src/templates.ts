@@ -1,4 +1,4 @@
-import { getTypeIconSrc, capitalizeFirstLetter, addHyphenation } from './utils.js';
+import { getTypeIconSrc, formatStatName, addHyphenation } from './utils.js';
 import type { Pokemon, PokemonType } from './types.js';
 
 const FALLBACK_IMAGE = 'imgs/icons/pokemon-ball.png';
@@ -61,7 +61,7 @@ function createDetailsHeader(pokemon: Pokemon): string {
 
 function createImageSection(src: string, name: string): string {
   return `<div class="pokemon-image-section">
-      <img src="${src}" alt="${name}" class="details-image" loading="lazy">
+      <img src="${src}" alt="Official artwork of ${name}" class="details-image" loading="lazy">
     </div>`;
 }
 
@@ -105,7 +105,7 @@ function createAboutTab(
 
 function createBaseStatsTab(pokemon: Pokemon): string {
   const rows = pokemon.stats
-    .map(stat => `<tr><th>${capitalizeFirstLetter(stat.stat.name)}:</th><td><progress value="${stat.base_stat}" max="200"></progress>${stat.base_stat}</td></tr>`)
+    .map(stat => `<tr><th>${formatStatName(stat.stat.name)}:</th><td><progress value="${stat.base_stat}" max="200"></progress>${stat.base_stat}</td></tr>`)
     .join('');
 
   return `<div id="BaseStats" class="tab-content" style="display: none;">
@@ -117,7 +117,7 @@ function createBaseStatsTab(pokemon: Pokemon): string {
 
 function createMovesTab(pokemon: Pokemon): string {
   return `<div id="Moves" class="tab-content" style="display: none;">
-      <div class="moves-container" id="moves-${pokemon.id}" data-loaded="false">Loading moves...</div>
+      <div class="moves-container" id="moves-${pokemon.id}" data-loaded="false" data-pokemon-id="${pokemon.id}">Loading moves...</div>
     </div>`;
 }
 

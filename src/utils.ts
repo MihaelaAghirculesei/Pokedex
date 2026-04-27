@@ -45,14 +45,26 @@ export const getTypeIconSrc = (type: string): string => TYPE_ICONS[type] ?? '';
 export const capitalizeFirstLetter = (s: string): string =>
   s.charAt(0).toUpperCase() + s.slice(1);
 
-export function filterPokemon<T extends { name: string }>(
+const STAT_NAMES: Record<string, string> = {
+  hp: 'HP',
+  attack: 'Attack',
+  defense: 'Defense',
+  'special-attack': 'Sp. Attack',
+  'special-defense': 'Sp. Defense',
+  speed: 'Speed',
+};
+
+export const formatStatName = (name: string): string =>
+  STAT_NAMES[name] ?? capitalizeFirstLetter(name);
+
+export function filterPokemon<T extends { name: string; id: number }>(
   pokemonList: T[],
   searchTerm: string,
   limit: number
 ): T[] {
-  const term = searchTerm.toLowerCase();
+  const term = searchTerm.toLowerCase().trim();
   return pokemonList
-    .filter(p => p.name.toLowerCase().includes(term))
+    .filter(p => p.name.toLowerCase().includes(term) || String(p.id) === term)
     .slice(0, limit);
 }
 

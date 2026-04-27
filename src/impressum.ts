@@ -1,4 +1,5 @@
-type Language = 'de' | 'en';
+import { getLang, setLang, applyLangToggleUI, type Language } from './i18n.js';
+import { initLogoAnimation } from './logo.js';
 
 interface PageTranslations {
   title: string;
@@ -55,11 +56,9 @@ const translations: Record<Language, PageTranslations> = {
   },
 };
 
-let currentLang: Language = 'en';
-
 function applyTranslations(lang: Language): void {
-  const t = translations[lang];
-  document.title = t.title;
+  const tr = translations[lang];
+  document.title = tr.title;
   document.documentElement.lang = lang;
 
   const qs = (sel: string): Element | null => document.querySelector(sel);
@@ -69,94 +68,53 @@ function applyTranslations(lang: Language): void {
     if (el) el.textContent = text;
   };
 
-  setText('h1.adsimple-322947329', t.headline);
-  setText('h1.adsimple-322947329 + p.adsimple-322947329', t.info);
-  setText('#eu-streitschlichtung', t.euDispute);
+  setText('h1.adsimple-322947329', tr.headline);
+  setText('h1.adsimple-322947329 + p.adsimple-322947329', tr.info);
+  setText('#eu-streitschlichtung', tr.euDispute);
 
   const euParagraphs = document.querySelectorAll<HTMLElement>(
     '#eu-streitschlichtung + p.adsimple-322947329'
   );
-  if (euParagraphs[0]) euParagraphs[0].textContent = `${t.euText1} ${t.euText2}`;
-  if (euParagraphs[1]) euParagraphs[1].textContent = t.euText3;
+  if (euParagraphs[0]) euParagraphs[0].textContent = `${tr.euText1} ${tr.euText2}`;
+  if (euParagraphs[1]) euParagraphs[1].textContent = tr.euText3;
 
-  setText('#bildernachweis', t.imageCredits);
-  setText('#bildernachweis + p.adsimple-322947329', t.imageText1);
+  setText('#bildernachweis', tr.imageCredits);
+  setText('#bildernachweis + p.adsimple-322947329', tr.imageText1);
 
   const rightsStrong = qs('#bildernachweis + p.adsimple-322947329 + p strong');
-  if (rightsStrong) rightsStrong.textContent = t.imageText2;
+  if (rightsStrong) rightsStrong.textContent = tr.imageText2;
 
   const copyrightP = qs(
     '#bildernachweis + p.adsimple-322947329 + p + p.adsimple-322947329'
   );
-  if (copyrightP) copyrightP.textContent = t.imageText3;
+  if (copyrightP) copyrightP.textContent = tr.imageText3;
 
   const backButton = qs('.button');
-  if (backButton) backButton.textContent = t.backButton;
+  if (backButton) backButton.textContent = tr.backButton;
 
   const sourceP = qs('p[style*="margin-top:15px"]');
-  if (sourceP) sourceP.textContent = t.sourceText;
+  if (sourceP) sourceP.textContent = tr.sourceText;
 }
 
 function toggleLanguage(): void {
-  currentLang = currentLang === 'de' ? 'en' : 'de';
-  localStorage.setItem('pokedex-lang', currentLang);
-  applyTranslations(currentLang);
-
+  const newLang: Language = getLang() === 'de' ? 'en' : 'de';
+  setLang(newLang);
+  applyTranslations(newLang);
   const toggle = document.getElementById('languageToggle');
-  if (!toggle) return;
-
-  const labels = toggle.querySelectorAll<HTMLElement>('.lang-label');
-  if (currentLang === 'en') {
-    toggle.classList.add('en');
-    labels[0]?.classList.remove('active');
-    labels[1]?.classList.add('active');
-  } else {
-    toggle.classList.remove('en');
-    labels[0]?.classList.add('active');
-    labels[1]?.classList.remove('active');
-  }
-}
-
-function initLogoAnimation(): void {
-  const headerLogo = document.querySelector<HTMLElement>('header .headline-icon');
-  if (headerLogo) headerLogo.classList.add('animate-logo');
-
-  const footerLogo = document.querySelector<HTMLElement>('.footer .headline-icon');
-  if (!footerLogo) return;
-
-  const observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const el = entry.target as HTMLElement;
-          el.classList.remove('animate-logo');
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => { el.classList.add('animate-logo'); });
-          });
-          observer.unobserve(el);
-        }
-      });
-    },
-    { threshold: 0.5 }
-  );
-  observer.observe(footerLogo);
+  if (toggle) applyLangToggleUI(newLang, toggle);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   initLogoAnimation();
 
-  const savedLang = localStorage.getItem('pokedex-lang');
-  if (savedLang === 'de') {
-    currentLang = 'de';
+  const lang = getLang();
+  if (lang === 'de') {
     applyTranslations('de');
-    const toggle = document.getElementById('languageToggle');
-    if (toggle) {
-      toggle.classList.remove('en');
-      const labels = toggle.querySelectorAll<HTMLElement>('.lang-label');
-      labels[0]?.classList.add('active');
-      labels[1]?.classList.remove('active');
-    }
   }
 
-  document.getElementById('languageToggle')?.addEventListener('click', toggleLanguage);
+  const toggle = document.getElementById('languageToggle');
+  if (toggle) {
+    applyLangToggleUI(lang, toggle);
+    toggle.addEventListener('click', toggleLanguage);
+  }
 });

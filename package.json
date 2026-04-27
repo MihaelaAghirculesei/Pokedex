@@ -38,5 +38,8 @@
   },
   "dependencies": {
     "dompurify": "^3.4.1"
+  },
+  "overrides": {
+    "serialize-javascript": "^7.0.5"
   }
 }
