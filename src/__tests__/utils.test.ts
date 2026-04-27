@@ -3,6 +3,7 @@ import {
   typeColor,
   getTypeIconSrc,
   capitalizeFirstLetter,
+  formatStatName,
   filterPokemon,
   addHyphenation,
 } from '../utils.js';
@@ -63,11 +64,11 @@ describe('capitalizeFirstLetter', () => {
 
 describe('filterPokemon', () => {
   const list = [
-    { name: 'bulbasaur' },
-    { name: 'ivysaur' },
-    { name: 'charmander' },
-    { name: 'charmeleon' },
-    { name: 'charizard' },
+    { name: 'bulbasaur', id: 1 },
+    { name: 'ivysaur', id: 2 },
+    { name: 'charmander', id: 4 },
+    { name: 'charmeleon', id: 5 },
+    { name: 'charizard', id: 6 },
   ];
 
   it('filters by partial name', () => {
@@ -86,6 +87,35 @@ describe('filterPokemon', () => {
 
   it('is case-insensitive', () => {
     expect(filterPokemon(list, 'CHAR', 10)).toHaveLength(3);
+  });
+
+  it('matches by exact Pokémon ID number', () => {
+    const result = filterPokemon(list, '4', 10);
+    expect(result).toHaveLength(1);
+    expect(result[0]?.name).toBe('charmander');
+  });
+
+  it('does not partially match IDs', () => {
+    expect(filterPokemon(list, '1', 10)).toEqual([{ name: 'bulbasaur', id: 1 }]);
+  });
+});
+
+describe('formatStatName', () => {
+  it('formats special-attack correctly', () => {
+    expect(formatStatName('special-attack')).toBe('Sp. Attack');
+  });
+
+  it('formats special-defense correctly', () => {
+    expect(formatStatName('special-defense')).toBe('Sp. Defense');
+  });
+
+  it('formats hp as uppercase', () => {
+    expect(formatStatName('hp')).toBe('HP');
+  });
+
+  it('capitalizes unknown stat names as fallback', () => {
+    expect(formatStatName('attack')).toBe('Attack');
+    expect(formatStatName('speed')).toBe('Speed');
   });
 });
 
