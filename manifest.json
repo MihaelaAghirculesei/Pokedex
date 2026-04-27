@@ -1,7 +1,7 @@
 {
   "name": "Pokédex - Interactive Pokemon Encyclopedia",
   "short_name": "Pokédex",
-  "description": "Enterprise-level Progressive Web App with complete Pokemon database, offline support, and advanced search capabilities",
+  "description": "Offline-first Pokédex PWA — browse, search, and explore Pokémon with full offline support.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a1a2e",
@@ -41,21 +41,5 @@
       "label": "Pokemon Detail View"
     }
   ],
-  "shortcuts": [
-    {
-      "name": "Search Pokemon",
-      "short_name": "Search",
-      "description": "Quick search for any Pokemon",
-      "url": "/?search=true",
-      "icons": [
-        {
-          "src": "/imgs/icons/pokemon-ball.png",
-          "sizes": "96x96"
-        }
-      ]
-    }
-  ],
-  "prefer_related_applications": false,
-  "related_applications": [],
-  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7"
+  "prefer_related_applications": false
 }

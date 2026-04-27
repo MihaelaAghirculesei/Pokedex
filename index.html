@@ -2,45 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Interactive Pokédex - Explore all Pokemon with advanced search, detailed stats, and offline support">
+    <meta name="author" content="Mihaela Melania Aghirculesei">
+    <meta property="og:title" content="Pokédex - Interactive Pokemon Encyclopedia">
+    <meta property="og:description" content="Interactive Pokédex - Explore all Pokemon with advanced search, detailed stats, and offline support">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/imgs/icons/pokemon-ball.png">
     <meta name="theme-color" content="#e94560">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Pokédex">
-    <link rel="icon" type="image/png" href="imgs/icons/pokemon-ball.png">
-    <link rel="apple-touch-icon" href="imgs/icons/pokemon-ball.png">
-    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="/imgs/icons/pokemon-ball.png">
+    <link rel="apple-touch-icon" href="/imgs/icons/pokemon-ball.png">
+    <link rel="manifest" href="/manifest.json">
     <title>Pokédex</title>
-    
+
     <link rel="dns-prefetch" href="https://pokeapi.co">
     <link rel="preconnect" href="https://raw.githubusercontent.com">
-    
-    <link rel="preload" as="image" href="./imgs/icons/pokemon-ball.png">
-    <link rel="preload" as="image" href="./imgs/icons/icon-pokemon.png">
-    <link rel="preload" as="image" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png">
-    
+
     <link rel="stylesheet" href="shared.css">
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
-    <script src="scripts/templates.js" defer></script>
+    <script src="/src/main.ts" type="module"></script>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
             <a class="logo" href="#" aria-label="Home">
                 <div class="headline-box">
-                    <img class="headline-icon" 
-                         src="./imgs/icons/pokemon-ball.png" 
+                    <img class="headline-icon"
+                         src="/imgs/icons/pokemon-ball.png"
                          alt="Pokéball Icon"
                          aria-hidden="true">
                     <h1 class="headline">Pokédex</h1>
                 </div>
             </a>
-            <input class="search-input" 
-                   id="search-input" 
-                   type="text" 
+            <input class="search-input"
+                   id="search-input"
+                   type="text"
                    placeholder="Search"
                    aria-label="Search Pokémon"
                    autocomplete="off">
@@ -48,10 +48,10 @@
     </header>
 
     <main class="pokemon-content">
-        <div id="loading" class="loading-indicator">Loading...</div>
+        <div id="loading" class="loading-indicator" role="status">Loading...</div>
+        <div role="status" aria-live="polite" aria-atomic="true" id="search-status" class="sr-only"></div>
         <div id="pokedex-container" class="pokedex-container" aria-live="polite">
         </div>
-        <div id="error-message" class="error-message" hidden></div>
         <button id="load-more" class="load-more-btn">
             <span>⚡ Load More Pokémon</span>
         </button>
@@ -60,29 +60,14 @@
     <footer class="footer">
         <a class="logo" href="#" aria-label="Back to top">
             <div class="headline-box">
-                <img class="headline-icon" 
-                     src="./imgs/icons/icon-pokemon.png" 
+                <img class="headline-icon"
+                     src="/imgs/icons/icon-pokemon.png"
                      alt="Pokémon Logo"
                      aria-hidden="true">
                 <h2 class="headline">Pokédex</h2>
             </div>
         </a>
-        <a href="impressum.html"><button class="button">Legal Notice</button></a>
+        <a href="impressum.html" class="button">Legal Notice</a>
     </footer>
-    
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        registration.addEventListener('updatefound', () => {
-                        });
-                    })
-                    .catch(error => {
-                        console.error('❌ Service Worker registration failed:', error);
-                    });
-            });
-        }
-    </script>
 </body>
 </html>

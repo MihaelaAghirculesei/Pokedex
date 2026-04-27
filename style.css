@@ -1,10 +1,10 @@
 .search-input {
-  padding: 5px 10px !important;
+  padding: 5px 10px;
   border-radius: var(--border-radius);
   border: 3px solid black;
   box-sizing: border-box;
-  margin-top: -8px !important;
-  transform: translateY(-7px) !important;
+  margin-top: -8px;
+  transform: translateY(-7px);
 }
 
 .pokemon-content {
@@ -55,7 +55,7 @@
   width: 100%;
   font-weight: bold;
   font-size: 16px;
-  border-bottom: 1px solid aqua;
+  border-bottom: 1px solid var(--secondary-color);
 }
 .pokemon-name {
   font-size: 25px;
@@ -71,8 +71,8 @@
   height: 200px;
 }
 .pokemon-image {
-  width: 240px !important;
-  height: 240px !important;
+  width: 240px;
+  height: 240px;
   transition: transform 0.3s ease;
 }
 .pokemon-card:hover .pokemon-image,
@@ -95,7 +95,7 @@
   text-transform: capitalize;
   color: black;
   background-color: var(--type-color);
-  width: 120px;
+  width: 114px;
   height: 50px;
 }
 .type-button-container {
@@ -103,10 +103,6 @@
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 5px;
-}
-.pokemon-card img {
-  width: 120px;
-  height: 120px;
 }
 .pokemon-card h3 {
   margin: 10px 0;
@@ -123,8 +119,8 @@
   border-radius: 20px;
 }
 .type-icon {
-  width: 35px !important;
-  height: 35px !important;
+  width: 35px;
+  height: 35px;
   object-fit: contain;
   background-color: var(--type-color);
 }
@@ -148,7 +144,7 @@
     #ff00ff7b 64%,
     transparent 80%
   );
-  background-position: 50% 50%;
+  background-position: var(--x, 50%) var(--y, 50%);
   background-size: 250% 250%;
   mix-blend-mode: color-dodge;
   opacity: 0.88;
@@ -278,17 +274,13 @@
   max-width: 90%;
   position: relative;
   color: #fff;
-}
-
-.details-card {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-height: 80vh;
-  height: 900px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   border: 3px solid var(--secondary-color);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
   transform: translateZ(0);
   background-image: linear-gradient(
     115deg,
@@ -302,6 +294,8 @@
   );
   background-position: 50% 50%;
   background-size: 200% 200%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
 .details-card::-webkit-scrollbar {
@@ -325,11 +319,7 @@
   background-clip: content-box;
 }
 
-.details-card.moves-active {
-  padding: 1.5rem;
-}
 .details-card:hover {
-  transform: scale(1.05);
   box-shadow: var(--hover-shadow);
 }
 
@@ -338,6 +328,13 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.details-header h2 {
+  display: inline-block;
+  margin-right: 10px;
+  text-transform: capitalize;
+}
+
 .pokemon-image-section {
   position: relative;
   display: flex;
@@ -357,6 +354,9 @@
 }
 .details-header span {
   margin-left: auto;
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .arrow-left {
@@ -375,39 +375,6 @@
   z-index: 10;
 }
 
-.details-card.moves-active .arrow-left {
-  left: -5px;
-}
-
-.details-card.moves-active .arrow-right {
-  right: -5px;
-}
-
-.details-card.moves-active .pokemon-image-section {
-  padding: 10px 0;
-}
-
-.details-card.moves-active .details-image {
-  padding: 10px;
-  max-width: 86%;
-  max-height: 431px;
-}
-
-#arrowDiv {
-  padding-top: 20px;
-  display: flex;
-  justify-content: space-between;
-}
-#access .stat-name {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #00698f;
-}
-#access .stat-row {
-  background-color: #f7f7f7;
-  padding: 1rem;
-  border-top: 1px solid #ddd;
-}
 #About .tab-table {
   padding-top: 15px;
 }
@@ -435,19 +402,8 @@
   .pokedex-container {
     padding: 15px;
   }
-  .move-name {
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
-  .move-method {
-    font-size: max(0.7rem, 11px);
-    padding: 2px 6px;
-  }
   .moves-container {
     gap: 6px;
-  }
-  .move-item {
-    padding: 4px 6px;
   }
 }
 
@@ -512,6 +468,6 @@
 
 @media (min-width: 540px) and (max-width: 1024px) {
   .search-input {
-    transform: translateY(-2px) !important;
+    transform: translateY(-2px);
   }
 }

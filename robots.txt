@@ -1,8 +1,4 @@
-# Pokédx Elite - Production Ready
-# Allow search engines to index this professional project
-
 User-agent: *
 Allow: /
+Disallow: /404.html
 
-# Optional: Add sitemap when available
-# Sitemap: https://mihaela-melania-aghirculesei.de/pokedex/sitemap.xml
