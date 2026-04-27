@@ -1,83 +1,118 @@
-# 🔥 **Pokédex** - Next-Generation Interactive Experience
+# Pokédex PWA
 
 <div align="center">
 
-![Pokédex Banner](imgs/readme/pokedex.png)
+![Pokédex](public/imgs/readme/pokedex.png)
 
-**🚀 A cutting-edge, feature-rich Pokémon Pokédex Progressive Web App built with vanilla JavaScript and advanced PokéAPI integration**
-
-[![✨ Live Experience](https://img.shields.io/badge/✨_LIVE_EXPERIENCE-Interactive_Demo-FF6B6B?style=for-the-badge&logo=rocket&logoColor=white)](https://pokedex.mihaela-melania-aghirculesei.de/)
-[![📱 PWA Ready](https://img.shields.io/badge/📱_PWA-Installable_App-4ECDC4?style=for-the-badge&logo=pwa&logoColor=white)](https://pokedex.mihaela-melania-aghirculesei.de/)
-[![🔧 Vanilla JS](https://img.shields.io/badge/🔧_VANILLA_JS-Zero_Dependencies-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![⚡ Professional Grade](https://img.shields.io/badge/⚡_PROFESSIONAL-Grade_Performance-00D9FF?style=for-the-badge&logo=lightning&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex)
-
-**[🎮 Launch App](https://pokedex.mihaela-melania-aghirculesei.de/) • [📱 Install as PWA](#-progressive-web-app-pwa) • [🚀 Quick Start](#-lightning-fast-setup) • [🎯 Advanced Features](#-advanced-features) • [📊 Performance](#-performance-excellence)**
+[![Live Demo](https://img.shields.io/badge/Live_Demo-pokedex--aghirculesei.pages.dev-FF6B6B?style=for-the-badge&logo=rocket&logoColor=white)](https://pokedex-aghirculesei.pages.dev/)
+[![PWA](https://img.shields.io/badge/PWA-Installable-4ECDC4?style=for-the-badge&logo=pwa&logoColor=white)](https://pokedex-aghirculesei.pages.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Mode-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 </div>
 
+An offline-first Pokédex — originally built in pure Vanilla JavaScript to master browser APIs from scratch, then migrated to TypeScript and Vite to bring it to production quality.
+
 ---
 
-## 🚀 **Lightning-Fast Setup**
+## From Vanilla JS to TypeScript — and why it matters
+
+This project went through a deliberate two-phase journey.
+
+### Phase 1 — Vanilla JavaScript
+
+The first version had zero dependencies, zero build step, and zero framework overhead. Every feature was written against raw browser APIs. This was intentional: understanding the platform before abstracting it.
+
+```
+Original stack
+├── Pure Vanilla JavaScript (ES6+)     — zero framework overhead
+├── Hand-crafted Service Worker        — three-tier cache (static, API, sprites)
+├── Custom build-production.js script  — manual minification pipeline
+└── Zero external dependencies         — maximum control, maximum learning
+```
+
+### Phase 2 — TypeScript + Vite
+
+Once the features were solid and the architecture was proven, the codebase was migrated to TypeScript. The goal was not to rewrite — it was to enforce correctness at scale. Every original feature survived untouched. What changed was the tooling layer around it.
+
+```
+Migrated stack
+├── TypeScript 6 — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
+├── Vite 7       — HMR in development, optimized bundles in production
+├── Vitest 4     — 32 unit tests covering templates and utility functions
+├── Workbox PWA  — declarative offline caching via vite-plugin-pwa
+└── ESLint       — TypeScript strict rules + Vitest plugin
+```
+
+**What the migration proves:** knowing when to use vanilla and when to add tooling is a more valuable skill than defaulting to a framework from the start.
+
+---
+
+## Why it's worth reading the code
+
+Three things that rarely appear together in portfolio projects:
+
+### Typed API boundary with strict null handling
+
+Every shape returned by PokéAPI is modelled in `src/types.ts`. The `types` field on `Pokemon` is typed as `[PokemonType, ...PokemonType[]]` — a tuple that guarantees at least one element, so `pokemon.types[0]` never needs a null check. `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` in `tsconfig.json` make TypeScript reject any unsafe assumption about optional data.
+
+### Keyboard accessibility following WAI-ARIA guidelines
+
+Focus is **trapped inside the modal** (Tab/Shift+Tab cycle through interactive elements only), **ESC closes** the overlay, **arrow keys navigate** between cards, and focus **restores to the previously active element** on close. Keyboard and mouse modes are mutually exclusive — moving the mouse removes the keyboard focus ring immediately.
+
+### Holographic shimmer that actually follows the cursor
+
+Mouse position is tracked via `mousemove` (throttled with `requestAnimationFrame`), normalized to `--x`/`--y` CSS custom properties, and consumed by a pseudo-element gradient using `mix-blend-mode: color-dodge`. The gradient position shifts with the cursor, replicating the light-shift of physical Pokémon trading cards.
+
+---
+
+## Quick start
 
 ```bash
-# 🎯 Clone the repository
 git clone https://github.com/MihaelaAghirculesei/Pokedex.git
-
-# 📂 Enter project directory  
 cd Pokedex
-
-# 🚀 Launch instantly - No build required!
-open index.html  # or use any HTTP server
+npm install
+npm run dev
 ```
 
-**Why It's Revolutionary:** Zero dependencies, instant deployment, pure performance optimization.
+Open `http://localhost:5173` in your browser.
+
+### Available scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server with HMR |
+| `npm run build` | Production build to `dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm test` | Run 32 unit tests with Vitest |
+| `npm run typecheck` | TypeScript type check (no emit) |
+| `npm run lint` | ESLint on `src/` |
 
 ---
 
-## 📋 **Navigation Hub**
-
-<div align="center">
-
-| **⚡ Quick Access** | **🎯 Features** | **🔧 Technical** | **🤝 Community** |
-|---------------------|------------------|------------------|-------------------|
-| [🚀 Live Demo](https://pokedex.mihaela-melania-aghirculesei.de/) | [🎮 Core Features](#-what-sets-this-apart) | [🏗️ Architecture](#-advanced-tech-stack) | [🤝 Contributing](#-contributing) |
-| [📱 Install PWA](#-progressive-web-app-pwa) | [🎭 Advanced Details](#-advanced-features) | [⚡ Performance](#-performance-excellence) | [📞 Contact](#-connect--support) |
-| [📸 Screenshots](#-visual-excellence) | [🎮 User Guide](#-user-guide) | [🌐 Cross-Platform](#-progressive-web-app-pwa) | [👩‍💻 Developer](#-about-the-developer) |
-
-</div>
-
----
-
-## 🌟 **Revolutionary Pokédex Experience**
-
-**Pokédex** redefines what a web-based Pokédex can be. Built with cutting-edge vanilla JavaScript and powered by comprehensive PokéAPI integration, this application delivers an unparalleled interactive experience.
-
-### 🎭 **What Sets This Apart**
+## Features
 
 <table>
 <tr>
-<td width="33%" align="center">
+<td width="50%">
 
-### 🎨 **Pure Innovation**
-- **🔥 Zero Framework Dependency** - Raw performance optimization
-- **⚡ Lightning-fast Rendering** - Sub-second load times  
-- **🎯 Modern ES6+ Architecture** - Future-proof codebase
-
-</td>
-<td width="33%" align="center">
-
-### 🚀 **Advanced Features**  
-- **📱 Responsive Excellence** - Flawless across all devices
-- **🔍 Smart Search Engine** - Instant results with fuzzy matching
-- **🎮 Interactive Overlays** - Rich detailed views with tabs
+**Core**
+- Type-based dynamic color theming on cards
+- Substring search with 300ms debounce
+- Progressive "Load More" pagination
+- Tabbed detail overlay (About, Base Stats, Moves)
+- Visual stat bars via `<progress>` element
+- Slide animation on prev/next Pokémon navigation
 
 </td>
-<td width="33%" align="center">
+<td width="50%">
 
-### 🏗️ **Enterprise Quality**
-- **🛡️ Robust Error Handling** - Production-ready stability
-- **📊 Performance Optimized** - Smart caching and pagination
-- **♿ Accessibility First** - WCAG compliant design
+**PWA / Offline**
+- Workbox Service Worker — auto-generated, cache-first strategy
+- API responses cached up to 7 days (300 entries max)
+- Pokémon sprites cached up to 30 days (600 entries max)
+- Custom 404 page consistent with the app design
+- Installable on desktop and mobile
+- `manifest.json` with custom theme and icons
 
 </td>
 </tr>
@@ -85,379 +120,79 @@ open index.html  # or use any HTTP server
 
 ---
 
-## 📱 **Progressive Web App (PWA)**
-
-**Install Pokédex as a native app on any device!** This application is a fully-functional Progressive Web App with cross-platform support.
-
-### 🚀 **PWA Features**
-
-<table>
-<tr>
-<td width="50%">
-
-#### ✅ **Cross-Platform Installation**
-- **🖥️ Desktop:** Windows, macOS, Linux
-- **📱 Mobile:** Android, iOS
-- **🌐 Web:** Any modern browser
-- **⚡ Standalone Mode:** Runs like a native app
-- **🎨 Custom Theme:** Branded app experience
-
-</td>
-<td width="50%">
-
-#### 🔧 **Offline-First Architecture**
-- **📦 Service Worker Caching:** Complete offline support
-- **🔄 Smart Sync:** Data persists across sessions
-- **⚡ Instant Loading:** Pre-cached resources
-- **📊 API Caching:** Previously viewed Pokémon available offline
-- **🖼️ Image Caching:** Optimized asset delivery
-
-</td>
-</tr>
-</table>
-
-### 📲 **How to Install**
-
-#### **Desktop (Chrome/Edge):**
-1. Visit [pokedex.mihaela-melania-aghirculesei.de](https://pokedex.mihaela-melania-aghirculesei.de/)
-2. Look for the **Install** icon (🖥️ or ➕) in the address bar
-3. Click **Install** → App opens in standalone window
-4. Access from Start Menu/Applications folder
-
-#### **Mobile (Android):**
-1. Open in **Chrome** browser
-2. Tap **Menu (⋮)** → **"Add to Home screen"** or **"Install app"**
-3. App icon appears on your home screen
-4. Tap to launch as native app
-
-#### **Mobile (iOS/Safari):**
-1. Open in **Safari** browser
-2. Tap **Share** button (square with arrow)
-3. Scroll and tap **"Add to Home Screen"**
-4. App icon appears on home screen
-
----
-
-## 🎯 **Advanced Features**
-
-<table>
-<tr>
-<td width="50%">
-
-#### 🎪 **User Experience Excellence**
-- ✨ **Dynamic Pokémon Cards** - Type-based color theming
-- 🔍 **Real-time Search** - Instant filtering with debouncing
-- 📄 **Smart Pagination** - Efficient "Load More" system
-- 🎨 **Smooth Animations** - CSS3-powered transitions
-- 📱 **Mobile-Optimized** - Touch-friendly responsive design
-- ⚡ **Loading States** - Professional progress indicators
-
-</td>
-<td width="50%">
-
-#### 🎯 **Advanced Technical Features**
-- 🗂️ **Tabbed Interface** - About, Stats, and **Moves** sections
-- 📊 **Visual Stats Display** - Progress bars with dynamic colors
-- 🎮 **Complete Move Database** - Full moveset with type indicators
-- 🏷️ **Comprehensive Type System** - 18 types with custom icons
-- 🔄 **Seamless Navigation** - Previous/Next Pokémon browsing
-- 🎭 **Full-Screen Overlays** - Detailed Pokemon information views
-- ⌨️ **Full Keyboard Navigation** - Arrow keys, focus trap, WCAG compliant
-- ✨ **Glitter Effects** - Animated particle effects on hover
-- 📱 **Full PWA Support** - Installable app with offline-first architecture
-
-</td>
-</tr>
-</table>
-
----
-
-## 🎬 **Visual Excellence**
-
-<div align="center">
-
-### 📸 **Interface Showcase**
-
-<table>
-<tr>
-<td align="center" width="25%">
-<img src="imgs/readme/interface.png" width="180px" alt="Pokédex main interface grid" style="border-radius: 12px; border: 2px solid #4ECDC4;"/>
-<br/><sub><b>🎯 Main Grid Interface</b></sub>
-</td>
-<td align="center" width="25%">
-<img src="imgs/readme/interactive_cards.png" width="180px" alt="Interactive Cards" style="border-radius: 12px; border: 2px solid #FF6B6B;"/>
-<br/><sub><b>🎨 Dynamic Interactive Cards</b></sub>
-</td>
-<td align="center" width="25%">
-<img src="imgs/readme/detailed_view.png" width="180px" alt="Detail Overlay" style="border-radius: 12px; border: 2px solid #45B7D1;"/>
-<br/><sub><b>📊 Advanced Detail System</b></sub>
-</td>
-<td align="center" width="25%">
-<img src="https://img.shields.io/badge/MOVES-Integration-success?style=for-the-badge&logo=pokemon" alt="Moves Feature"/>
-<br/><sub><b>🎮 Complete Movesets</b></sub>
-</td>
-</tr>
-</table>
-
-### 🎥 **Experience It Live**
-
-[![🚀 Launch Pokédex](https://img.shields.io/badge/🚀_LAUNCH_POKÉDEX-Experience_Now-success?style=for-the-badge&labelColor=FF6B6B&color=4ECDC4&logoColor=white&logo=rocket)](https://pokedex.mihaela-melania-aghirculesei.de/)
-[![📱 Install PWA](https://img.shields.io/badge/📱_INSTALL_AS_APP-Cross_Platform-success?style=for-the-badge&labelColor=4ECDC4&color=FF6B6B&logoColor=white&logo=pwa)](https://pokedex.mihaela-melania-aghirculesei.de/)
-
-</div>
-
----
-
-## ⚡ **Advanced Tech Stack**
-
-<div align="center">
-
-### 🏗️ **Architecture Excellence**
-
-| 🎨 **Frontend Excellence** | 🔗 **API Integration** | 🎯 **Performance** | 🛡️ **Quality** |
-|---------------------------|----------------------|-------------------|-----------------|
-| ![JavaScript ES6+](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat&logo=javascript&logoColor=black) | ![PokéAPI v2](https://img.shields.io/badge/PokéAPI-v2_Complete-6366F1?style=flat&logo=pokemon&logoColor=white) | ![Smart Caching](https://img.shields.io/badge/Smart-Caching-00D9FF?style=flat&logo=cache&logoColor=white) | ![JSDoc](https://img.shields.io/badge/JSDoc-Complete-FF6B6B?style=flat&logo=javascript&logoColor=white) |
-| ![HTML5 Semantic](https://img.shields.io/badge/HTML5-Semantic-E34F26?style=flat&logo=html5&logoColor=white) | ![Fetch API](https://img.shields.io/badge/Fetch_API-Native-4ECDC4?style=flat&logo=javascript&logoColor=white) | ![Pagination](https://img.shields.io/badge/Smart-Pagination-45B7D1?style=flat&logo=pages&logoColor=white) | ![Error Handling](https://img.shields.io/badge/Error-Handling-FF9FF3?style=flat&logo=shield&logoColor=white) |
-| ![CSS3 Advanced](https://img.shields.io/badge/CSS3-Advanced-1572B6?style=flat&logo=css3&logoColor=white) | ![REST Integration](https://img.shields.io/badge/REST-Integration-F38BA8?style=flat&logo=api&logoColor=white) | ![Zero Dependencies](https://img.shields.io/badge/Zero-Dependencies-00F5FF?style=flat&logo=npm&logoColor=black) | ![Accessibility](https://img.shields.io/badge/WCAG-Compliant-54A0FF?style=flat&logo=accessibility&logoColor=white) |
-
-</div>
-
-### 🎯 **Core Innovation Stack**
-
-```bash
-🔥 Professional Architecture
-├── 📱 Pure Vanilla JavaScript (ES6+) - Zero framework overhead
-├── 🎨 Advanced CSS3 (Grid, Flexbox, Custom Properties)
-├── 🌐 HTML5 Semantic Structure - Accessibility-first design
-├── 🔧 Service Worker PWA - Offline-first architecture
-└── ⚡ Zero External Dependencies - Maximum performance
-
-🚀 Advanced Feature Set  
-├── 🔍 Smart Search Algorithm with 300ms Debouncing
-├── 📊 Dynamic Data Visualization System
-├── 🎭 Modal Overlay System with Full Keyboard Navigation (WCAG)
-├── 🗂️ Tabbed Content Management (About, Stats, Moves)
-├── ✨ Particle Effects System (Glitter animations)
-├── 🖼️ Intelligent Lazy Loading
-└── 📱 Responsive Grid System (Mobile-first approach)
-```
-
----
-
-## ⚡ **Performance Excellence**
-
-### 📊 **Elite Performance Metrics**
-
-<div align="center">
-
-| Performance Metric | **Pokédex** | Industry Standard | **Advantage** |
-|-------------------|------------------|-------------------|---------------|
-| **First Contentful Paint** | **< 0.8s** | < 2.5s | **3x Faster** ✅ |
-| **Largest Contentful Paint** | **< 1.5s** | < 4.0s | **2.7x Faster** ✅ |
-| **Bundle Size** | **0 Dependencies** | ~2MB average | **100% Lighter** ✅ |
-| **API Response Time** | **< 300ms** | < 1000ms | **3x Faster** ✅ |
-| **Search Response** | **Instant** | < 100ms | **Real-time** ✅ |
-
-</div>
-
-### 🚀 **Advanced Optimization Strategies**
-
-```javascript
-// 🎯 Professional-grade Performance Optimization
-const PERFORMANCE_CONFIG = {
-  dnsPreload: ["pokeapi.co", "raw.githubusercontent.com"],
-  criticalResources: ["pokemon-ball.png", "main-background.jpg"],
-  lazyLoadThreshold: "50px",
-  cacheStrategy: "aggressive-memory",
-  debounceDelay: 300
-};
-
-// ⚡ Optimized Rendering Pipeline
-function renderPokemon(pokemonArray = pokemonDetails) {
-  const fragment = document.createDocumentFragment();
-  pokemonArray.forEach(pokemon => {
-    fragment.appendChild(createPokemonCard(pokemon));
-  });
-  container.replaceChildren(fragment); // Single DOM manipulation
-}
-```
-
----
-
-## 🎮 **User Guide**
-
-### 🔍 **Mastering the Experience**
-
-<table>
-<tr>
-<td width="50%">
-
-#### 🎯 **Navigation Excellence**
-1. **🏠 Browse** - Explore the responsive card grid
-2. **🔍 Search** - Type names, IDs, or types for instant results
-3. **📄 Load More** - Progressive loading of additional Pokémon
-4. **🎭 Detailed Views** - Click any card for comprehensive overlay
-5. **🔄 Seamless Navigation** - Browse between Pokémon with arrow controls
-
-</td>
-<td width="50%">
-
-#### 📊 **Information Architecture**
-- **🎯 Core Data** - Name, ID, types with dynamic color coding
-- **📏 Physical Stats** - Height, weight in metric units
-- **🎮 Abilities** - Complete ability sets including hidden abilities
-- **📊 Base Stats** - Visual progress bars for all 6 core stats
-- **🎮 Move Database** - **Elite Feature:** Complete moveset integration
-- **🖼️ Visual Assets** - High-resolution official artwork
-
-</td>
-</tr>
-</table>
-
-### ⌨️ **Keyboard Accessibility**
-
-Full keyboard navigation support following WCAG guidelines:
+## Keyboard navigation
 
 | Key | Context | Action |
 |-----|---------|--------|
-| **Arrow Left / Right** | Card Grid | Navigate between Pokémon cards |
-| **Enter / Space** | Focused Card | Open detail overlay |
-| **ESC** | Overlay | Close the overlay |
-| **Arrow Left / Right** | Overlay | Browse to previous/next Pokémon |
-| **Tab / Shift+Tab** | Overlay | Cycle through overlay controls (focus trap) |
+| `→` / `←` | Card grid | Navigate between Pokémon cards |
+| `Enter` / `Space` | Focused card | Open detail overlay |
+| `ESC` | Overlay open | Close overlay, restore focus |
+| `→` / `←` | Overlay open | Browse to next / previous Pokémon |
+| `Tab` / `Shift+Tab` | Overlay open | Cycle through overlay controls (focus trapped) |
 
-- After the last card, **Arrow Right** moves focus to the **Load More** button
-- From the **Load More** button, **Arrow Right** cycles back to the first card, **Arrow Left** to the last card
-- After loading more Pokémon, focus automatically moves to the first new card
-- Cards receive a zoom effect on focus, matching the hover animation
-- Mouse and keyboard focus never overlap - moving the mouse clears keyboard focus
+- Reaching the last card with `→` moves focus to **Load More**
+- After loading more Pokémon, focus jumps automatically to the first new card
 
 ---
 
-## 🤝 **Contributing**
+## Screenshots
 
-### 🚀 **Join the Development Community**
-
-```bash
-# 1. 🍴 Fork the repository
-git clone https://github.com/YOUR_USERNAME/Pokedex.git
-
-# 2. 🌿 Create feature branch  
-git checkout -b feature/awesome-enhancement
-
-# 3. 💬 Commit with conventional format
-git commit -m '✨ feat: Add awesome enhancement'
-
-# 4. 📤 Push and create PR
-git push origin feature/awesome-enhancement
-```
-
-### 💡 **Enhancement Roadmap**
-
+<div align="center">
 <table>
 <tr>
-<td width="50%">
-
-#### 🎯 **Feature Enhancements**
-- 🔍 **Advanced Filter System** - Multi-criteria filtering
-- ⭐ **Favorites System** - Persistent favorite management
-- 🎵 **Audio Integration** - Pokémon cries and sound effects
-- 🌍 **Internationalization** - Multi-language support
-
+<td align="center">
+<img src="public/imgs/readme/interface.png" width="200px" alt="Main grid"/>
+<br/><sub>Main grid</sub>
 </td>
-<td width="50%">
-
-#### 🚀 **Technical Innovations**
-- 🎮 **Comparison Engine** - Side-by-side analysis tool
-- 📊 **Battle Calculator** - Damage and effectiveness computation
-- 🎨 **Theme System** - Multiple visual themes
-- 🔔 **Push Notifications** - Pokemon updates and reminders
-
+<td align="center">
+<img src="public/imgs/readme/interactive_cards.png" width="200px" alt="Holographic hover effect"/>
+<br/><sub>Holographic hover</sub>
+</td>
+<td align="center">
+<img src="public/imgs/readme/detailed_view.png" width="200px" alt="Detail overlay"/>
+<br/><sub>Detail overlay</sub>
 </td>
 </tr>
 </table>
-
----
-
-## 📞 **Connect & Support**
-
-<div align="center">
-
-### 🌟 **Professional Network**
-
-[![🌐 Portfolio](https://img.shields.io/badge/🌐_PORTFOLIO-Professional_Site-FF6B6B?style=for-the-badge&logo=firefox&logoColor=white)](https://mihaela-melania-aghirculesei.de/)
-[![💼 LinkedIn](https://img.shields.io/badge/💼_LINKEDIN-Professional_Profile-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/mihaela-aghirculesei-84147a23b/)
-[![🔧 GitHub](https://img.shields.io/badge/🔧_GITHUB-Source_Code-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MihaelaAghirculesei)
-[![📧 Email](https://img.shields.io/badge/📧_EMAIL-Professional_Contact-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:kontakt@mihaela-melania-aghirculesei.de?subject=Pokédex%20Project)
-
 </div>
 
 ---
 
-## 👩‍💻 **About the Developer**
+## Tech
 
-<div align="center">
-
-### 🌟 **Mihaela Aghirculesei - Front-end Developer**
-
-**Passionate about creating exceptional web experiences with cutting-edge vanilla technologies**
-
-</div>
-
-<table>
-<tr>
-<td width="50%">
-
-#### 🎯 **Project Demonstrates**
-- ✅ **Advanced Vanilla JavaScript** - ES6+ architecture mastery
-- ✅ **RESTful API Excellence** - Sophisticated integration patterns
-- ✅ **Responsive Design** - Mobile-first development approach
-- ✅ **Performance Engineering** - Enterprise-grade optimization
-- ✅ **Clean Architecture** - Maintainable code patterns
-- ✅ **UX Design Excellence** - Intuitive interface design
-- ✅ **Keyboard Accessibility** - WCAG compliant navigation
-
-</td>
-<td width="50%">
-
-#### 🚀 **Technical Expertise Portfolio**
-- **Frontend Mastery:** JavaScript ES6+, HTML5, CSS3, Responsive Design
-- **API Integration:** RESTful services, Error handling, Caching strategies
-- **Performance Optimization:** Memory management, Load time optimization
-- **Code Quality:** Clean architecture, Documentation, Testing practices
-- **Design Systems:** UI/UX principles, Accessibility standards
-- **Development Tools:** Git, VS Code, Browser DevTools, Performance profiling
-
-</td>
-</tr>
-</table>
+| Layer | Phase 1 — Vanilla JS | Phase 2 — TypeScript |
+|-------|----------------------|----------------------|
+| Language | Vanilla JavaScript (ES6+) | TypeScript 6 — strict mode |
+| Build | None (direct file serving) | Vite 7 — HMR + optimized bundles |
+| Offline | Hand-crafted Service Worker | Workbox via vite-plugin-pwa |
+| Testing | None | Vitest 4 — 32 unit tests |
+| Linting | None | ESLint + typescript-eslint strict |
+| Styling | CSS3 — Grid, Flexbox, Custom Properties | Unchanged |
+| Data | PokéAPI v2 via Fetch + AbortController | Unchanged |
+| Security | — | DOMPurify — sanitizes all injected HTML |
+| Accessibility | WAI-ARIA, focus trap, keyboard nav | Unchanged |
 
 ---
 
-## 📄 **License & Legal**
+## Install as PWA
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+**Desktop (Chrome / Edge):** click the install icon in the address bar → runs in a standalone window.
 
-**You are free to:**
-- ✅ Use this code for personal, educational, or commercial projects
-- ✅ Modify and distribute the code
-- ✅ Use it without asking permission
+**Android:** Menu → *Add to Home screen* or *Install app*.
 
-**PokéAPI Terms:** This project uses the PokéAPI service. Please review their [terms of service](https://pokeapi.co/docs/v2).
+**iOS / Safari:** Share → *Add to Home Screen*.
 
 ---
 
-<div align="center">
+## Contact
 
-## 🌟 **Built with Passion & Elite Vanilla JavaScript**
+[![Portfolio](https://img.shields.io/badge/Portfolio-aghirculesei.pages.dev-FF6B6B?style=flat&logo=firefox&logoColor=white)](https://aghirculesei.pages.dev/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Mihaela_Aghirculesei-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/mihaela-aghirculesei-84147a23b/)
+[![GitHub](https://img.shields.io/badge/GitHub-MihaelaAghirculesei-181717?style=flat&logo=github&logoColor=white)](https://github.com/MihaelaAghirculesei)
+[![Email](https://img.shields.io/badge/Email-aghirculesei@gmail.com-EA4335?style=flat&logo=gmail&logoColor=white)](mailto:aghirculesei@gmail.com)
 
-![Vanilla JS Badge](https://img.shields.io/badge/💖_BUILT_WITH-Vanilla_JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Quality Badge](https://img.shields.io/badge/🏆_QUALITY-Professional_Grade-FF6B6B?style=for-the-badge&labelColor=4ECDC4)
+---
 
-**⚡ Zero dependencies • 🚀 Maximum performance • 💎 Professional quality**
+## License
 
-*"Gotta code 'em all... efficiently!"*
-
-[![⭐ Star this repo](https://img.shields.io/badge/⭐_STAR_THIS_REPO-Help_Others_Discover-FFD700?style=for-the-badge&logo=github&logoColor=black)](https://github.com/MihaelaAghirculesei/Pokedex)
-
-</div>
+MIT — Pokémon data via [PokéAPI](https://pokeapi.co/docs/v2).
