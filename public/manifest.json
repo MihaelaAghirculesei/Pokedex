@@ -1,0 +1,45 @@
+{
+  "name": "Pokédex - Interactive Pokemon Encyclopedia",
+  "short_name": "Pokédex",
+  "description": "Offline-first Pokédex PWA — browse, search, and explore Pokémon with full offline support.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#e94560",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["entertainment", "education", "games"],
+  "icons": [
+    {
+      "src": "/imgs/icons/pokemon-ball.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/imgs/icons/icon-pokemon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/imgs/readme/interface.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Pokédex Main Interface"
+    },
+    {
+      "src": "/imgs/readme/detailed_view.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Pokemon Detail View"
+    }
+  ],
+  "prefer_related_applications": false
+}
