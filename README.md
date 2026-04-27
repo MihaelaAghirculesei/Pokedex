@@ -7,6 +7,7 @@
 [![Live Demo](https://img.shields.io/badge/Live_Demo-pokedex--aghirculesei.pages.dev-FF6B6B?style=for-the-badge&logo=rocket&logoColor=white)](https://pokedex-aghirculesei.pages.dev/)
 [![PWA](https://img.shields.io/badge/PWA-Installable-4ECDC4?style=for-the-badge&logo=pwa&logoColor=white)](https://pokedex-aghirculesei.pages.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Mode-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![CI](https://img.shields.io/github/actions/workflow/status/MihaelaAghirculesei/Pokedex/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
 
 </div>
 
@@ -36,11 +37,12 @@ Once the features were solid and the architecture was proven, the codebase was m
 
 ```
 Migrated stack
-├── TypeScript 6 — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
-├── Vite 7       — HMR in development, optimized bundles in production
-├── Vitest 4     — 32 unit tests covering templates and utility functions
-├── Workbox PWA  — declarative offline caching via vite-plugin-pwa
-└── ESLint       — TypeScript strict rules + Vitest plugin
+├── TypeScript 6    — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
+├── Vite 7          — HMR in development, optimized bundles in production
+├── Vitest 4        — 53 unit tests covering templates, utilities, and i18n
+├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
+├── ESLint          — TypeScript strict rules + Vitest plugin
+└── GitHub Actions  — CI: typecheck → lint → test → build on every push
 ```
 
 **What the migration proves:** knowing when to use vanilla and when to add tooling is a more valuable skill than defaulting to a framework from the start.
@@ -83,7 +85,7 @@ Open `http://localhost:5173` in your browser.
 | `npm run dev` | Start dev server with HMR |
 | `npm run build` | Production build to `dist/` |
 | `npm run preview` | Preview the production build locally |
-| `npm test` | Run 32 unit tests with Vitest |
+| `npm test` | Run 53 unit tests with Vitest |
 | `npm run typecheck` | TypeScript type check (no emit) |
 | `npm run lint` | ESLint on `src/` |
 
@@ -97,11 +99,13 @@ Open `http://localhost:5173` in your browser.
 
 **Core**
 - Type-based dynamic color theming on cards
-- Substring search with 300ms debounce
+- Search by name (substring) **or by Pokémon ID number** — with 300ms debounce
 - Progressive "Load More" pagination
 - Tabbed detail overlay (About, Base Stats, Moves)
-- Visual stat bars via `<progress>` element
+- Visual stat bars via `<progress>` element with formatted names (HP, Sp. Attack…)
 - Slide animation on prev/next Pokémon navigation
+- **DE / EN language toggle** — persisted across pages via `localStorage`
+- `prefers-reduced-motion` — all animations disabled for users who request it
 
 </td>
 <td width="50%">
@@ -112,7 +116,7 @@ Open `http://localhost:5173` in your browser.
 - Pokémon sprites cached up to 30 days (600 entries max)
 - Custom 404 page consistent with the app design
 - Installable on desktop and mobile
-- `manifest.json` with custom theme and icons
+- `manifest.json` with separate `maskable` and `any` icons
 
 </td>
 </tr>
@@ -165,7 +169,7 @@ Open `http://localhost:5173` in your browser.
 | Language | Vanilla JavaScript (ES6+) | TypeScript 6 — strict mode |
 | Build | None (direct file serving) | Vite 7 — HMR + optimized bundles |
 | Offline | Hand-crafted Service Worker | Workbox via vite-plugin-pwa |
-| Testing | None | Vitest 4 — 32 unit tests |
+| Testing | None | Vitest 4 — 53 unit tests |
 | Linting | None | ESLint + typescript-eslint strict |
 | Styling | CSS3 — Grid, Flexbox, Custom Properties | Unchanged |
 | Data | PokéAPI v2 via Fetch + AbortController | Unchanged |

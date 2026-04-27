@@ -9,6 +9,7 @@
     <meta property="og:description" content="Interactive Pokédex - Explore all Pokemon with advanced search, detailed stats, and offline support">
     <meta property="og:type" content="website">
     <meta property="og:image" content="/imgs/icons/pokemon-ball.png">
+    <meta property="og:url" content="https://pokedex-aghirculesei.pages.dev/">
     <meta name="theme-color" content="#e94560">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,7 +20,7 @@
     <link rel="manifest" href="/manifest.json">
     <title>Pokédex</title>
 
-    <link rel="dns-prefetch" href="https://pokeapi.co">
+    <link rel="preconnect" href="https://pokeapi.co">
     <link rel="preconnect" href="https://raw.githubusercontent.com">
 
     <link rel="stylesheet" href="shared.css">
@@ -27,6 +28,7 @@
     <script src="/src/main.ts" type="module"></script>
 </head>
 <body>
+    <noscript><style>body{padding:2rem;font-family:Arial,sans-serif;color:#fff;text-align:center}</style><p>This Pokédex requires JavaScript. Please enable it in your browser.</p></noscript>
     <header class="header">
         <div class="header-content">
             <a class="logo" href="#" aria-label="Home">
@@ -38,6 +40,11 @@
                     <h1 class="headline">Pokédex</h1>
                 </div>
             </a>
+            <button id="languageToggle" type="button" class="language-toggle en" aria-label="Switch language">
+                <span class="lang-label">DE</span>
+                <div class="slider"></div>
+                <span class="lang-label active">EN</span>
+            </button>
             <input class="search-input"
                    id="search-input"
                    type="text"
