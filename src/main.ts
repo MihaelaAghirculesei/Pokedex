@@ -9,7 +9,6 @@ import {
 } from './templates.js';
 import type { Pokemon, PokemonListResponse } from './types.js';
 import { initLogoAnimation } from './logo.js';
-import { getLang, setLang, applyLangToggleUI, t, type Language } from './i18n.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -64,31 +63,8 @@ const hideLoading = (): void => { loadingIndicator.setAttribute('hidden', 'true'
 function announceSearchResults(count: number, searchTerm: string): void {
   searchResultsStatus.textContent =
     count > 0
-      ? t().searchFound(count, searchTerm)
-      : t().searchNotFound(searchTerm);
-}
-
-// ─── i18n ─────────────────────────────────────────────────────────────────────
-
-function applyMainTranslations(): void {
-  const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
-  if (searchInput) searchInput.placeholder = t().searchPlaceholder;
-  const loadMoreSpan = loadMoreButton.querySelector('span');
-  if (loadMoreSpan) loadMoreSpan.textContent = t().loadMore;
-  loadingIndicator.textContent = t().loading;
-  document.documentElement.lang = getLang();
-}
-
-function initLanguageToggle(): void {
-  const toggle = document.getElementById('languageToggle');
-  if (!toggle) return;
-  applyLangToggleUI(getLang(), toggle);
-  toggle.addEventListener('click', () => {
-    const newLang: Language = getLang() === 'de' ? 'en' : 'de';
-    setLang(newLang);
-    applyMainTranslations();
-    applyLangToggleUI(newLang, toggle);
-  });
+      ? `${count} Pokémon found for "${searchTerm}"`
+      : `No Pokémon found for "${searchTerm}". Try loading more.`;
 }
 
 // ─── Fetch ───────────────────────────────────────────────────────────────────
@@ -169,10 +145,10 @@ function handleFetchError(error: Error): void {
   const isRateLimit = error.message.includes('429');
   const isServer = /5\d\d/.exec(error.message);
   const message = isRateLimit
-    ? t().errorRateLimit
+    ? 'Too many requests. Please wait a moment and try again.'
     : isServer
-    ? t().errorServer
-    : t().errorNetwork;
+    ? 'The Pokémon API is temporarily unavailable. Please try again later.'
+    : 'Failed to load Pokémon data. Check your connection and try again.';
 
   displayError(message);
 }
@@ -200,7 +176,7 @@ function handleSearch(searchTerm: string): void {
   if (filtered.length > 0) {
     renderPokemon(filtered);
   } else {
-    displayError(t().errorNotFound(searchTerm));
+    displayError(`No Pokémon found for "${searchTerm}". Try loading more Pokémon first.`);
   }
   announceSearchResults(filtered.length, searchTerm);
 }
@@ -538,9 +514,5 @@ loadMoreButton.addEventListener('click', () => { void fetchPokemonData(); });
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
-document.addEventListener('DOMContentLoaded', () => {
-  applyMainTranslations();
-  initLanguageToggle();
-  void init();
-  setTimeout(initLogoAnimation, LOGO_ANIMATION_DELAY_MS);
-});
+void init();
+setTimeout(initLogoAnimation, LOGO_ANIMATION_DELAY_MS);
