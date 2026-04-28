@@ -87,6 +87,20 @@ describe('detailTemplate', () => {
     expect(html).toContain('45');
     expect(html).toContain('49');
   });
+
+  it('uses front_default when official-artwork is null', () => {
+    const pokemon = {
+      ...mockPokemon,
+      sprites: { front_default: 'front.png', other: { 'official-artwork': { front_default: null } } },
+    };
+    const html = detailTemplate(pokemon, '0.7', '6.9', 'overgrow');
+    expect(html).toContain('front.png');
+  });
+
+  it('uses fallback image when both sprites are null', () => {
+    const html = detailTemplate(pokemonNoArtwork, '0.7', '6.9', 'overgrow');
+    expect(html).toContain('pokemon-ball.png');
+  });
 });
 
 describe('errorMessageTemplate', () => {

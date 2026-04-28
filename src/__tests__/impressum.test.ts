@@ -87,4 +87,36 @@ describe('impressum.ts — language handling', () => {
     expect(labels[0]?.classList.contains('active')).toBe(true);
     expect(labels[1]?.classList.contains('active')).toBe(false);
   });
+
+  it('loads without error when languageToggle is absent from DOM', async () => {
+    document.body.innerHTML = '<main><h1>Test</h1></main>';
+    await loadModule();
+    expect(document.querySelector('h1')?.textContent).toBe('Test');
+  });
+
+  it('applies DE translations gracefully when most elements are absent', async () => {
+    document.body.innerHTML = `
+      <h1 class="adsimple-322947329">Legal Notice</h1>
+      <button id="languageToggle" class="language-toggle en">
+        <span class="lang-label">DE</span>
+        <div class="slider"></div>
+        <span class="lang-label active">EN</span>
+      </button>
+    `;
+    localStorage.setItem('pokedex-lang', 'de');
+    await loadModule();
+    expect(document.querySelector('h1.adsimple-322947329')).toBeTruthy();
+  });
+
+  it('toggleLanguage handles toggle removed from DOM before click', async () => {
+    await loadModule();
+    const toggle = document.getElementById('languageToggle');
+    if (!toggle) throw new Error('languageToggle not found');
+    // Detach toggle so getElementById returns null inside toggleLanguage
+    toggle.remove();
+    // Event listener is still bound to the element object → toggleLanguage runs
+    toggle.click();
+    // No error should be thrown
+    expect(document.getElementById('languageToggle')).toBeNull();
+  });
 });

@@ -113,9 +113,13 @@ describe('formatStatName', () => {
     expect(formatStatName('hp')).toBe('HP');
   });
 
-  it('capitalizes unknown stat names as fallback', () => {
+  it('formats known stat names via lookup table', () => {
     expect(formatStatName('attack')).toBe('Attack');
     expect(formatStatName('speed')).toBe('Speed');
+  });
+
+  it('capitalizes unknown stat names as fallback', () => {
+    expect(formatStatName('unknown-stat')).toBe('Unknown-stat');
   });
 });
 
@@ -136,5 +140,39 @@ describe('addHyphenation', () => {
 
   it('returns the original short word unchanged', () => {
     expect(addHyphenation('tackle')).toBe('tackle');
+  });
+
+  it('processes words longer than 6 chars and returns a string', () => {
+    const result = addHyphenation('charmander');
+    expect(typeof result).toBe('string');
+    expect(result.replace(/­/g, '')).toBe('charmander');
+  });
+
+  it('inserts soft-hyphen between double consonants in long words', () => {
+    const result = addHyphenation('butterfly');
+    expect(result.replace(/­/g, '')).toBe('butterfly');
+    expect(result.length).toBeGreaterThan('butterfly'.length);
+  });
+
+  it('handles prefix patterns in long words without throwing', () => {
+    expect(() => addHyphenation('underwater')).not.toThrow();
+    expect(() => addHyphenation('overpower')).not.toThrow();
+  });
+
+  it('handles vowel+ing suffix in long words', () => {
+    const result = addHyphenation('canoeing');
+    expect(result.replace(/­/g, '')).toBe('canoeing');
+  });
+
+  it('handles vowel+ed suffix in long words', () => {
+    const result = addHyphenation('carried');
+    expect(result.replace(/­/g, '')).toBe('carried');
+  });
+
+  it('processes each word independently in multi-word strings', () => {
+    const result = addHyphenation('charmander fire');
+    const parts = result.split(' ');
+    expect(parts).toHaveLength(2);
+    expect(parts[1]).toBe('fire');
   });
 });

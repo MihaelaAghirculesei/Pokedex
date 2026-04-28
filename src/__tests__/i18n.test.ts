@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { getLang, setLang, applyLangToggleUI } from '../i18n.js';
 
 beforeEach(() => { localStorage.clear(); });
@@ -16,6 +16,14 @@ describe('getLang', () => {
   it('returns "en" for any unknown stored value', () => {
     localStorage.setItem('pokedex-lang', 'fr');
     expect(getLang()).toBe('en');
+  });
+
+  it('returns "en" when localStorage.getItem throws (e.g. SecurityError)', () => {
+    const spy = vi.spyOn(Storage.prototype, 'getItem').mockImplementationOnce(() => {
+      throw new Error('SecurityError');
+    });
+    expect(getLang()).toBe('en');
+    spy.mockRestore();
   });
 });
 
