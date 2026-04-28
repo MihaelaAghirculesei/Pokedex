@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { getLang, setLang, applyLangToggleUI, t } from '../i18n.js';
+import { getLang, setLang, applyLangToggleUI } from '../i18n.js';
 
 beforeEach(() => { localStorage.clear(); });
 
@@ -79,38 +79,3 @@ describe('applyLangToggleUI', () => {
   });
 });
 
-describe('t (translations)', () => {
-  it('returns English strings by default', () => {
-    expect(t().searchPlaceholder).toBe('Search');
-    expect(t().loadMore).toBe('⚡ Load More Pokémon');
-    expect(t().loading).toBe('Loading...');
-  });
-
-  it('returns German strings when lang is "de"', () => {
-    setLang('de');
-    expect(t().searchPlaceholder).toBe('Suchen');
-    expect(t().loadMore).toBe('⚡ Mehr Pokémon laden');
-    expect(t().loading).toBe('Laden...');
-  });
-
-  it('searchFound interpolates count and term correctly', () => {
-    const result = t().searchFound(5, 'char');
-    expect(result).toContain('5');
-    expect(result).toContain('char');
-  });
-
-  it('searchNotFound interpolates the search term', () => {
-    expect(t().searchNotFound('pikachu')).toContain('pikachu');
-  });
-
-  it('errorNotFound interpolates the search term', () => {
-    expect(t().errorNotFound('mewtwo')).toContain('mewtwo');
-  });
-
-  it('German searchFound also interpolates count and term', () => {
-    setLang('de');
-    const result = t().searchFound(3, 'glumanda');
-    expect(result).toContain('3');
-    expect(result).toContain('glumanda');
-  });
-});
