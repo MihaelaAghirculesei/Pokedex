@@ -76,7 +76,6 @@ function applyTranslations(lang: Language): void {
     '#eu-streitschlichtung + p.adsimple-322947329'
   );
   if (euParagraphs[0]) euParagraphs[0].textContent = `${tr.euText1} ${tr.euText2}`;
-  if (euParagraphs[1]) euParagraphs[1].textContent = tr.euText3;
 
   setText('#bildernachweis', tr.imageCredits);
   setText('#bildernachweis + p.adsimple-322947329', tr.imageText1);
