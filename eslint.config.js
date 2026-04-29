@@ -29,6 +29,8 @@ export default tseslint.config(
 
       // Non-null assertions should be avoided — use optional chaining instead
       '@typescript-eslint/no-non-null-assertion': 'warn',
+      // Disabled: conflicts with no-non-null-assertion (both can't be satisfied simultaneously)
+      '@typescript-eslint/non-nullable-type-assertion-style': 'off',
 
       // Require explicit return types on exported functions
       '@typescript-eslint/explicit-function-return-type': 'off',

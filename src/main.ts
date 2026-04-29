@@ -280,14 +280,12 @@ function createNavButton(direction: 'prev' | 'next', currentPokemon: Pokemon): H
 
 function showPreviousPokemon(current: Pokemon): void {
   const idx = pokemonDetails.indexOf(current);
-  const prev = pokemonDetails[(idx - 1 + pokemonDetails.length) % pokemonDetails.length];
-  if (prev) updateDetailsCard(prev, 'prev');
+  updateDetailsCard(pokemonDetails[(idx - 1 + pokemonDetails.length) % pokemonDetails.length] as Pokemon, 'prev');
 }
 
 function showNextPokemon(current: Pokemon): void {
   const idx = pokemonDetails.indexOf(current);
-  const next = pokemonDetails[(idx + 1) % pokemonDetails.length];
-  if (next) updateDetailsCard(next, 'next');
+  updateDetailsCard(pokemonDetails[(idx + 1) % pokemonDetails.length] as Pokemon, 'next');
 }
 
 function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' = 'next'): void {
