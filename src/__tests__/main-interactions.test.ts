@@ -1062,6 +1062,97 @@ describe('main.ts — updateDetailsCard slide-out state and rAF lifecycle (lines
   });
 });
 
+// ─── fetchPokemonData: catch-block + search-input guard (lines 93, 103-110) ──
+
+describe('main.ts — fetchPokemonData catch-block and search-input guard (lines 93, 103-110)', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('#search-input absent during load-more falls back to empty string and keeps cards rendered (line 93)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+
+    document.getElementById('search-input')?.remove();
+
+    document.getElementById('load-more')?.click();
+
+    await vi.waitFor(
+      () => {
+        expect((document.getElementById('load-more') as HTMLButtonElement).disabled).toBe(false);
+      },
+      { timeout: 2000 },
+    );
+
+    expect(document.querySelector('.error-message')).toBeNull();
+    expect(document.querySelector('.pokemon-card')).toBeTruthy();
+  });
+
+  it('empty results on load-more does not crash when newCard is undefined (lines 103-107)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ results: [] }),
+      }),
+    );
+
+    const cardsBefore = document.querySelectorAll('.pokemon-card').length;
+    document.getElementById('load-more')?.click();
+
+    await vi.waitFor(
+      () => {
+        expect((document.getElementById('load-more') as HTMLButtonElement).disabled).toBe(false);
+      },
+      { timeout: 2000 },
+    );
+
+    expect(document.querySelector('.error-message')).toBeNull();
+    expect(document.querySelectorAll('.pokemon-card').length).toBe(cardsBefore);
+  });
+
+  it('AbortError during load-more is silently swallowed — no error UI shown (line 110)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockRejectedValue(new DOMException('The operation was aborted.', 'AbortError')),
+    );
+
+    document.getElementById('load-more')?.click();
+
+    await vi.waitFor(
+      () => {
+        expect((document.getElementById('load-more') as HTMLButtonElement).disabled).toBe(false);
+      },
+      { timeout: 2000 },
+    );
+
+    expect(document.querySelector('.error-message')).toBeNull();
+  });
+
+  it('non-Error thrown during load-more is silently swallowed — no error UI shown (line 110)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue('unexpected string error'));
+
+    document.getElementById('load-more')?.click();
+
+    await vi.waitFor(
+      () => {
+        expect((document.getElementById('load-more') as HTMLButtonElement).disabled).toBe(false);
+      },
+      { timeout: 2000 },
+    );
+
+    expect(document.querySelector('.error-message')).toBeNull();
+  });
+});
+
 // ─── trapFocus edge cases (lines 413-417) ────────────────────────────────────
 
 describe('main.ts — trapFocus edge cases (lines 413-417)', () => {
@@ -1086,6 +1177,74 @@ describe('main.ts — trapFocus edge cases (lines 413-417)', () => {
 
     expect(preventDefaultSpy).toHaveBeenCalled();
     expect(document.querySelector('.overlay')).toBeTruthy();
+  });
+});
+
+// ─── Guard clause branches (lines 199, 232, 257) ─────────────────────────────
+
+describe('main.ts — guard clause branches (lines 199, 232, 257)', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(() => { vi.doUnmock('../templates.js'); cleanup(); });
+
+  it('createPokemonCard applies fallback color when type is not in typeColor (line 199)', async () => {
+    const unknownPokemon = { ...POKEMON, types: [{ type: { name: 'stellar' } }] };
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(
+          url.includes('?offset=')
+            ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
+            : unknownPokemon,
+        ),
+      }),
+    ));
+    await loadAndWaitForCards();
+    const card = document.querySelector<HTMLElement>('.pokemon-card');
+    if (!card) throw new Error('.pokemon-card not found');
+    expect(card.style.backgroundColor).toBeTruthy();
+  });
+
+  it('showPokemonDetails applies fallback color on details-card when type is not in typeColor (line 232)', async () => {
+    const unknownPokemon = { ...POKEMON, types: [{ type: { name: 'stellar' } }] };
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(
+          url.includes('?offset=')
+            ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
+            : unknownPokemon,
+        ),
+      }),
+    ));
+    await loadAndWaitForCards();
+    openOverlay();
+    const detailsCard = document.querySelector<HTMLElement>('.details-card');
+    if (!detailsCard) throw new Error('.details-card not found');
+    expect(detailsCard.style.backgroundColor).toBeTruthy();
+  });
+
+  it('appendNavigationButtons returns early without arrow buttons when .pokemon-image-section is absent (line 257)', async () => {
+    vi.doMock('../templates.js', () => ({
+      createPokemonCardTemplate: () => '',
+      detailTemplate: () => '',
+      errorMessageTemplate: () => '',
+      movesErrorTemplate: () => '',
+      createMovesHTMLTemplate: () => '',
+    }));
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(
+          url.includes('?offset=')
+            ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
+            : POKEMON,
+        ),
+      }),
+    ));
+    await loadAndWaitForCards();
+    openOverlay();
+    expect(document.querySelector('.overlay')).toBeTruthy();
+    expect(document.querySelector('.arrow-button')).toBeNull();
   });
 });
 
@@ -1160,5 +1319,216 @@ describe('main.ts — fetch errors (handleFetchError)', () => {
       { timeout: 2000 },
     );
     expect(document.querySelector('.pokemon-card')).toBeNull();
+  });
+});
+
+// ─── SLIDE_DURATION_MS initialization (line 26) ──────────────────────────────
+
+describe('main.ts — SLIDE_DURATION_MS initialization (line 26)', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('uses CSS variable when --transition-duration is set (truthy branch)', async () => {
+    vi.stubGlobal('getComputedStyle', () => ({
+      getPropertyValue: (prop: string) => prop === '--transition-duration' ? '0.4' : '',
+    }));
+    stubFetchSuccessTwo();
+    await import('../main.js');
+    await vi.waitFor(
+      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      { timeout: 2000 },
+    );
+    document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
+    document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
+    const detailsCard = document.querySelector<HTMLElement>('.details-card');
+    if (!detailsCard) throw new Error('.details-card not found');
+    // SLIDE_DURATION_MS = parseFloat('0.4') * 1000 = 400 → dur = '0.4s'
+    expect(detailsCard.style.transition).toContain('0.4s');
+  });
+
+  it('falls back to 300ms when CSS variable is empty string (falsy branch)', async () => {
+    // jsdom returns '' for custom properties by default — no stub needed
+    stubFetchSuccessTwo();
+    await import('../main.js');
+    await vi.waitFor(
+      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      { timeout: 2000 },
+    );
+    document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
+    document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
+    const detailsCard = document.querySelector<HTMLElement>('.details-card');
+    if (!detailsCard) throw new Error('.details-card not found');
+    // SLIDE_DURATION_MS = 300 → dur = '0.3s'
+    expect(detailsCard.style.transition).toContain('0.3s');
+  });
+});
+
+// ─── getEl: throws when required element is absent (line 33) ──────────────────
+
+describe('main.ts — getEl throws for missing element (line 33)', () => {
+  beforeEach(() => { vi.resetModules(); });
+  afterEach(cleanup);
+
+  it('throws naming the missing element id when a required DOM element is absent', async () => {
+    // DOM without #loading — getEl('loading') is the first module-level call
+    document.body.innerHTML = `
+      <div id="search-status"></div>
+      <div id="pokedex-container"></div>
+      <button id="load-more"></button>
+      <input id="search-input" type="text">
+    `;
+    vi.stubGlobal('fetch', vi.fn());
+    await expect(import('../main.js')).rejects.toThrow(
+      'Required element #loading is missing from the DOM',
+    );
+  });
+});
+
+// ─── Direction branches: lines 314, 343 ──────────────────────────────────────
+
+describe('main.ts — direction branches (lines 314, 343)', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('sets backgroundColor to #95afc0 fallback when pokemon type is absent from typeColor map (line 314 ??)', async () => {
+    const unknownTypePokemon = { ...POKEMON, types: [{ type: { name: 'unknown-xyz' } }] };
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(
+          url.includes('?offset=')
+            ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
+            : unknownTypePokemon,
+        ),
+      }),
+    ));
+    await import('../main.js');
+    await vi.waitFor(
+      () => { expect(document.querySelector('.pokemon-card')).toBeTruthy(); },
+      { timeout: 2000 },
+    );
+    document.querySelector<HTMLElement>('.pokemon-card')?.click();
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
+    const detailsCard = document.querySelector<HTMLElement>('.details-card');
+    if (!detailsCard) throw new Error('.details-card not found');
+    const evt = new Event('transitionend') as TransitionEvent;
+    Object.defineProperty(evt, 'propertyName', { value: 'transform' });
+    detailsCard.dispatchEvent(evt);
+    // jsdom normalises #95afc0 → rgb(149, 175, 192)
+    expect(detailsCard.style.backgroundColor).toBe('rgb(149, 175, 192)');
+  });
+
+  it('openTab exits early without throwing when .details-card is absent from DOM (line 343)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+    const detailsCard = document.querySelector<HTMLElement>('.details-card');
+    if (!detailsCard) throw new Error('.details-card not found');
+    // Use document-level querySelector — same pattern as all other tab-button tests.
+    const tabBtn = document.querySelector<HTMLElement>('[data-tab="About"]');
+    if (!tabBtn) throw new Error('[data-tab="About"] not found');
+    // Move tab button out before removing detailsCard so its event listener is preserved.
+    // querySelector('.details-card') inside openTab will now return null → early return (line 343).
+    document.body.appendChild(tabBtn);
+    detailsCard.remove();
+    expect(() => { tabBtn.click(); }).not.toThrow();
+    expect(document.querySelector('.details-card')).toBeNull();
+  });
+});
+
+// ─── trapFocus: Shift+Tab when first element is focused (line 420 left branch) ──
+
+describe('main.ts — trapFocus: Shift+Tab on first focusable element (line 420)', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('Shift+Tab when first focusable element is focused wraps focus to last (line 420 left branch)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+
+    // Build a minimal overlay directly so the test is immune to showPokemonDetails state
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.setAttribute('tabindex', '-1');
+    const btn1 = document.createElement('button');
+    btn1.textContent = 'First';
+    const btn2 = document.createElement('button');
+    btn2.textContent = 'Middle';
+    const btn3 = document.createElement('button');
+    btn3.textContent = 'Last';
+    overlay.append(btn1, btn2, btn3);
+    document.body.appendChild(overlay);
+
+    btn1.focus();
+    expect(document.activeElement).toBe(btn1);
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }),
+    );
+
+    expect(document.activeElement).toBe(btn3);
+  });
+});
+
+// ─── trapFocus: !first || !last guard (line 417) ─────────────────────────────
+
+describe('main.ts — trapFocus !first guard (line 417)', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('trapFocus returns early without crash when querySelectorAll yields length>0 but undefined first (line 417)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+
+    const overlay = document.querySelector<HTMLElement>('.overlay');
+    if (!overlay) throw new Error('.overlay not found');
+
+    // NodeList-like: length=1 but index 0 is undefined → !first fires the early return at line 417
+    const fakeNodeList = Object.assign([], { length: 1 }) as unknown as NodeListOf<HTMLElement>;
+    const spy = vi.spyOn(overlay, 'querySelectorAll').mockReturnValue(fakeNodeList);
+
+    const tabEvent = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+    const preventDefaultSpy = vi.spyOn(tabEvent, 'preventDefault');
+
+    expect(() => document.dispatchEvent(tabEvent)).not.toThrow();
+    expect(preventDefaultSpy).not.toHaveBeenCalled();
+    expect(document.querySelector('.overlay')).toBeTruthy();
+
+    spy.mockRestore();
+  });
+});
+
+// ─── navigateCards: empty card list early return (line 432) ──────────────────
+
+describe('main.ts — navigateCards cards.length===0 early return (line 432)', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('ArrowRight with no cards in DOM does not throw and adds keyboard-nav (line 432)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+
+    document.querySelectorAll('.pokemon-card').forEach(el => { el.remove(); });
+
+    expect(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    }).not.toThrow();
+    expect(document.querySelector('.pokemon-card')).toBeNull();
+    expect(document.body.classList.contains('keyboard-nav')).toBe(true);
+  });
+
+  it('ArrowLeft with no cards in DOM does not throw and adds keyboard-nav (line 432)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+
+    document.querySelectorAll('.pokemon-card').forEach(el => { el.remove(); });
+
+    expect(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    }).not.toThrow();
+    expect(document.querySelector('.pokemon-card')).toBeNull();
+    expect(document.body.classList.contains('keyboard-nav')).toBe(true);
   });
 });
