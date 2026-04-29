@@ -8,6 +8,7 @@
 [![PWA](https://img.shields.io/badge/PWA-Installable-4ECDC4?style=for-the-badge&logo=pwa&logoColor=white)](https://pokedex-aghirculesei.pages.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Mode-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![CI](https://img.shields.io/github/actions/workflow/status/MihaelaAghirculesei/Pokedex/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
+[![codecov](https://img.shields.io/codecov/c/github/MihaelaAghirculesei/Pokedex?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/MihaelaAghirculesei/Pokedex)
 
 </div>
 
@@ -85,7 +86,8 @@ Open `http://localhost:5173` in your browser.
 | `npm run dev` | Start dev server with HMR |
 | `npm run build` | Production build to `dist/` |
 | `npm run preview` | Preview the production build locally |
-| `npm test` | Run 53 unit tests with Vitest |
+| `npm test` | Run unit tests with Vitest |
+| `npm run test:coverage` | Tests + coverage report (HTML + lcov) |
 | `npm run typecheck` | TypeScript type check (no emit) |
 | `npm run lint` | ESLint on `src/` |
 
