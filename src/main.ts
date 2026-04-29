@@ -448,7 +448,7 @@ function navigateCards(key: string): void {
       loadMoreButton.focus();
       loadMoreButton.scrollIntoView({ block: 'center' });
     }
-  } else if (key === 'ArrowLeft') {
+  } else {
     if (currentIndex - 1 >= 0) {
       cards[currentIndex - 1]?.focus();
       cards[currentIndex - 1]?.scrollIntoView({ block: 'center' });
