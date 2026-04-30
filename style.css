@@ -381,6 +381,34 @@
   }
 }
 
+/* ─── Skeleton loader ──────────────────────────────────────────────────────── */
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: var(--card-width);
+  height: var(--card-height);
+  padding: 15px;
+  border: 3px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  background: linear-gradient(90deg, #ddd 25%, #eee 50%, #ddd 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite linear;
+}
+
+.skeleton-block {
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
 @media (max-width: 431px) {
   #About .tab-table table {
     font-size: 12px;

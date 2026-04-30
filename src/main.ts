@@ -81,7 +81,11 @@ async function fetchPokemonData(): Promise<void> {
 
   const previousCount = pokemonDetails.length;
   try {
-    showLoading();
+    if (previousCount === 0) {
+      renderSkeletons();
+    } else {
+      showLoading();
+    }
     loadMoreButton.disabled = true;
 
     const data = await fetchPokemons(signal);
@@ -182,6 +186,28 @@ function handleSearch(searchTerm: string): void {
 }
 
 // ─── Render ───────────────────────────────────────────────────────────────────
+
+function renderSkeletons(): void {
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < LIMIT; i++) {
+    const card = document.createElement('div');
+    card.className = 'skeleton-card';
+    card.innerHTML = `
+      <div class="pokemon-card-header">
+        <div class="skeleton-block" style="width:55%;height:18px"></div>
+        <div class="skeleton-block" style="width:20%;height:18px"></div>
+      </div>
+      <div class="pokemon-image-container">
+        <div class="skeleton-block" style="width:180px;height:180px;border-radius:50%"></div>
+      </div>
+      <div class="pokemon-card-footer">
+        <div class="skeleton-block" style="width:70px;height:28px;border-radius:12px"></div>
+      </div>
+    `;
+    fragment.appendChild(card);
+  }
+  pokedexContainer.replaceChildren(fragment);
+}
 
 function renderPokemon(pokemonArray: Pokemon[]): void {
   const fragment = document.createDocumentFragment();

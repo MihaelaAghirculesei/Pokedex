@@ -16,7 +16,7 @@ export function createPokemonCardTemplate(pokemon: Pokemon, isFirst = false): st
       <p class="pokemon-number">${pokemon.id}</p>
     </div>
     <div class="pokemon-image-container">
-      <img class="pokemon-image" src="${src}" alt="Official artwork of ${pokemon.name}" ${imgAttrs}>
+      <img class="pokemon-image" src="${src}" alt="Official artwork of ${pokemon.name}" width="475" height="475" ${imgAttrs}>
     </div>
     <div class="pokemon-card-footer">${typesButtons}</div>
   `;
