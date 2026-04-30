@@ -3,11 +3,12 @@ import type { Pokemon, PokemonType } from './types.js';
 
 const FALLBACK_IMAGE = 'imgs/icons/pokemon-ball.png';
 
-export function createPokemonCardTemplate(pokemon: Pokemon): string {
+export function createPokemonCardTemplate(pokemon: Pokemon, isFirst = false): string {
   const typesButtons = pokemon.types.map(type => createTypeButtonTemplate(type)).join('');
   const src = pokemon.sprites.other['official-artwork'].front_default
     ?? pokemon.sprites.front_default
     ?? FALLBACK_IMAGE;
+  const imgAttrs = isFirst ? 'fetchpriority="high"' : 'loading="lazy"';
 
   return `
     <div class="pokemon-card-header">
@@ -15,7 +16,7 @@ export function createPokemonCardTemplate(pokemon: Pokemon): string {
       <p class="pokemon-number">${pokemon.id}</p>
     </div>
     <div class="pokemon-image-container">
-      <img class="pokemon-image" src="${src}" alt="Official artwork of ${pokemon.name}" loading="lazy">
+      <img class="pokemon-image" src="${src}" alt="Official artwork of ${pokemon.name}" ${imgAttrs}>
     </div>
     <div class="pokemon-card-footer">${typesButtons}</div>
   `;

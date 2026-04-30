@@ -185,11 +185,11 @@ function handleSearch(searchTerm: string): void {
 
 function renderPokemon(pokemonArray: Pokemon[]): void {
   const fragment = document.createDocumentFragment();
-  pokemonArray.forEach(pokemon => fragment.appendChild(createPokemonCard(pokemon)));
+  pokemonArray.forEach((pokemon, index) => fragment.appendChild(createPokemonCard(pokemon, index === 0)));
   pokedexContainer.replaceChildren(fragment);
 }
 
-function createPokemonCard(pokemon: Pokemon): HTMLElement {
+function createPokemonCard(pokemon: Pokemon, isFirst = false): HTMLElement {
   const card = document.createElement('div');
   card.className = 'pokemon-card';
   card.dataset.name = pokemon.name;
@@ -197,7 +197,7 @@ function createPokemonCard(pokemon: Pokemon): HTMLElement {
   card.setAttribute('role', 'button');
   card.setAttribute('aria-label', `Show details for ${pokemon.name}`);
   card.style.backgroundColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
-  setHTML(card, createPokemonCardTemplate(pokemon));
+  setHTML(card, createPokemonCardTemplate(pokemon, isFirst));
   return card;
 }
 
