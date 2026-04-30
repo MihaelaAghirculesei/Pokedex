@@ -5,7 +5,7 @@ import pluginVitest from 'eslint-plugin-vitest';
 
 export default tseslint.config(
   // Files to never lint
-  { ignores: ['dist/', 'node_modules/', 'vite.config.ts', 'eslint.config.js'] },
+  { ignores: ['dist/', 'node_modules/', 'scripts/', 'vite.config.ts', 'eslint.config.js'] },
 
   // Base JavaScript rules
   js.configs.recommended,
