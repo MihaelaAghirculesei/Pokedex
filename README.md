@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Pokédex](public/imgs/readme/pokedex.png)
+![Pokédex](imgs/readme/pokedex.png)
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-pokedex--aghirculesei.pages.dev-FF6B6B?style=for-the-badge&logo=rocket&logoColor=white)](https://pokedex-aghirculesei.pages.dev/)
 [![PWA](https://img.shields.io/badge/PWA-Installable-4ECDC4?style=for-the-badge&logo=pwa&logoColor=white)](https://pokedex-aghirculesei.pages.dev/)
@@ -40,7 +40,7 @@ Once the features were solid and the architecture was proven, the codebase was m
 Migrated stack
 ├── TypeScript 6    — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
 ├── Vite 7          — HMR in development, optimized bundles in production
-├── Vitest 4        — 53 unit tests covering templates, utilities, and i18n
+├── Vitest 4        — 165 unit tests covering templates, utilities, and i18n
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
 ├── ESLint          — TypeScript strict rules + Vitest plugin
 └── GitHub Actions  — CI: typecheck → lint → test → build on every push
@@ -147,15 +147,15 @@ Open `http://localhost:5173` in your browser.
 <table>
 <tr>
 <td align="center">
-<img src="public/imgs/readme/interface.png" width="200px" alt="Main grid"/>
+<img src="imgs/readme/interface.png" width="200px" alt="Main grid"/>
 <br/><sub>Main grid</sub>
 </td>
 <td align="center">
-<img src="public/imgs/readme/interactive_cards.png" width="200px" alt="Holographic hover effect"/>
+<img src="imgs/readme/interactive_cards.png" width="200px" alt="Holographic hover effect"/>
 <br/><sub>Holographic hover</sub>
 </td>
 <td align="center">
-<img src="public/imgs/readme/detailed_view.png" width="200px" alt="Detail overlay"/>
+<img src="imgs/readme/detailed_view.png" width="200px" alt="Detail overlay"/>
 <br/><sub>Detail overlay</sub>
 </td>
 </tr>
@@ -171,7 +171,7 @@ Open `http://localhost:5173` in your browser.
 | Language | Vanilla JavaScript (ES6+) | TypeScript 6 — strict mode |
 | Build | None (direct file serving) | Vite 7 — HMR + optimized bundles |
 | Offline | Hand-crafted Service Worker | Workbox via vite-plugin-pwa |
-| Testing | None | Vitest 4 — 53 unit tests |
+| Testing | None | Vitest 4 — 165 unit tests |
 | Linting | None | ESLint + typescript-eslint strict |
 | Styling | CSS3 — Grid, Flexbox, Custom Properties | Unchanged |
 | Data | PokéAPI v2 via Fetch + AbortController | Unchanged |
