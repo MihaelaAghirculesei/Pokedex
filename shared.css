@@ -25,7 +25,7 @@ body {
   min-height: 100vh;
   width: 100%;
   font-family: var(--font-family);
-  background-image: url(./imgs/background/Designer.jpeg);
+  background-image: url(./imgs/background/Designer.webp);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -485,7 +485,7 @@ progress {
 
 @media (max-width: 431px) {
   html {
-    background-image: url(./imgs/background/Designer.jpeg);
+    background-image: url(./imgs/background/Designer.webp);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
