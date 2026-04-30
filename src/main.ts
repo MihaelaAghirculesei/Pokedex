@@ -13,7 +13,7 @@ import { initLogoAnimation } from './logo.js';
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const BASE_URL = 'https://pokeapi.co/api/v2/';
-const LIMIT = 30;
+const LIMIT = 20;
 const MIN_SEARCH_LENGTH = 3;
 const SEARCH_DEBOUNCE_DELAY = 300;
 const MAX_SEARCH_RESULTS = 20;
@@ -198,6 +198,9 @@ function createPokemonCard(pokemon: Pokemon, isFirst = false): HTMLElement {
   card.setAttribute('aria-label', `Show details for ${pokemon.name}`);
   card.style.backgroundColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
   setHTML(card, createPokemonCardTemplate(pokemon, isFirst));
+  if (isFirst) {
+    card.querySelector<HTMLImageElement>('.pokemon-image')?.setAttribute('fetchpriority', 'high');
+  }
   return card;
 }
 
