@@ -357,11 +357,16 @@ function openTab(evt: Event, tabName: string): void {
   document.querySelectorAll<HTMLElement>('.tab-content').forEach(tab => {
     tab.style.display = 'none';
   });
-  document.querySelectorAll('.tab-button').forEach(btn => { btn.classList.remove('active'); });
+  document.querySelectorAll('.tab-button').forEach(btn => {
+    btn.classList.remove('active');
+    btn.setAttribute('aria-selected', 'false');
+  });
 
   const target = document.getElementById(tabName);
   if (target) target.style.display = 'block';
-  (evt.currentTarget as HTMLElement).classList.add('active');
+  const activeBtn = evt.currentTarget as HTMLElement;
+  activeBtn.classList.add('active');
+  activeBtn.setAttribute('aria-selected', 'true');
 
   const detailsCard = document.querySelector('.details-card');
   if (!detailsCard) return;

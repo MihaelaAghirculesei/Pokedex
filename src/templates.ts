@@ -74,10 +74,10 @@ function createDetailOverlay(
 ): string {
   return `
     <div class="detail-overlay">
-      <div class="tab-container">
-        <button class="tab-button active" data-tab="About">About</button>
-        <button class="tab-button" data-tab="BaseStats">Base Stats</button>
-        <button class="tab-button" data-tab="Moves">Moves</button>
+      <div class="tab-container" role="tablist">
+        <button class="tab-button active" role="tab" aria-selected="true"  aria-controls="About"     id="tab-About"     data-tab="About">About</button>
+        <button class="tab-button"        role="tab" aria-selected="false" aria-controls="BaseStats" id="tab-BaseStats" data-tab="BaseStats">Base Stats</button>
+        <button class="tab-button"        role="tab" aria-selected="false" aria-controls="Moves"     id="tab-Moves"     data-tab="Moves">Moves</button>
       </div>
       ${createAboutTab(pokemon, height, weight, abilities)}
       ${createBaseStatsTab(pokemon)}
@@ -92,7 +92,7 @@ function createAboutTab(
   weight: string,
   abilities: string
 ): string {
-  return `<div id="About" class="tab-content">
+  return `<div id="About" class="tab-content" role="tabpanel" aria-labelledby="tab-About" tabindex="0">
       <div class="tab-table">
         <table>
           <tr><th>Species:</th><td>${pokemon.species.name}</td></tr>
@@ -106,10 +106,10 @@ function createAboutTab(
 
 function createBaseStatsTab(pokemon: Pokemon): string {
   const rows = pokemon.stats
-    .map(stat => `<tr><th>${formatStatName(stat.stat.name)}:</th><td><progress value="${stat.base_stat}" max="200"></progress>${stat.base_stat}</td></tr>`)
+    .map(stat => `<tr><th>${formatStatName(stat.stat.name)}:</th><td><progress value="${stat.base_stat}" max="255"></progress>${stat.base_stat}</td></tr>`)
     .join('');
 
-  return `<div id="BaseStats" class="tab-content" style="display: none;">
+  return `<div id="BaseStats" class="tab-content" role="tabpanel" aria-labelledby="tab-BaseStats" tabindex="0" style="display: none;">
       <div class="tab-table">
         <table>${rows}</table>
       </div>
@@ -117,7 +117,7 @@ function createBaseStatsTab(pokemon: Pokemon): string {
 }
 
 function createMovesTab(pokemon: Pokemon): string {
-  return `<div id="Moves" class="tab-content" style="display: none;">
+  return `<div id="Moves" class="tab-content" role="tabpanel" aria-labelledby="tab-Moves" tabindex="0" style="display: none;">
       <div class="moves-container" id="moves-${pokemon.id}" data-loaded="false" data-pokemon-id="${pokemon.id}">Loading moves...</div>
     </div>`;
 }
