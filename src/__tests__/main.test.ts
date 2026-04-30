@@ -27,6 +27,7 @@ function buildDOM(): void {
     </header>
     <div id="loading" hidden>Loading...</div>
     <div id="search-status"></div>
+    <div id="search-no-results" hidden></div>
     <div id="pokedex-container"></div>
     <button id="load-more"><span>Load More Pokémon</span></button>
     <footer class="footer"></footer>

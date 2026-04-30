@@ -38,6 +38,7 @@ const loadingIndicator = getEl('loading');
 const loadMoreButton = getEl('load-more') as HTMLButtonElement;
 const pokedexContainer = getEl('pokedex-container');
 const searchResultsStatus = getEl('search-status');
+const searchNoResults = getEl('search-no-results');
 
 // ─── State ───────────────────────────────────────────────────────────────────
 
@@ -134,7 +135,14 @@ async function fetchAllPokemonDetails(
   results: { url: string }[],
   signal: AbortSignal
 ): Promise<Pokemon[]> {
-  return Promise.all(results.map(p => fetchOnePokemon(p.url, signal)));
+  const settled = await Promise.allSettled(results.map(p => fetchOnePokemon(p.url, signal)));
+  const fulfilled = settled
+    .filter((r): r is PromiseFulfilledResult<Pokemon> => r.status === 'fulfilled')
+    .map(r => r.value);
+  if (fulfilled.length === 0 && results.length > 0) {
+    throw (settled[0] as PromiseRejectedResult).reason as Error;
+  }
+  return fulfilled;
 }
 
 async function fetchOnePokemon(url: string, signal: AbortSignal): Promise<Pokemon> {
@@ -180,7 +188,8 @@ function handleSearch(searchTerm: string): void {
   if (filtered.length > 0) {
     renderPokemon(filtered);
   } else {
-    displayError(`No Pokémon found for "${searchTerm}". Try loading more Pokémon first.`);
+    searchNoResults.textContent = `No Pokémon found for "${searchTerm}". Try loading more.`;
+    searchNoResults.removeAttribute('hidden');
   }
   announceSearchResults(filtered.length, searchTerm);
 }
@@ -210,6 +219,7 @@ function renderSkeletons(): void {
 }
 
 function renderPokemon(pokemonArray: Pokemon[]): void {
+  searchNoResults.setAttribute('hidden', '');
   const fragment = document.createDocumentFragment();
   pokemonArray.forEach((pokemon, index) => fragment.appendChild(createPokemonCard(pokemon, index === 0)));
   pokedexContainer.replaceChildren(fragment);

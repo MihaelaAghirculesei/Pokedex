@@ -8,7 +8,7 @@
     <meta property="og:title" content="Pokédex - Interactive Pokemon Encyclopedia">
     <meta property="og:description" content="Interactive Pokédex - Explore all Pokemon with advanced search, detailed stats, and offline support">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="/imgs/icons/pokemon-ball.png">
+    <meta property="og:image" content="https://pokedex-aghirculesei.pages.dev/imgs/icons/pokemon-ball.png">
     <meta property="og:url" content="https://pokedex-aghirculesei.pages.dev/">
     <meta name="theme-color" content="#e94560">
     <meta name="mobile-web-app-capable" content="yes">
@@ -52,6 +52,7 @@
     <main class="pokemon-content">
         <div id="loading" class="loading-indicator" role="status">Loading...</div>
         <div role="status" aria-live="polite" aria-atomic="true" id="search-status" class="sr-only"></div>
+        <div id="search-no-results" class="search-no-results" hidden></div>
         <div id="pokedex-container" class="pokedex-container">
         </div>
         <button id="load-more" class="load-more-btn">

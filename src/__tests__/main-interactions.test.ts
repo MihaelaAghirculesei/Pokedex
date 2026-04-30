@@ -28,6 +28,7 @@ function buildDOM(): void {
     </header>
     <div id="loading" hidden></div>
     <div id="search-status"></div>
+    <div id="search-no-results" hidden></div>
     <div id="pokedex-container"></div>
     <button id="load-more"><span>Load More</span></button>
   `;
@@ -291,17 +292,21 @@ describe('main.ts — search', () => {
     );
   });
 
-  it('shows error and announces zero results when search yields nothing', async () => {
+  it('shows no-results message and keeps cards visible when search yields nothing', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
     const input = document.getElementById('search-input') as HTMLInputElement;
     input.value = 'zzz';
     input.dispatchEvent(new Event('input'));
     await vi.waitFor(
-      () => { expect(document.querySelector('.error-message')).toBeTruthy(); },
+      () => {
+        const el = document.getElementById('search-no-results');
+        expect(el?.hasAttribute('hidden')).toBe(false);
+      },
       { timeout: 1500 },
     );
     expect(document.getElementById('search-status')?.textContent).toContain('No Pokémon');
+    expect(document.querySelector('.pokemon-card')).toBeTruthy();
   });
 
   it('clears search status when fewer than 3 chars typed', async () => {
