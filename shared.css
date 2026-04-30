@@ -25,12 +25,16 @@ body {
   min-height: 100vh;
   width: 100%;
   font-family: var(--font-family);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
   background-image: url(./imgs/background/Designer.webp);
-  background-repeat: no-repeat;
-  background-position: center;
   background-size: cover;
-  background-attachment: fixed;
-  margin: 0;
+  background-position: center;
+  z-index: -1;
 }
 
 main {
@@ -56,7 +60,6 @@ main {
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  box-sizing: border-box;
 }
 
 .headline-box {
@@ -66,7 +69,6 @@ main {
   flex-direction: row;
   gap: 15px;
   width: 100%;
-  box-sizing: border-box;
 }
 
 @keyframes bounce {
@@ -484,55 +486,24 @@ progress {
 }
 
 @media (max-width: 431px) {
-  html {
-    background-image: url(./imgs/background/Designer.webp);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-attachment: fixed;
-    min-height: 100%;
-  }
-  
-  body {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: transparent;
-  }
-  
-  main {
-    flex: 1;
-  }
-  
   .header-content {
     width: auto;
-    flex-direction: row;
-    justify-content: space-between;
     padding: 5px 10px;
     max-width: none;
   }
-  
+
   .header, header {
-    padding: 8px;
+    padding: 10px 12px;
     height: auto;
-    min-height: 60px;
   }
-  
+
   .headline-box {
     margin-right: 0;
-    display: flex;
-    align-items: center;
     gap: 10px;
-    transform: translateY(-15px);
   }
-  
+
   .headline-icon {
-    width: 40px;
-  }
-  
-  .headline {
-    font-size: 1.2rem;
-    margin: 0;
+    width: 60px;
   }
 
   .language-toggle {
@@ -540,7 +511,6 @@ progress {
     height: 30px;
     font-size: 11px;
     padding: 0 4px;
-    transform: translateY(-15px);
   }
 
   .language-toggle .slider {
@@ -585,17 +555,14 @@ progress {
     margin-bottom: 0;
   }
   
-  .footer .headline-box .headline {
-    display: none;
-  }
-  
   .footer .headline-icon {
     width: 70px;
   }
-  
-  .header .headline-icon {
-    width: 70px;
+
+  .footer .headline-icon.animate-logo {
+    transform: translateY(0);
   }
+  
   
   .headline-box .headline {
     display: none;

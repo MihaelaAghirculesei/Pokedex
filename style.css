@@ -2,9 +2,6 @@
   padding: 5px 10px;
   border-radius: var(--border-radius);
   border: 3px solid black;
-  box-sizing: border-box;
-  margin-top: -8px;
-  transform: translateY(-7px);
 }
 
 .pokemon-content {
@@ -239,9 +236,6 @@
   height: 20px;
 }
 
-#BaseStats .tab-table th {
-  font-weight: normal;
-}
 .details-card {
   padding: 1.5rem;
   border-radius: 15px;
@@ -349,9 +343,6 @@
   z-index: 10;
 }
 
-#About .tab-table {
-  padding-top: 15px;
-}
 
 @media (max-width: 310px) {
   .pokemon-card {
@@ -421,15 +412,11 @@
     padding: 5px;
   }
   .details-card {
-    display: flex;
-    flex-direction: column;
     transition: opacity 0.3s ease;
   }
   .search-input {
-    margin: 3px;
-    margin-top: 3px;
-    margin-bottom: 8px;
-    padding-bottom: 12px;
+    margin: 0;
+    padding: 8px 12px;
   }
 }
 
@@ -468,8 +455,3 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
-@media (min-width: 540px) and (max-width: 1024px) {
-  .search-input {
-    transform: translateY(-2px);
-  }
-}

@@ -62,7 +62,7 @@ function createDetailsHeader(pokemon: Pokemon): string {
 
 function createImageSection(src: string, name: string): string {
   return `<div class="pokemon-image-section">
-      <img src="${src}" alt="Official artwork of ${name}" class="details-image" loading="lazy">
+      <img src="${src}" alt="Official artwork of ${name}" class="details-image" width="475" height="475" loading="lazy">
     </div>`;
 }
 
