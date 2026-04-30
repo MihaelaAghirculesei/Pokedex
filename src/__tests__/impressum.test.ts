@@ -29,7 +29,6 @@ const IMPRESSUM_DOM = `
 
 async function loadModule(): Promise<void> {
   await import('../impressum.js');
-  document.dispatchEvent(new Event('DOMContentLoaded'));
 }
 
 describe('impressum.ts — language handling', () => {

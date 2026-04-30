@@ -6,6 +6,7 @@ import {
   formatStatName,
   filterPokemon,
   addHyphenation,
+  formatMoveName,
 } from '../utils.js';
 
 const ALL_TYPES = [
@@ -120,6 +121,24 @@ describe('formatStatName', () => {
 
   it('capitalizes unknown stat names as fallback', () => {
     expect(formatStatName('unknown-stat')).toBe('Unknown-stat');
+  });
+});
+
+describe('formatMoveName', () => {
+  it('capitalizes each word and replaces hyphens with spaces', () => {
+    expect(formatMoveName('fire-blast')).toBe('Fire Blast');
+  });
+
+  it('handles single-word moves', () => {
+    expect(formatMoveName('tackle')).toBe('Tackle');
+  });
+
+  it('handles three-part move names', () => {
+    expect(formatMoveName('double-edge')).toBe('Double Edge');
+  });
+
+  it('returns empty string for empty input', () => {
+    expect(formatMoveName('')).toBe('');
   });
 });
 

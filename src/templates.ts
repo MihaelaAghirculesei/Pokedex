@@ -1,4 +1,4 @@
-import { getTypeIconSrc, formatStatName, addHyphenation } from './utils.js';
+import { getTypeIconSrc, formatStatName, addHyphenation, formatMoveName } from './utils.js';
 import type { Pokemon, PokemonType } from './types.js';
 
 const FALLBACK_IMAGE = 'imgs/icons/pokemon-ball.png';
@@ -49,7 +49,7 @@ export const movesErrorTemplate = (): string => '<p>Failed to load moves</p>';
 
 export function createMovesHTMLTemplate(moves: { name: string }[]): string {
   return `<div class="moves-table-content">
-      ${moves.map(move => `<span class="move-compact-tag">${addHyphenation(move.name)}</span>`).join('')}
+      ${moves.map(move => `<span class="move-compact-tag">${addHyphenation(formatMoveName(move.name))}</span>`).join('')}
     </div>`;
 }
 

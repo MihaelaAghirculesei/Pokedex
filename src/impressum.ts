@@ -103,17 +103,15 @@ function toggleLanguage(): void {
   if (toggle) applyLangToggleUI(newLang, toggle);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  initLogoAnimation();
+initLogoAnimation();
 
-  const lang = getLang();
-  if (lang === 'de') {
-    applyTranslations('de');
-  }
+const lang = getLang();
+if (lang === 'de') {
+  applyTranslations('de');
+}
 
-  const toggle = document.getElementById('languageToggle');
-  if (toggle) {
-    applyLangToggleUI(lang, toggle);
-    toggle.addEventListener('click', toggleLanguage);
-  }
-});
+const toggle = document.getElementById('languageToggle');
+if (toggle) {
+  applyLangToggleUI(lang, toggle);
+  toggle.addEventListener('click', toggleLanguage);
+}

@@ -68,6 +68,9 @@ export function filterPokemon<T extends { name: string; id: number }>(
     .slice(0, limit);
 }
 
+export const formatMoveName = (name: string): string =>
+  name.split('-').map(capitalizeFirstLetter).join(' ');
+
 export function addHyphenation(text: string): string {
   return text.split(' ').map(word => hyphenateWord(word)).join(' ');
 }
