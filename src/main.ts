@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import { typeColor, capitalizeFirstLetter, filterPokemon } from './utils.js';
+import { typeColor, filterPokemon } from './utils.js';
 import {
   createPokemonCardTemplate,
   detailTemplate,
@@ -409,9 +409,7 @@ function loadPokemonMoves(pokemonId: string): void {
     return;
   }
 
-  const moves = pokemon.moves.slice(0, 20).map(m => ({
-    name: capitalizeFirstLetter(m.move.name.replace(/-/g, ' ')),
-  }));
+  const moves = pokemon.moves.slice(0, 20).map(m => ({ name: m.move.name }));
 
   movesContainer.dataset.loaded = 'true';
   setHTML(movesContainer, createMovesHTMLTemplate(moves));
