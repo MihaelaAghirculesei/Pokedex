@@ -31,21 +31,5 @@
       "purpose": "any"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/imgs/readme/interface.png",
-      "sizes": "540x720",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Pokédex Main Interface"
-    },
-    {
-      "src": "/imgs/readme/detailed_view.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Pokemon Detail View"
-    }
-  ],
   "prefer_related_applications": false
 }
