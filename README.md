@@ -9,6 +9,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Mode-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![CI](https://img.shields.io/github/actions/workflow/status/MihaelaAghirculesei/Pokedex/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
 [![codecov](https://img.shields.io/codecov/c/github/MihaelaAghirculesei/Pokedex?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/MihaelaAghirculesei/Pokedex)
+[![PageSpeed](https://img.shields.io/badge/PageSpeed_Insights-Report-4285F4?style=for-the-badge&logo=pagespeedinsights&logoColor=white)](https://pagespeed.web.dev/report?url=https://pokedex-aghirculesei.pages.dev/)
 
 </div>
 
