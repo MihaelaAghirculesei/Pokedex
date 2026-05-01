@@ -12,11 +12,11 @@ export function createPokemonCardTemplate(pokemon: Pokemon, isFirst = false): st
 
   return `
     <div class="pokemon-card-header">
-      <h3 class="pokemon-name">${pokemon.name}</h3>
+      <h3 class="pokemon-name">${formatMoveName(pokemon.name)}</h3>
       <p class="pokemon-number">${pokemon.id}</p>
     </div>
     <div class="pokemon-image-container">
-      <img class="pokemon-image" src="${src}" alt="Official artwork of ${pokemon.name}" width="475" height="475" ${imgAttrs}>
+      <img class="pokemon-image" src="${src}" alt="Official artwork of ${formatMoveName(pokemon.name)}" width="475" height="475" ${imgAttrs}>
     </div>
     <div class="pokemon-card-footer">${typesButtons}</div>
   `;
@@ -55,14 +55,14 @@ export function createMovesHTMLTemplate(moves: { name: string }[]): string {
 
 function createDetailsHeader(pokemon: Pokemon): string {
   return `<div class="details-header">
-      <h2>${pokemon.name}</h2>
+      <h2>${formatMoveName(pokemon.name)}</h2>
       <span>${pokemon.id}</span>
     </div>`;
 }
 
 function createImageSection(src: string, name: string): string {
   return `<div class="pokemon-image-section">
-      <img src="${src}" alt="Official artwork of ${name}" class="details-image" width="475" height="475" loading="lazy">
+      <img src="${src}" alt="Official artwork of ${formatMoveName(name)}" class="details-image" width="475" height="475" loading="lazy">
     </div>`;
 }
 
@@ -106,7 +106,7 @@ function createAboutTab(
 
 function createBaseStatsTab(pokemon: Pokemon): string {
   const rows = pokemon.stats
-    .map(stat => `<tr><th>${formatStatName(stat.stat.name)}:</th><td><progress value="${stat.base_stat}" max="255"></progress>${stat.base_stat}</td></tr>`)
+    .map(stat => `<tr><th>${formatStatName(stat.stat.name)}:</th><td><progress value="${stat.base_stat}" max="255" aria-label="${formatStatName(stat.stat.name)}"></progress>${stat.base_stat}</td></tr>`)
     .join('');
 
   return `<div id="BaseStats" class="tab-content" role="tabpanel" aria-labelledby="tab-BaseStats" tabindex="0" style="display: none;">
