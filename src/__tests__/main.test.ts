@@ -114,7 +114,7 @@ describe('main.ts — fetch error handling', () => {
 
     await vi.waitFor(() => {
       expect(document.querySelector('.pokemon-card')).toBeTruthy();
-      expect(document.querySelector('.pokemon-name')?.textContent).toBe('bulbasaur');
+      expect(document.querySelector('.pokemon-name')?.textContent).toBe('Bulbasaur');
     });
   });
 

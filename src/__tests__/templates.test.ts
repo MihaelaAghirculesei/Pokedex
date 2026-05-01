@@ -39,7 +39,7 @@ const pokemonNoArtwork: Pokemon = {
 
 describe('createPokemonCardTemplate', () => {
   it('includes the Pokémon name', () => {
-    expect(createPokemonCardTemplate(mockPokemon)).toContain('bulbasaur');
+    expect(createPokemonCardTemplate(mockPokemon)).toContain('Bulbasaur');
   });
 
   it('includes the Pokémon id', () => {

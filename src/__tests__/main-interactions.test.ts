@@ -110,7 +110,7 @@ describe('main.ts — card rendering', () => {
     if (!card) throw new Error('.pokemon-card not found');
     expect(card.dataset.name).toBe('bulbasaur');
     expect(card.getAttribute('role')).toBe('button');
-    expect(card.getAttribute('aria-label')).toContain('bulbasaur');
+    expect(card.getAttribute('aria-label')).toContain('Bulbasaur');
     expect(card.getAttribute('tabindex')).toBe('0');
   });
 });
@@ -444,7 +444,7 @@ describe('main.ts — keyboard navigation', () => {
     expect(document.body.classList.contains('keyboard-nav')).toBe(false);
   });
 
-  it('blurs focused pokemon card on document mousemove', async () => {
+  it('keeps focus on pokemon card on document mousemove (only removes keyboard-nav ring)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
     const card = document.querySelector<HTMLElement>('.pokemon-card');
@@ -452,7 +452,7 @@ describe('main.ts — keyboard navigation', () => {
     card.focus();
     expect(document.activeElement).toBe(card);
     document.dispatchEvent(new MouseEvent('mousemove'));
-    expect(document.activeElement).not.toBe(card);
+    expect(document.activeElement).toBe(card);
   });
 
   it('ArrowRight on focused card moves focus to next card', async () => {
