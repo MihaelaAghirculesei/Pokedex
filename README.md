@@ -41,7 +41,7 @@ Once the features were solid and the architecture was proven, the codebase was m
 Migrated stack
 ├── TypeScript 6    — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
 ├── Vite 7          — HMR in development, optimized bundles in production
-├── Vitest 4        — 165 unit tests covering templates, utilities, and i18n
+├── Vitest 4        — 169 unit tests covering templates, utilities, and i18n
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
 ├── ESLint          — TypeScript strict rules + Vitest plugin
 └── GitHub Actions  — CI: typecheck → lint → test → build on every push
@@ -107,7 +107,7 @@ Open `http://localhost:5173` in your browser.
 - Tabbed detail overlay (About, Base Stats, Moves)
 - Visual stat bars via `<progress>` element with formatted names (HP, Sp. Attack…)
 - Slide animation on prev/next Pokémon navigation
-- **DE / EN language toggle** — persisted across pages via `localStorage`
+- **DE / EN language toggle** on the Legal Notice page — preference saved via `localStorage`
 - `prefers-reduced-motion` — all animations disabled for users who request it
 
 </td>
@@ -148,7 +148,7 @@ Open `http://localhost:5173` in your browser.
 <table>
 <tr>
 <td align="center">
-<img src="imgs/readme/interface.png" width="200px" alt="Main grid"/>
+<img src="imgs/readme/interface.jpg" width="200px" alt="Main grid"/>
 <br/><sub>Main grid</sub>
 </td>
 <td align="center">
@@ -156,7 +156,7 @@ Open `http://localhost:5173` in your browser.
 <br/><sub>Holographic hover</sub>
 </td>
 <td align="center">
-<img src="imgs/readme/detailed_view.png" width="200px" alt="Detail overlay"/>
+<img src="imgs/readme/detailed_view.jpg" width="200px" alt="Detail overlay"/>
 <br/><sub>Detail overlay</sub>
 </td>
 </tr>
