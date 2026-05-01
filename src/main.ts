@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import { typeColor, filterPokemon } from './utils.js';
+import { typeColor, filterPokemon, formatMoveName } from './utils.js';
 import {
   createPokemonCardTemplate,
   detailTemplate,
@@ -231,7 +231,7 @@ function createPokemonCard(pokemon: Pokemon, isFirst = false): HTMLElement {
   card.dataset.name = pokemon.name;
   card.setAttribute('tabindex', '0');
   card.setAttribute('role', 'button');
-  card.setAttribute('aria-label', `Show details for ${pokemon.name}`);
+  card.setAttribute('aria-label', `Show details for ${formatMoveName(pokemon.name)}`);
   card.style.backgroundColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
   setHTML(card, createPokemonCardTemplate(pokemon, isFirst));
   return card;
@@ -256,11 +256,13 @@ function showPokemonDetails(pokemon: Pokemon): void {
   previouslyFocusedElement = document.activeElement as HTMLElement;
   currentOverlayPokemon = pokemon;
 
+  document.title = `${formatMoveName(pokemon.name)} — Pokédex`;
+
   const overlay = document.createElement('div');
   overlay.className = 'overlay';
   overlay.setAttribute('role', 'dialog');
   overlay.setAttribute('aria-modal', 'true');
-  overlay.setAttribute('aria-label', 'Pokémon details');
+  overlay.setAttribute('aria-label', `${formatMoveName(pokemon.name)} details`);
   overlay.setAttribute('tabindex', '-1');
 
   const detailsCard = document.createElement('div');
@@ -284,6 +286,7 @@ function showPokemonDetails(pokemon: Pokemon): void {
 function closeOverlay(overlay: HTMLElement): void {
   overlay.remove();
   document.body.classList.remove('no-scroll');
+  document.title = 'Pokédex';
   currentOverlayPokemon = null;
   previouslyFocusedElement?.focus();
 }
@@ -543,8 +546,6 @@ pokedexContainer.addEventListener('mouseout', (e: MouseEvent) => {
 
 document.addEventListener('mousemove', () => {
   document.body.classList.remove('keyboard-nav');
-  const focused = document.activeElement as HTMLElement;
-  if (focused.classList.contains('pokemon-card')) focused.blur();
 });
 
 loadMoreButton.addEventListener('click', () => { void fetchPokemonData(); });
