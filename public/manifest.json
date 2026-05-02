@@ -33,16 +33,16 @@
   ],
   "screenshots": [
     {
-      "src": "/imgs/readme/interface.png",
+      "src": "/imgs/readme/interface.jpg",
       "sizes": "540x720",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "narrow",
       "label": "Pokédex Main Interface"
     },
     {
-      "src": "/imgs/readme/detailed_view.png",
+      "src": "/imgs/readme/detailed_view.jpg",
       "sizes": "1280x720",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Pokemon Detail View"
     }
