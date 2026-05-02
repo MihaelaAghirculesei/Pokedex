@@ -124,7 +124,7 @@ function createMovesTab(pokemon: Pokemon): string {
 
 function createTypeButtonTemplate(type: PokemonType): string {
   return `<span class="type-button">
-      <img class="type-icon" src="${getTypeIconSrc(type.type.name)}" alt="${type.type.name}">
+      <img class="type-icon" src="${getTypeIconSrc(type.type.name)}" alt="${type.type.name}" width="35" height="35">
       <span>${type.type.name}</span>
     </span>`;
 }

@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import { typeColor, filterPokemon, formatMoveName } from './utils.js';
+import { typeColor, filterPokemon, formatMoveName, getTextColorForBackground } from './utils.js';
 import {
   createPokemonCardTemplate,
   detailTemplate,
@@ -232,7 +232,9 @@ function createPokemonCard(pokemon: Pokemon, isFirst = false): HTMLElement {
   card.setAttribute('tabindex', '0');
   card.setAttribute('role', 'button');
   card.setAttribute('aria-label', `Show details for ${formatMoveName(pokemon.name)}`);
-  card.style.backgroundColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
+  const bgColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
+  card.style.backgroundColor = bgColor;
+  card.style.color = getTextColorForBackground(bgColor);
   setHTML(card, createPokemonCardTemplate(pokemon, isFirst));
   return card;
 }
@@ -267,7 +269,9 @@ function showPokemonDetails(pokemon: Pokemon): void {
 
   const detailsCard = document.createElement('div');
   detailsCard.className = 'details-card';
-  detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
+  const detailsBgColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
+  detailsCard.style.backgroundColor = detailsBgColor;
+  detailsCard.style.color = getTextColorForBackground(detailsBgColor);
   setHTML(detailsCard, createDetailsHTML(pokemon));
   attachTabListeners(detailsCard);
   appendNavigationButtons(detailsCard, pokemon);
