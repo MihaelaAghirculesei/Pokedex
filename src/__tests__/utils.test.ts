@@ -7,6 +7,7 @@ import {
   filterPokemon,
   addHyphenation,
   formatMoveName,
+  getTextColorForBackground,
 } from '../utils.js';
 
 const ALL_TYPES = [
@@ -193,5 +194,19 @@ describe('addHyphenation', () => {
     const parts = result.split(' ');
     expect(parts).toHaveLength(2);
     expect(parts[1]).toBe('fire');
+  });
+});
+
+describe('getTextColorForBackground', () => {
+  it('returns white for dark backgrounds (fighting, rock, dark types)', () => {
+    expect(getTextColorForBackground('#30336b')).toBe('#ffffff');
+    expect(getTextColorForBackground('#2d3436')).toBe('#ffffff');
+    expect(getTextColorForBackground('#705848')).toBe('#ffffff');
+  });
+
+  it('returns black for light backgrounds (electric, dragon, normal types)', () => {
+    expect(getTextColorForBackground('#fed330')).toBe('#000000');
+    expect(getTextColorForBackground('#ffeaa7')).toBe('#000000');
+    expect(getTextColorForBackground('#95afc0')).toBe('#000000');
   });
 });

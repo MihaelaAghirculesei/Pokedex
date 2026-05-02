@@ -71,6 +71,15 @@ export function filterPokemon<T extends { name: string; id: number }>(
 export const formatMoveName = (name: string): string =>
   name.split('-').map(capitalizeFirstLetter).join(' ');
 
+export function getTextColorForBackground(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const lin = (c: number): number => c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  return L > 0.179 ? '#000000' : '#ffffff';
+}
+
 export function addHyphenation(text: string): string {
   return text.split(' ').map(word => hyphenateWord(word)).join(' ');
 }
