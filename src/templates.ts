@@ -1,14 +1,23 @@
 import { getTypeIconSrc, formatStatName, addHyphenation, formatMoveName } from './utils.js';
 import type { Pokemon, PokemonType } from './types.js';
 
-const FALLBACK_IMAGE = 'imgs/icons/pokemon-ball.png';
+const FALLBACK_IMAGE = 'imgs/icons/pokemon-ball.webp';
+
+function optimizeImageUrl(url: string, width: number): string {
+  if (!url.startsWith('https://')) return url;
+  return `https://wsrv.nl/?url=${url.slice(8)}&output=webp&q=85&w=${width}&maxage=30d`;
+}
 
 export function createPokemonCardTemplate(pokemon: Pokemon, isFirst = false): string {
   const typesButtons = pokemon.types.map(type => createTypeButtonTemplate(type)).join('');
-  const src = pokemon.sprites.other['official-artwork'].front_default
+  const rawSrc = pokemon.sprites.other['official-artwork'].front_default
     ?? pokemon.sprites.front_default
     ?? FALLBACK_IMAGE;
-  const imgAttrs = isFirst ? 'fetchpriority="high"' : 'loading="lazy"';
+  const imgAttrs = isFirst ? 'fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"';
+  const src = optimizeImageUrl(rawSrc, 280);
+  const srcsetAttr = rawSrc.startsWith('https://')
+    ? `srcset="${optimizeImageUrl(rawSrc, 150)} 150w, ${optimizeImageUrl(rawSrc, 280)} 280w, ${optimizeImageUrl(rawSrc, 480)} 480w" sizes="(max-width: 432px) 150px, 240px"`
+    : '';
 
   return `
     <div class="pokemon-card-header">
@@ -16,7 +25,7 @@ export function createPokemonCardTemplate(pokemon: Pokemon, isFirst = false): st
       <p class="pokemon-number">${pokemon.id}</p>
     </div>
     <div class="pokemon-image-container">
-      <img class="pokemon-image" src="${src}" alt="Official artwork of ${formatMoveName(pokemon.name)}" width="475" height="475" ${imgAttrs}>
+      <img class="pokemon-image" src="${src}" alt="Official artwork of ${formatMoveName(pokemon.name)}" width="240" height="240" ${srcsetAttr} ${imgAttrs}>
     </div>
     <div class="pokemon-card-footer">${typesButtons}</div>
   `;
@@ -61,8 +70,9 @@ function createDetailsHeader(pokemon: Pokemon): string {
 }
 
 function createImageSection(src: string, name: string): string {
+  const optimized = optimizeImageUrl(src, 475);
   return `<div class="pokemon-image-section">
-      <img src="${src}" alt="Official artwork of ${formatMoveName(name)}" class="details-image" width="475" height="475" loading="lazy">
+      <img src="${optimized}" alt="Official artwork of ${formatMoveName(name)}" class="details-image" width="475" height="475">
     </div>`;
 }
 
@@ -124,7 +134,7 @@ function createMovesTab(pokemon: Pokemon): string {
 
 function createTypeButtonTemplate(type: PokemonType): string {
   return `<span class="type-button">
-      <img class="type-icon" src="${getTypeIconSrc(type.type.name)}" alt="${type.type.name}" width="35" height="35">
+      <img class="type-icon" src="${getTypeIconSrc(type.type.name)}" alt="" width="35" height="35" loading="lazy" decoding="async" fetchpriority="low">
       <span>${type.type.name}</span>
     </span>`;
 }
