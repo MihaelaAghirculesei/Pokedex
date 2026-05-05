@@ -13,7 +13,7 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
-    "optimize:images": "node scripts/optimize-bg.mjs && node scripts/resize-icons.mjs",
+    "optimize:images": "node scripts/optimize-bg.mjs && node scripts/resize-icons.mjs && node scripts/convert-webp.mjs",
     "ci:local": "npm run typecheck && npm run lint && npm run test && npm run build"
   },
   "repository": {
