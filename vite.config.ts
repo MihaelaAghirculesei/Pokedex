@@ -1,12 +1,28 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { VitePWA } from 'vite-plugin-pwa';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+function makeCSSnoblocking(): Plugin {
+  return {
+    name: 'make-css-non-blocking',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html: string): string {
+        return html.replace(
+          /<link rel="stylesheet" crossorigin href="([^"]+\.css)">/g,
+          `<link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin href="$1">`
+        );
+      },
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
+    makeCSSnoblocking(),
     VitePWA({
       registerType: 'autoUpdate',
       strategies: 'generateSW',
@@ -28,7 +44,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /^https:\/\/raw\.githubusercontent\.com\//,
+            urlPattern: /^https:\/\/(wsrv\.nl|raw\.githubusercontent\.com)\//,
             handler: 'CacheFirst',
             options: {
               cacheName: 'pokemon-images',
@@ -48,6 +64,11 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         impressum: resolve(__dirname, 'impressum.html'),
+      },
+      output: {
+        manualChunks: {
+          vendor: ['dompurify'],
+        },
       },
     },
   },
