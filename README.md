@@ -9,7 +9,6 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Mode-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![CI](https://img.shields.io/github/actions/workflow/status/MihaelaAghirculesei/Pokedex/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
 [![codecov](https://img.shields.io/codecov/c/github/MihaelaAghirculesei/Pokedex?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/MihaelaAghirculesei/Pokedex)
-[![PageSpeed](https://img.shields.io/badge/PageSpeed_Insights-Report-4285F4?style=for-the-badge&logo=pagespeedinsights&logoColor=white)](https://pagespeed.web.dev/report?url=https://pokedex-aghirculesei.pages.dev/)
 
 </div>
 
@@ -41,7 +40,7 @@ Once the features were solid and the architecture was proven, the codebase was m
 Migrated stack
 ├── TypeScript 6    — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
 ├── Vite 7          — HMR in development, optimized bundles in production
-├── Vitest 4        — 169 unit tests covering templates, utilities, and i18n
+├── Vitest 4        — 179 unit tests covering templates, utilities, and i18n
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
 ├── ESLint          — TypeScript strict rules + Vitest plugin
 └── GitHub Actions  — CI: typecheck → lint → test → build on every push
@@ -61,7 +60,7 @@ Every shape returned by PokéAPI is modelled in `src/types.ts`. The `types` fiel
 
 ### Keyboard accessibility following WAI-ARIA guidelines
 
-Focus is **trapped inside the modal** (Tab/Shift+Tab cycle through interactive elements only), **ESC closes** the overlay, **arrow keys navigate** between cards, and focus **restores to the previously active element** on close. Keyboard and mouse modes are mutually exclusive — moving the mouse removes the keyboard focus ring immediately.
+Focus is **trapped inside the modal** (Tab/Shift+Tab cycle through interactive elements only), **ESC closes** the overlay, **← → navigate** between Pokémon, **↑ ↓ switch tabs** (About / Base Stats / Moves), and focus **restores to the previously active element** on close. Keyboard and mouse modes are mutually exclusive — moving the mouse removes the keyboard focus ring immediately.
 
 ### Holographic shimmer that actually follows the cursor
 
@@ -134,7 +133,8 @@ Open `http://localhost:5173` in your browser.
 | `→` / `←` | Card grid | Navigate between Pokémon cards |
 | `Enter` / `Space` | Focused card | Open detail overlay |
 | `ESC` | Overlay open | Close overlay, restore focus |
-| `→` / `←` | Overlay open | Browse to next / previous Pokémon |
+| `→` / `←` | Overlay open | Next / previous Pokémon |
+| `↑` / `↓` | Overlay open | Switch tab (About → Base Stats → Moves) |
 | `Tab` / `Shift+Tab` | Overlay open | Cycle through overlay controls (focus trapped) |
 
 - Reaching the last card with `→` moves focus to **Load More**
@@ -172,7 +172,7 @@ Open `http://localhost:5173` in your browser.
 | Language | Vanilla JavaScript (ES6+) | TypeScript 6 — strict mode |
 | Build | None (direct file serving) | Vite 7 — HMR + optimized bundles |
 | Offline | Hand-crafted Service Worker | Workbox via vite-plugin-pwa |
-| Testing | None | Vitest 4 — 165 unit tests |
+| Testing | None | Vitest 4 — 179 unit tests |
 | Linting | None | ESLint + typescript-eslint strict |
 | Styling | CSS3 — Grid, Flexbox, Custom Properties | Unchanged |
 | Data | PokéAPI v2 via Fetch + AbortController | Unchanged |
