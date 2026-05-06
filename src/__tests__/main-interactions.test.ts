@@ -587,40 +587,31 @@ describe('main.ts — mouse interactions', () => {
 // ─── Direction-specific prev/next navigation (lines 284-290) ─────────────────
 
 describe('main.ts — direction-specific navigation (lines 284-290)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
-  afterEach(cleanup);
-
-  it('prev button applies translateX(100%) slide-out on details-card', async () => {
+  beforeEach(async () => {
+    vi.resetModules();
+    buildDOM();
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
       () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
       { timeout: 2000 },
     );
+  });
+  afterEach(cleanup);
+
+  it('prev button applies translateX(100%) slide-out on details-card', () => {
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
     document.querySelector<HTMLButtonElement>('.arrow-button.prev')?.click();
     expect(document.querySelector<HTMLElement>('.details-card')?.style.transform).toBe('translateX(100%)');
   });
 
-  it('next button applies translateX(-100%) slide-out on details-card', async () => {
-    stubFetchSuccessTwo();
-    await import('../main.js');
-    await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
-      { timeout: 2000 },
-    );
+  it('next button applies translateX(-100%) slide-out on details-card', () => {
     document.querySelectorAll<HTMLElement>('.pokemon-card')[1]?.click();
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     expect(document.querySelector<HTMLElement>('.details-card')?.style.transform).toBe('translateX(-100%)');
   });
 
-  it('prev from first pokemon wraps to last after slide-in completes', async () => {
-    stubFetchSuccessTwo();
-    await import('../main.js');
-    await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
-      { timeout: 2000 },
-    );
+  it('prev from first pokemon wraps to last after slide-in completes', () => {
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
     vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
     document.querySelector<HTMLButtonElement>('.arrow-button.prev')?.click();
@@ -632,13 +623,7 @@ describe('main.ts — direction-specific navigation (lines 284-290)', () => {
     expect(detailsCard.textContent.toLowerCase()).toContain('ivysaur');
   });
 
-  it('next from last pokemon wraps to first after slide-in completes', async () => {
-    stubFetchSuccessTwo();
-    await import('../main.js');
-    await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
-      { timeout: 2000 },
-    );
+  it('next from last pokemon wraps to first after slide-in completes', () => {
     document.querySelectorAll<HTMLElement>('.pokemon-card')[1]?.click();
     vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
@@ -1535,5 +1520,138 @@ describe('main.ts — navigateCards cards.length===0 early return (line 432)', (
     }).not.toThrow();
     expect(document.querySelector('.pokemon-card')).toBeNull();
     expect(document.body.classList.contains('keyboard-nav')).toBe(true);
+  });
+});
+
+// ─── navigateTabs: ArrowUp / ArrowDown inside overlay ─────────────────────────
+
+describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('ArrowDown switches from About to Base Stats', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(document.getElementById('BaseStats')?.style.display).toBe('block');
+    expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('ArrowDown from Base Stats switches to Moves', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(document.getElementById('Moves')?.style.display).toBe('block');
+    expect(document.querySelector('[data-tab="Moves"]')?.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('ArrowDown from Moves wraps back to About', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(document.getElementById('About')?.style.display).toBe('block');
+    expect(document.querySelector('[data-tab="About"]')?.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('ArrowUp from About wraps to Moves', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+    expect(document.getElementById('Moves')?.style.display).toBe('block');
+    expect(document.querySelector('[data-tab="Moves"]')?.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('ArrowUp from Base Stats switches to About', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+    expect(document.getElementById('About')?.style.display).toBe('block');
+    expect(document.querySelector('[data-tab="About"]')?.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('ArrowUp/ArrowDown outside overlay does not trigger tab navigation', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(document.querySelector('.overlay')).toBeNull();
+  });
+});
+
+// ─── Branch coverage: lines 421, 426-428, 462, 499 ───────────────────────────
+
+describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('ArrowDown with no aria-selected tab uses fromIndex=0 as fallback (line 421 false branch)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+    document.querySelectorAll<HTMLElement>('.tab-button').forEach(btn => {
+      btn.setAttribute('aria-selected', 'false');
+    });
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('ArrowDown with no tab buttons skips openTab call gracefully (lines 426-428 false branch)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+    document.querySelectorAll('.tab-button').forEach(el => { el.remove(); });
+    expect(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    }).not.toThrow();
+  });
+
+  it('overlay present but currentOverlayPokemon is null: non-Tab/Escape key returns early (line 462 true branch)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    document.body.appendChild(overlay);
+    expect(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    }).not.toThrow();
+    expect(document.querySelector('.overlay')).toBeTruthy();
+  });
+
+  it('ArrowDown on a tab button without data-tab attribute falls back to empty string (line 428 ?? branch)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+    const basestatsBtn = document.querySelector<HTMLElement>('[data-tab="BaseStats"]');
+    if (!basestatsBtn) throw new Error('[data-tab="BaseStats"] not found');
+    basestatsBtn.removeAttribute('data-tab');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(basestatsBtn.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('Shift+Tab with focus on middle overlay element does not wrap focus (line 499 false branch)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+    const overlay = document.querySelector<HTMLElement>('.overlay');
+    if (!overlay) throw new Error('.overlay not found');
+    const focusable = Array.from(overlay.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    ));
+    if (focusable.length < 3) throw new Error('Need at least 3 focusable elements');
+    const middle = focusable[Math.floor(focusable.length / 2)];
+    if (!middle) throw new Error('No middle focusable element');
+    middle.focus();
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }),
+    );
+    expect(document.activeElement).toBe(middle);
   });
 });
