@@ -1,3 +1,5 @@
+import '../shared.css';
+import '../style.css';
 import DOMPurify from 'dompurify';
 import { typeColor, filterPokemon, formatMoveName, getTextColorForBackground } from './utils.js';
 import {
@@ -236,6 +238,12 @@ function createPokemonCard(pokemon: Pokemon, isFirst = false): HTMLElement {
   card.style.backgroundColor = bgColor;
   card.style.color = getTextColorForBackground(bgColor);
   setHTML(card, createPokemonCardTemplate(pokemon, isFirst));
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      showPokemonDetails(pokemon);
+    }
+  });
   return card;
 }
 
@@ -352,7 +360,9 @@ function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' = 'next'
 
     detailsCard.style.transition = 'none';
     detailsCard.style.transform = `translateX(${slideIn})`;
-    detailsCard.style.backgroundColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
+    const newBgColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
+    detailsCard.style.backgroundColor = newBgColor;
+    detailsCard.style.color = getTextColorForBackground(newBgColor);
     setHTML(detailsCard, createDetailsHTML(pokemon));
     attachTabListeners(detailsCard);
     appendNavigationButtons(detailsCard, pokemon);
@@ -370,20 +380,19 @@ function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' = 'next'
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
 
-function openTab(evt: Event, tabName: string): void {
+function openTab(btn: HTMLElement, tabName: string): void {
   document.querySelectorAll<HTMLElement>('.tab-content').forEach(tab => {
     tab.style.display = 'none';
   });
-  document.querySelectorAll('.tab-button').forEach(btn => {
-    btn.classList.remove('active');
-    btn.setAttribute('aria-selected', 'false');
+  document.querySelectorAll<HTMLElement>('.tab-button').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
   });
 
   const target = document.getElementById(tabName);
   if (target) target.style.display = 'block';
-  const activeBtn = evt.currentTarget as HTMLElement;
-  activeBtn.classList.add('active');
-  activeBtn.setAttribute('aria-selected', 'true');
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected', 'true');
 
   const detailsCard = document.querySelector('.details-card');
   if (!detailsCard) return;
@@ -402,8 +411,22 @@ function openTab(evt: Event, tabName: string): void {
 
 function attachTabListeners(container: HTMLElement): void {
   container.querySelectorAll<HTMLElement>('.tab-button').forEach(btn => {
-    btn.addEventListener('click', e => { openTab(e, btn.dataset.tab ?? ''); });
+    btn.addEventListener('click', () => { openTab(btn, btn.dataset.tab ?? ''); });
   });
+}
+
+function navigateTabs(key: string): void {
+  const tabs = Array.from(document.querySelectorAll<HTMLElement>('.tab-button'));
+  const activeIndex = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+  const fromIndex = activeIndex !== -1 ? activeIndex : 0;
+  const nextIndex = key === 'ArrowDown'
+    ? (fromIndex + 1) % tabs.length
+    : (fromIndex - 1 + tabs.length) % tabs.length;
+  const nextTab = tabs[nextIndex];
+  if (nextTab) {
+    nextTab.focus();
+    openTab(nextTab, nextTab.dataset.tab ?? '');
+  }
 }
 
 function loadPokemonMoves(pokemonId: string): void {
@@ -424,7 +447,7 @@ function loadPokemonMoves(pokemonId: string): void {
 
 // ─── Keyboard & focus trap ────────────────────────────────────────────────────
 
-document.addEventListener('keydown', (e: KeyboardEvent) => {
+function onKeydown(e: KeyboardEvent): void {
   const overlay = document.querySelector<HTMLElement>('.overlay');
 
   if (overlay) {
@@ -439,6 +462,7 @@ document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (!currentOverlayPokemon) return;
     if (e.key === 'ArrowLeft') { e.preventDefault(); showPreviousPokemon(currentOverlayPokemon); }
     if (e.key === 'ArrowRight') { e.preventDefault(); showNextPokemon(currentOverlayPokemon); }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); navigateTabs(e.key); }
     return;
   }
 
@@ -448,7 +472,18 @@ document.addEventListener('keydown', (e: KeyboardEvent) => {
     document.body.classList.add('keyboard-nav');
     navigateCards(e.key);
   }
-});
+}
+
+function onMousemove(): void {
+  document.body.classList.remove('keyboard-nav');
+}
+
+// Replace previous listeners to prevent accumulation when the module is re-imported (e.g. in tests).
+type DocRegistry = Document & { _pkKeydown?: typeof onKeydown; _pkMousemove?: typeof onMousemove };
+const _d = document as DocRegistry;
+if (_d._pkKeydown) document.removeEventListener('keydown', _d._pkKeydown);
+_d._pkKeydown = onKeydown;
+document.addEventListener('keydown', onKeydown);
 
 function trapFocus(e: KeyboardEvent, overlay: HTMLElement): void {
   const focusable = overlay.querySelectorAll<HTMLElement>(
@@ -520,13 +555,6 @@ pokedexContainer.addEventListener('click', (e: MouseEvent) => {
   openCardOverlay(e);
 });
 
-pokedexContainer.addEventListener('keydown', (e: KeyboardEvent) => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    openCardOverlay(e);
-  }
-});
-
 // throttled via requestAnimationFrame — fires at most once per frame
 pokedexContainer.addEventListener('mousemove', (e: MouseEvent) => {
   if (mousemoveRafPending) return;
@@ -548,9 +576,9 @@ pokedexContainer.addEventListener('mouseout', (e: MouseEvent) => {
   card.style.setProperty('--y', '50%');
 });
 
-document.addEventListener('mousemove', () => {
-  document.body.classList.remove('keyboard-nav');
-});
+if (_d._pkMousemove) document.removeEventListener('mousemove', _d._pkMousemove);
+_d._pkMousemove = onMousemove;
+document.addEventListener('mousemove', onMousemove);
 
 loadMoreButton.addEventListener('click', () => { void fetchPokemonData(); });
 
