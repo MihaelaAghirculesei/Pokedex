@@ -31,7 +31,7 @@ describe('typeColor', () => {
 
 describe('getTypeIconSrc', () => {
   it('returns the correct path for a known type', () => {
-    expect(getTypeIconSrc('fire')).toBe('imgs/icons/fire.png');
+    expect(getTypeIconSrc('fire')).toBe('/imgs/icons/fire.webp');
   });
 
   it('returns an empty string for an unknown type', () => {
