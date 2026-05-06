@@ -53,13 +53,31 @@ describe('createPokemonCardTemplate', () => {
   });
 
   it('falls back to fallback image when both sprites are null', () => {
-    expect(createPokemonCardTemplate(pokemonNoArtwork)).toContain('pokemon-ball.png');
+    expect(createPokemonCardTemplate(pokemonNoArtwork)).toContain('pokemon-ball.webp');
   });
 
   it('renders one type button per type', () => {
     const html = createPokemonCardTemplate(mockPokemon);
     const matches = html.match(/type-button/g) ?? [];
     expect(matches).toHaveLength(2);
+  });
+
+  it('optimizes https artwork URLs via wsrv.nl and includes srcset', () => {
+    const pokemonHttps: Pokemon = {
+      ...mockPokemon,
+      sprites: {
+        front_default: null,
+        other: { 'official-artwork': { front_default: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png' } },
+      },
+    };
+    const html = createPokemonCardTemplate(pokemonHttps);
+    expect(html).toContain('wsrv.nl');
+    expect(html).toContain('srcset=');
+  });
+
+  it('uses fetchpriority="high" for the first card', () => {
+    const html = createPokemonCardTemplate(mockPokemon, true);
+    expect(html).toContain('fetchpriority="high"');
   });
 });
 
@@ -99,7 +117,7 @@ describe('detailTemplate', () => {
 
   it('uses fallback image when both sprites are null', () => {
     const html = detailTemplate(pokemonNoArtwork, '0.7', '6.9', 'overgrow');
-    expect(html).toContain('pokemon-ball.png');
+    expect(html).toContain('pokemon-ball.webp');
   });
 });
 
