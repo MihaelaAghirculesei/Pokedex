@@ -1,26 +1,5 @@
-import { test, expect, type Page } from '@playwright/test';
-import { BULBASAUR, IVYSAUR } from './fixtures/pokemon';
-
-async function mockPokeApi(page: Page): Promise<void> {
-  await page.route('https://pokeapi.co/api/v2/pokemon?**', route =>
-    route.fulfill({
-      json: {
-        results: [
-          { url: 'https://pokeapi.co/api/v2/pokemon/1/' },
-          { url: 'https://pokeapi.co/api/v2/pokemon/2/' },
-        ],
-      },
-    })
-  );
-  await page.route('https://pokeapi.co/api/v2/pokemon/1/', route =>
-    route.fulfill({ json: BULBASAUR })
-  );
-  await page.route('https://pokeapi.co/api/v2/pokemon/2/', route =>
-    route.fulfill({ json: IVYSAUR })
-  );
-  // Block image requests so tests don't depend on external assets
-  await page.route(/wsrv\.nl|raw\.githubusercontent\.com/, route => route.abort());
-}
+import { test, expect } from '@playwright/test';
+import { mockPokeApi } from './fixtures/mock-api';
 
 test.beforeEach(async ({ page }) => {
   await mockPokeApi(page);
@@ -39,7 +18,8 @@ test('clicking a card opens the detail overlay', async ({ page }) => {
   await expect(page.locator('.overlay')).toContainText('Bulbasaur');
 });
 
-test('Escape key closes the overlay', async ({ page }) => {
+test('Escape key closes the overlay', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'keyboard Escape is a desktop-only interaction');
   await page.goto('/');
   await page.locator('.pokemon-card').first().click();
   await expect(page.locator('.overlay')).toBeVisible();
@@ -48,7 +28,8 @@ test('Escape key closes the overlay', async ({ page }) => {
   await expect(page).toHaveTitle('Pokédex');
 });
 
-test('ArrowRight navigates to next Pokémon in overlay', async ({ page }) => {
+test('ArrowRight navigates to next Pokémon in overlay', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'arrow-key navigation is a desktop-only interaction');
   await page.goto('/');
   await page.locator('.pokemon-card').first().click();
   await expect(page.locator('.overlay')).toContainText('Bulbasaur');
