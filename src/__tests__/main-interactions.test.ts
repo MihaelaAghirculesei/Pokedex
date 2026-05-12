@@ -2,8 +2,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('../logo.js', () => ({ initLogoAnimation: vi.fn() }));
 
-// jsdom does not implement scrollIntoView
+// jsdom does not implement scrollIntoView or scrollBy
 HTMLElement.prototype.scrollIntoView = vi.fn();
+HTMLElement.prototype.scrollBy = vi.fn();
 
 const POKEMON = {
   id: 1,
@@ -1461,6 +1462,46 @@ describe('main.ts — trapFocus: Shift+Tab on first focusable element (line 420)
   });
 });
 
+// ─── setupScrollIndicator: click handler (lines 427-428) ────────────────────
+
+describe('main.ts — scroll-indicator click handler (lines 427-428)', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('clicking scroll-indicator scrolls the active tab content (non-null branch)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    // Stub rAF synchronously so setupScrollIndicator runs immediately inside openOverlay
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    openOverlay();
+
+    const scrollBtn = document.querySelector<HTMLElement>('.scroll-indicator');
+    if (!scrollBtn) throw new Error('.scroll-indicator not found');
+
+    const aboutTab = document.querySelector<HTMLElement>('#About');
+    if (!aboutTab) throw new Error('#About tab not found');
+    const scrollBySpy = vi.spyOn(aboutTab, 'scrollBy');
+    scrollBtn.click();
+
+    expect(scrollBySpy).toHaveBeenCalledWith({ top: 80, behavior: 'smooth' });
+  });
+
+  it('clicking scroll-indicator with no active tab does not throw (null branch)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    openOverlay();
+
+    document.querySelectorAll<HTMLElement>('.tab-button').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    const scrollBtn = document.querySelector<HTMLElement>('.scroll-indicator');
+    if (!scrollBtn) throw new Error('.scroll-indicator not found');
+    expect(() => { scrollBtn.click(); }).not.toThrow();
+  });
+});
+
 // ─── trapFocus: !first || !last guard (line 417) ─────────────────────────────
 
 describe('main.ts — trapFocus !first guard (line 417)', () => {
@@ -1533,6 +1574,7 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     stubFetchSuccess();
     await loadAndWaitForCards();
     openOverlay();
+    document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(document.getElementById('BaseStats')?.style.display).toBe('block');
     expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe('true');
@@ -1542,6 +1584,7 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     stubFetchSuccess();
     await loadAndWaitForCards();
     openOverlay();
+    document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(document.getElementById('Moves')?.style.display).toBe('block');
@@ -1552,6 +1595,7 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     stubFetchSuccess();
     await loadAndWaitForCards();
     openOverlay();
+    document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
@@ -1563,6 +1607,7 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     stubFetchSuccess();
     await loadAndWaitForCards();
     openOverlay();
+    document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
     expect(document.getElementById('Moves')?.style.display).toBe('block');
     expect(document.querySelector('[data-tab="Moves"]')?.getAttribute('aria-selected')).toBe('true');
@@ -1572,6 +1617,7 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     stubFetchSuccess();
     await loadAndWaitForCards();
     openOverlay();
+    document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
     expect(document.getElementById('About')?.style.display).toBe('block');
@@ -1599,6 +1645,7 @@ describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases'
     document.querySelectorAll<HTMLElement>('.tab-button').forEach(btn => {
       btn.setAttribute('aria-selected', 'false');
     });
+    document.querySelector<HTMLElement>('.tab-button')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe('true');
   });
@@ -1632,6 +1679,7 @@ describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases'
     const basestatsBtn = document.querySelector<HTMLElement>('[data-tab="BaseStats"]');
     if (!basestatsBtn) throw new Error('[data-tab="BaseStats"] not found');
     basestatsBtn.removeAttribute('data-tab');
+    document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(basestatsBtn.getAttribute('aria-selected')).toBe('true');
   });
@@ -1653,5 +1701,130 @@ describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases'
       new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }),
     );
     expect(document.activeElement).toBe(middle);
+  });
+});
+
+// ─── Branch coverage: lines 411, 481, 502, 528 ───────────────────────────────
+
+describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('updateScrollIndicator shows indicator when overflowing and not at bottom (line 411 || right branch)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    openOverlay();
+
+    const detailsCard = document.querySelector<HTMLElement>('.details-card');
+    if (!detailsCard) throw new Error('.details-card not found');
+    const aboutTab = document.querySelector<HTMLElement>('#About');
+    if (!aboutTab) throw new Error('#About not found');
+
+    // scrollHeight (300) > clientHeight (0) + 2 → overflows=true → !overflows=false
+    // → right side of || is evaluated; atBottom = 0 >= 290 = false → hidden = false
+    Object.defineProperty(aboutTab, 'scrollHeight', { get: () => 300, configurable: true });
+
+    // Re-trigger updateScrollIndicator by clicking the already-active About tab
+    document.querySelector<HTMLElement>('[data-tab="About"]')?.click();
+
+    const indicator = detailsCard.querySelector<HTMLElement>('.scroll-indicator');
+    if (!indicator) throw new Error('.scroll-indicator not found');
+    expect(indicator.hidden).toBe(false);
+  });
+
+  it('navigateTabs: if(nextTab) false branch when tabs list is empty (line 481)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+
+    const tabBtn = document.querySelector<HTMLElement>('.tab-button');
+    if (!tabBtn) throw new Error('.tab-button not found');
+    tabBtn.focus();
+
+    // With tabs=[] → nextIndex=NaN → nextTab=undefined → if(nextTab) false branch
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    const origQSA = document.querySelectorAll.bind(document);
+    const qsaSpy = vi.spyOn(document, 'querySelectorAll').mockImplementation((selector: string) =>
+      selector === '.tab-button'
+        ? document.createElement('div').querySelectorAll('.none')
+        : origQSA(selector),
+    );
+
+    expect(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    }).not.toThrow();
+
+    qsaSpy.mockRestore();
+  });
+
+  it('loadPokemonMoves: if(dc) false branch when .details-card absent at execution time (line 502)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    const origQS = document.querySelector.bind(document);
+    let dcCallCount = 0;
+    const qsSpy = vi.spyOn(document, 'querySelector').mockImplementation((selector: string) => {
+      if (selector === '.details-card') {
+        dcCallCount++;
+        if (dcCallCount >= 2) return null;
+      }
+      return origQS(selector);
+    });
+
+    document.querySelector<HTMLElement>('[data-tab="Moves"]')?.click();
+    qsSpy.mockRestore();
+
+    // Moves must have loaded despite dc being null on the second querySelector call
+    expect(document.querySelector('.moves-container')?.getAttribute('data-loaded')).toBe('true');
+  });
+
+  it('onKeydown ArrowDown: if(dc) false branch when .details-card absent (line 528)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+
+    document.querySelector('.details-card')?.remove();
+
+    // Focus the overlay (tabindex="-1") so activeElement is not a tab-button → else branch
+    const overlay = document.querySelector<HTMLElement>('.overlay');
+    if (!overlay) throw new Error('.overlay not found');
+    overlay.focus();
+
+    expect(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    }).not.toThrow();
+  });
+
+  it('ArrowDown with non-tab-button focus still navigates to BaseStats tab', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+
+    const overlay = document.querySelector<HTMLElement>('.overlay');
+    if (!overlay) throw new Error('.overlay not found');
+    overlay.focus();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+
+    expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe('true');
+    expect(document.getElementById('BaseStats')?.style.display).toBe('block');
+  });
+
+  it('ArrowUp with non-tab-button focus navigates to Moves tab (wraps from About)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    openOverlay();
+
+    const overlay = document.querySelector<HTMLElement>('.overlay');
+    if (!overlay) throw new Error('.overlay not found');
+    overlay.focus();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+
+    expect(document.querySelector('[data-tab="Moves"]')?.getAttribute('aria-selected')).toBe('true');
+    expect(document.getElementById('Moves')?.style.display).toBe('block');
   });
 });
