@@ -40,10 +40,12 @@ Once the features were solid and the architecture was proven, the codebase was m
 Migrated stack
 ├── TypeScript 6    — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
 ├── Vite 7          — HMR in development, optimized bundles in production
-├── Vitest 4        — 179 unit tests covering templates, utilities, and i18n
+├── Vitest 4        — 196 unit tests covering templates, utilities, and i18n
+├── Playwright      — 6 E2E tests with mocked PokeAPI (Chromium)
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
 ├── ESLint          — TypeScript strict rules + Vitest plugin
-└── GitHub Actions  — CI: typecheck → lint → test → build on every push
+├── Husky + lint-staged — pre-commit ESLint fix, pre-push typecheck + tests
+└── GitHub Actions  — CI: typecheck → lint → test → build → E2E on every push
 ```
 
 **What the migration proves:** knowing when to use vanilla and when to add tooling is a more valuable skill than defaulting to a framework from the start.
@@ -88,8 +90,12 @@ Open `http://localhost:5173` in your browser.
 | `npm run preview` | Preview the production build locally |
 | `npm test` | Run unit tests with Vitest |
 | `npm run test:coverage` | Tests + coverage report (HTML + lcov) |
+| `npm run test:e2e` | E2E tests with Playwright (Chromium) |
 | `npm run typecheck` | TypeScript type check (no emit) |
 | `npm run lint` | ESLint on `src/` |
+| `npm run lint:fix` | ESLint on `src/` with auto-fix |
+| `npm run analyze` | Production build + open bundle visualizer |
+| `npm run ci:local` | Full CI pipeline locally (typecheck → lint → test → build → E2E) |
 
 ---
 
@@ -119,6 +125,7 @@ Open `http://localhost:5173` in your browser.
 - Custom 404 page consistent with the app design
 - Installable on desktop and mobile
 - `manifest.json` with separate `maskable` and `any` icons
+- Update toast — notifies the user when a new version is available after a silent SW update
 
 </td>
 </tr>
@@ -172,11 +179,12 @@ Open `http://localhost:5173` in your browser.
 | Language | Vanilla JavaScript (ES6+) | TypeScript 6 — strict mode |
 | Build | None (direct file serving) | Vite 7 — HMR + optimized bundles |
 | Offline | Hand-crafted Service Worker | Workbox via vite-plugin-pwa |
-| Testing | None | Vitest 4 — 179 unit tests |
+| Testing | None | Vitest 4 — 196 unit tests + Playwright 6 E2E |
 | Linting | None | ESLint + typescript-eslint strict |
+| Git hooks | None | Husky + lint-staged (pre-commit fix, pre-push gate) |
 | Styling | CSS3 — Grid, Flexbox, Custom Properties | Unchanged |
 | Data | PokéAPI v2 via Fetch + AbortController | Unchanged |
-| Security | — | DOMPurify — sanitizes all injected HTML |
+| Security | — | DOMPurify + HTTP security headers (CSP, X-Frame-Options…) |
 | Accessibility | WAI-ARIA, focus trap, keyboard nav | Unchanged |
 
 ---
