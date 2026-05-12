@@ -18,8 +18,13 @@ export default defineConfig({
         { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
         { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
         { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+        { name: 'mobile-chrome', use: { ...devices['Pixel 5'] } },
+        { name: 'mobile-safari', use: { ...devices['iPhone 13'] } },
       ]
-    : [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+    : [
+        { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+        { name: 'mobile-chrome', use: { ...devices['Pixel 5'] } },
+      ],
   webServer: {
     command: 'node node_modules/vite/bin/vite.js',
     url: 'http://localhost:5173',
