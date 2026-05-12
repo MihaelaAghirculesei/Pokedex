@@ -293,7 +293,7 @@ describe('main.ts — search', () => {
     );
   });
 
-  it('shows no-results message and keeps cards visible when search yields nothing', async () => {
+  it('shows no-results message and clears the grid when search yields nothing', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
     const input = document.getElementById('search-input') as HTMLInputElement;
@@ -307,7 +307,7 @@ describe('main.ts — search', () => {
       { timeout: 1500 },
     );
     expect(document.getElementById('search-status')?.textContent).toContain('No Pokémon');
-    expect(document.querySelector('.pokemon-card')).toBeTruthy();
+    expect(document.querySelector('.pokemon-card')).toBeNull();
   });
 
   it('clears search status when fewer than 3 chars typed', async () => {
