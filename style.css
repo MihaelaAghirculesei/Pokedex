@@ -1,3 +1,58 @@
+/* ─── PWA update toast ───────────────────────────────────────────────────── */
+
+#pwa-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: #1a1a2e;
+  color: #fff;
+  border: 2px solid var(--secondary-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  z-index: 9999;
+  white-space: nowrap;
+  animation: toast-slide-in 0.3s ease;
+}
+
+@keyframes toast-slide-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(1rem); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.pwa-toast-reload {
+  background: var(--secondary-color);
+  color: #1a1a2e;
+  border: none;
+  border-radius: 8px;
+  padding: 0.35rem 0.8rem;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.pwa-toast-reload:hover { opacity: 0.85; }
+
+.pwa-toast-close {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 0.2rem;
+  line-height: 1;
+}
+
+.pwa-toast-close:hover { color: #fff; }
+
+/* ─── Search ─────────────────────────────────────────────────────────────── */
+
 .search-input {
   padding: 5px 10px;
   border-radius: var(--border-radius);
@@ -474,6 +529,8 @@
   font-size: 1.1rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
   width: 100%;
+  background-color: rgba(0, 0, 0, 0.65);
+  border-radius: var(--border-radius);
 }
 
 .error-message {
