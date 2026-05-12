@@ -594,7 +594,9 @@ describe('main.ts — direction-specific navigation (lines 284-290)', () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        if (document.querySelectorAll('.pokemon-card').length !== 2) throw new Error('cards not ready');
+      },
       { timeout: 2000 },
     );
   });
