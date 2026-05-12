@@ -51,6 +51,7 @@ let searchTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let previouslyFocusedElement: HTMLElement | null = null;
 let currentOverlayPokemon: Pokemon | null = null;
 let mousemoveRafPending = false;
+let activeScrollAbort: AbortController | null = null;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -292,10 +293,15 @@ function showPokemonDetails(pokemon: Pokemon): void {
     if (e.target === overlay) closeOverlay(overlay);
   });
 
-  requestAnimationFrame(() => { overlay.focus(); });
+  requestAnimationFrame(() => {
+    overlay.focus();
+    setupScrollIndicator(detailsCard);
+  });
 }
 
 function closeOverlay(overlay: HTMLElement): void {
+  activeScrollAbort?.abort();
+  activeScrollAbort = null;
   overlay.remove();
   document.body.classList.remove('no-scroll');
   document.title = 'Pokédex';
@@ -366,6 +372,7 @@ function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' = 'next'
     setHTML(detailsCard, createDetailsHTML(pokemon));
     attachTabListeners(detailsCard);
     appendNavigationButtons(detailsCard, pokemon);
+    setupScrollIndicator(detailsCard);
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -376,6 +383,52 @@ function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' = 'next'
       });
     });
   });
+}
+
+// ─── Scroll Indicator ─────────────────────────────────────────────────────────
+
+function getActiveScrollable(container: HTMLElement): HTMLElement | null {
+  const btn = container.querySelector<HTMLElement>('.tab-button.active');
+  const tab = btn?.dataset.tab;
+  if (!tab) return null;
+  return tab === 'Moves'
+    ? container.querySelector<HTMLElement>('.moves-container')
+    : container.querySelector<HTMLElement>(`#${tab}.tab-content`);
+}
+
+function updateScrollIndicator(container: HTMLElement): void {
+  const indicator = container.querySelector<HTMLElement>('.scroll-indicator');
+  if (!indicator) return;
+
+  activeScrollAbort?.abort();
+  activeScrollAbort = new AbortController();
+
+  const scrollable = getActiveScrollable(container);
+  const refresh = (): void => {
+    if (!scrollable) { indicator.hidden = true; return; }
+    const overflows = scrollable.scrollHeight > scrollable.clientHeight + 2;
+    const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight - 10;
+    indicator.hidden = !overflows || atBottom;
+  };
+  refresh();
+  scrollable?.addEventListener('scroll', refresh, { signal: activeScrollAbort.signal });
+}
+
+function setupScrollIndicator(container: HTMLElement): void {
+  const detailOverlay = container.querySelector<HTMLElement>('.detail-overlay');
+  if (!detailOverlay) return;
+  detailOverlay.querySelector('.scroll-indicator')?.remove();
+  const indicator = document.createElement('button');
+  indicator.className = 'scroll-indicator';
+  indicator.setAttribute('aria-label', 'Scroll down');
+  indicator.textContent = '↓';
+  indicator.hidden = true;
+  indicator.addEventListener('click', () => {
+    const scrollable = getActiveScrollable(container);
+    scrollable?.scrollBy({ top: 80, behavior: 'smooth' });
+  });
+  detailOverlay.appendChild(indicator);
+  updateScrollIndicator(container);
 }
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
@@ -394,7 +447,7 @@ function openTab(btn: HTMLElement, tabName: string): void {
   btn.classList.add('active');
   btn.setAttribute('aria-selected', 'true');
 
-  const detailsCard = document.querySelector('.details-card');
+  const detailsCard = document.querySelector<HTMLElement>('.details-card');
   if (!detailsCard) return;
 
   if (tabName === 'Moves') {
@@ -404,8 +457,10 @@ function openTab(btn: HTMLElement, tabName: string): void {
       const pokemonId = movesContainer.dataset.pokemonId ?? '';
       if (pokemonId) loadPokemonMoves(pokemonId);
     }
+    setTimeout(() => { updateScrollIndicator(detailsCard); }, 50);
   } else {
     detailsCard.classList.remove('moves-active');
+    updateScrollIndicator(detailsCard);
   }
 }
 
@@ -443,6 +498,8 @@ function loadPokemonMoves(pokemonId: string): void {
 
   movesContainer.dataset.loaded = 'true';
   setHTML(movesContainer, createMovesHTMLTemplate(moves));
+  const dc = document.querySelector<HTMLElement>('.details-card');
+  if (dc) updateScrollIndicator(dc);
 }
 
 // ─── Keyboard & focus trap ────────────────────────────────────────────────────
@@ -462,7 +519,10 @@ function onKeydown(e: KeyboardEvent): void {
     if (!currentOverlayPokemon) return;
     if (e.key === 'ArrowLeft') { e.preventDefault(); showPreviousPokemon(currentOverlayPokemon); }
     if (e.key === 'ArrowRight') { e.preventDefault(); showNextPokemon(currentOverlayPokemon); }
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); navigateTabs(e.key); }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      navigateTabs(e.key);
+    }
     return;
   }
 
