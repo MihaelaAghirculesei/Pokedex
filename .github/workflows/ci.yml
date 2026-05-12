@@ -65,7 +65,7 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       - name: Run E2E tests
-        run: npm run test:e2e -- --project=chromium --project=mobile-chrome
+        run: npm run test:e2e:functional -- --project=chromium --project=mobile-chrome
 
       - name: Run visual regression tests
         run: npm run e2e:visual:ci
