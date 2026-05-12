@@ -40,7 +40,7 @@ Once the features were solid and the architecture was proven, the codebase was m
 Migrated stack
 ├── TypeScript 6    — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
 ├── Vite 7          — HMR in development, optimized bundles in production
-├── Vitest 4        — 196 unit tests covering templates, utilities, and i18n
+├── Vitest 4        — 200 unit tests covering templates, utilities, and i18n
 ├── Playwright      — 6 E2E tests with mocked PokeAPI (Chromium)
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
 ├── ESLint          — TypeScript strict rules + Vitest plugin
@@ -179,12 +179,12 @@ Open `http://localhost:5173` in your browser.
 | Language | Vanilla JavaScript (ES6+) | TypeScript 6 — strict mode |
 | Build | None (direct file serving) | Vite 7 — HMR + optimized bundles |
 | Offline | Hand-crafted Service Worker | Workbox via vite-plugin-pwa |
-| Testing | None | Vitest 4 — 196 unit tests + Playwright 6 E2E |
+| Testing | None | Vitest 4 — 200 unit tests + Playwright 6 E2E |
 | Linting | None | ESLint + typescript-eslint strict |
 | Git hooks | None | Husky + lint-staged (pre-commit fix, pre-push gate) |
 | Styling | CSS3 — Grid, Flexbox, Custom Properties | Unchanged |
 | Data | PokéAPI v2 via Fetch + AbortController | Unchanged |
-| Security | — | DOMPurify + HTTP security headers (CSP, X-Frame-Options…) |
+| Security | None | DOMPurify + HTTP security headers (CSP, X-Frame-Options…) |
 | Accessibility | WAI-ARIA, focus trap, keyboard nav | Unchanged |
 
 ---
