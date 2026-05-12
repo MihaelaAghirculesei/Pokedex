@@ -1,32 +1,22 @@
 import '../shared.css';
 import '../style.css';
-import DOMPurify from 'dompurify';
-import { typeColor, filterPokemon, formatMoveName, getTextColorForBackground } from './utils.js';
-import {
-  createPokemonCardTemplate,
-  detailTemplate,
-  errorMessageTemplate,
-  movesErrorTemplate,
-  createMovesHTMLTemplate,
-} from './templates.js';
-import type { Pokemon, PokemonListResponse } from './types.js';
+import type { Pokemon } from './types.js';
+import { filterPokemon } from './utils.js';
 import { initLogoAnimation } from './logo.js';
+import { initPwaUpdateToast } from './pwa-toast.js';
+import { fetchPokemons, fetchAllPokemonDetails, getErrorMessage } from './api.js';
+import { renderSkeletons, renderPokemon, createPokemonCard, displayError } from './render.js';
+import { showPokemonDetails } from './overlay.js';
+import { setupKeyboard } from './keyboard.js';
+import { state } from './state.js';
 
-// ─── Constants ───────────────────────────────────────────────────────────────
+// ─── Constants ────────────────────────────────────────────────────────────────
 
-const BASE_URL = 'https://pokeapi.co/api/v2/';
-const LIMIT = 30;
-const MIN_SEARCH_LENGTH = 3;
+const LIMIT                = 30;
+const MIN_SEARCH_LENGTH    = 3;
 const SEARCH_DEBOUNCE_DELAY = 300;
-const MAX_SEARCH_RESULTS = 20;
+const MAX_SEARCH_RESULTS   = 20;
 const LOGO_ANIMATION_DELAY_MS = 1000;
-
-const SLIDE_DURATION_MS = (() => {
-  const val = getComputedStyle(document.documentElement)
-    .getPropertyValue('--transition-duration')
-    .trim();
-  return val ? parseFloat(val) * 1000 : 300;
-})();
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
 
@@ -36,42 +26,30 @@ function getEl(id: string): HTMLElement {
   return el;
 }
 
-const loadingIndicator = getEl('loading');
-const loadMoreButton = getEl('load-more') as HTMLButtonElement;
-const pokedexContainer = getEl('pokedex-container');
+const loadingIndicator   = getEl('loading');
+const loadMoreButton     = getEl('load-more') as HTMLButtonElement;
+const pokedexContainer   = getEl('pokedex-container');
 const searchResultsStatus = getEl('search-status');
-const searchNoResults = getEl('search-no-results');
+const searchNoResults    = getEl('search-no-results');
 
-// ─── State ───────────────────────────────────────────────────────────────────
+// ─── Private state ────────────────────────────────────────────────────────────
 
-const pokemonDetails: Pokemon[] = [];
 let offset = 0;
 let fetchAbortController: AbortController | null = null;
 let searchTimeoutId: ReturnType<typeof setTimeout> | null = null;
-let previouslyFocusedElement: HTMLElement | null = null;
-let currentOverlayPokemon: Pokemon | null = null;
-let mousemoveRafPending = false;
-let activeScrollAbort: AbortController | null = null;
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function setHTML(element: Element, html: string): void {
-  element.innerHTML = DOMPurify.sanitize(html, {
-    ADD_ATTR: ['data-tab', 'data-loaded', 'data-pokemon-id'],
-  });
-}
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const showLoading = (): void => { loadingIndicator.removeAttribute('hidden'); };
 const hideLoading = (): void => { loadingIndicator.setAttribute('hidden', 'true'); };
 
 function announceSearchResults(count: number, searchTerm: string): void {
-  searchResultsStatus.textContent =
-    count > 0
-      ? `${count} Pokémon found for "${searchTerm}"`
-      : `No Pokémon found for "${searchTerm}". Try loading more.`;
+  searchResultsStatus.textContent = count > 0
+    ? `${count} Pokémon found for "${searchTerm}"`
+    : `No Pokémon found for "${searchTerm}". Try loading more.`;
 }
 
-// ─── Fetch ───────────────────────────────────────────────────────────────────
+// ─── Fetch ────────────────────────────────────────────────────────────────────
 
 async function init(): Promise<void> {
   await fetchPokemonData();
@@ -83,18 +61,18 @@ async function fetchPokemonData(): Promise<void> {
   fetchAbortController = new AbortController();
   const { signal } = fetchAbortController;
 
-  const previousCount = pokemonDetails.length;
+  const previousCount = state.pokemonDetails.length;
   try {
     if (previousCount === 0) {
-      renderSkeletons();
+      renderSkeletons(pokedexContainer, LIMIT);
     } else {
       showLoading();
     }
     loadMoreButton.disabled = true;
 
-    const data = await fetchPokemons(signal);
+    const data    = await fetchPokemons(offset, LIMIT, signal);
     const newPokemon = await fetchAllPokemonDetails(data.results, signal);
-    pokemonDetails.push(...newPokemon);
+    state.pokemonDetails.push(...newPokemon);
     offset += LIMIT;
 
     const activeSearch =
@@ -104,7 +82,7 @@ async function fetchPokemonData(): Promise<void> {
     if (activeSearch.length >= MIN_SEARCH_LENGTH) {
       handleSearch(activeSearch);
     } else {
-      renderPokemon(pokemonDetails);
+      renderPokemon(pokedexContainer, searchNoResults, state.pokemonDetails, buildCard);
       if (previousCount > 0) {
         const cards = pokedexContainer.querySelectorAll<HTMLElement>('.pokemon-card');
         const newCard = cards[previousCount];
@@ -116,7 +94,8 @@ async function fetchPokemonData(): Promise<void> {
     }
   } catch (error) {
     if (error instanceof Error && error.name !== 'AbortError') {
-      handleFetchError(error);
+      console.error('Pokémon fetch failed:', error);
+      displayError(pokedexContainer, getErrorMessage(error));
     }
   } finally {
     hideLoading();
@@ -125,47 +104,10 @@ async function fetchPokemonData(): Promise<void> {
   }
 }
 
-async function fetchPokemons(signal: AbortSignal): Promise<PokemonListResponse> {
-  const response = await fetch(
-    `${BASE_URL}pokemon?offset=${offset}&limit=${LIMIT}`,
-    { signal }
-  );
-  if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  return response.json() as Promise<PokemonListResponse>;
-}
+// ─── Card factory (closes over showPokemonDetails) ────────────────────────────
 
-async function fetchAllPokemonDetails(
-  results: { url: string }[],
-  signal: AbortSignal
-): Promise<Pokemon[]> {
-  const settled = await Promise.allSettled(results.map(p => fetchOnePokemon(p.url, signal)));
-  const fulfilled = settled
-    .filter((r): r is PromiseFulfilledResult<Pokemon> => r.status === 'fulfilled')
-    .map(r => r.value);
-  if (fulfilled.length === 0 && results.length > 0) {
-    throw (settled[0] as PromiseRejectedResult).reason as Error;
-  }
-  return fulfilled;
-}
-
-async function fetchOnePokemon(url: string, signal: AbortSignal): Promise<Pokemon> {
-  const response = await fetch(url, { signal });
-  if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  return response.json() as Promise<Pokemon>;
-}
-
-function handleFetchError(error: Error): void {
-  console.error('Pokémon fetch failed:', error);
-
-  const isRateLimit = error.message.includes('429');
-  const isServer = /5\d\d/.exec(error.message);
-  const message = isRateLimit
-    ? 'Too many requests. Please wait a moment and try again.'
-    : isServer
-    ? 'The Pokémon API is temporarily unavailable. Please try again later.'
-    : 'Failed to load Pokémon data. Check your connection and try again.';
-
-  displayError(message);
+function buildCard(pokemon: Pokemon, isFirst: boolean): HTMLElement {
+  return createPokemonCard(pokemon, isFirst, showPokemonDetails);
 }
 
 // ─── Search ───────────────────────────────────────────────────────────────────
@@ -179,7 +121,7 @@ function handleSearchInput(e: Event): void {
   const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
   if (searchTimeoutId !== null) clearTimeout(searchTimeoutId);
   if (searchTerm.length < MIN_SEARCH_LENGTH) {
-    renderPokemon(pokemonDetails);
+    renderPokemon(pokedexContainer, searchNoResults, state.pokemonDetails, buildCard);
     searchResultsStatus.textContent = '';
     return;
   }
@@ -187,440 +129,35 @@ function handleSearchInput(e: Event): void {
 }
 
 function handleSearch(searchTerm: string): void {
-  const filtered = filterPokemon(pokemonDetails, searchTerm, MAX_SEARCH_RESULTS);
+  const filtered = filterPokemon(state.pokemonDetails, searchTerm, MAX_SEARCH_RESULTS);
   if (filtered.length > 0) {
-    renderPokemon(filtered);
+    renderPokemon(pokedexContainer, searchNoResults, filtered, buildCard);
   } else {
+    pokedexContainer.replaceChildren();
     searchNoResults.textContent = `No Pokémon found for "${searchTerm}". Try loading more.`;
     searchNoResults.removeAttribute('hidden');
   }
   announceSearchResults(filtered.length, searchTerm);
 }
 
-// ─── Render ───────────────────────────────────────────────────────────────────
-
-function renderSkeletons(): void {
-  const fragment = document.createDocumentFragment();
-  for (let i = 0; i < LIMIT; i++) {
-    const card = document.createElement('div');
-    card.className = 'skeleton-card';
-    card.innerHTML = `
-      <div class="pokemon-card-header">
-        <div class="skeleton-block" style="width:55%;height:18px"></div>
-        <div class="skeleton-block" style="width:20%;height:18px"></div>
-      </div>
-      <div class="pokemon-image-container">
-        <div class="skeleton-block" style="width:180px;height:180px;border-radius:50%"></div>
-      </div>
-      <div class="pokemon-card-footer">
-        <div class="skeleton-block" style="width:70px;height:28px;border-radius:12px"></div>
-      </div>
-    `;
-    fragment.appendChild(card);
-  }
-  pokedexContainer.replaceChildren(fragment);
-}
-
-function renderPokemon(pokemonArray: Pokemon[]): void {
-  searchNoResults.setAttribute('hidden', '');
-  const fragment = document.createDocumentFragment();
-  pokemonArray.forEach((pokemon, index) => fragment.appendChild(createPokemonCard(pokemon, index === 0)));
-  pokedexContainer.replaceChildren(fragment);
-}
-
-function createPokemonCard(pokemon: Pokemon, isFirst = false): HTMLElement {
-  const card = document.createElement('div');
-  card.className = 'pokemon-card';
-  card.dataset.name = pokemon.name;
-  card.setAttribute('tabindex', '0');
-  card.setAttribute('role', 'button');
-  card.setAttribute('aria-label', `Show details for ${formatMoveName(pokemon.name)}`);
-  const bgColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
-  card.style.backgroundColor = bgColor;
-  card.style.color = getTextColorForBackground(bgColor);
-  setHTML(card, createPokemonCardTemplate(pokemon, isFirst));
-  card.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      showPokemonDetails(pokemon);
-    }
-  });
-  return card;
-}
-
-function displayError(message: string): void {
-  setHTML(pokedexContainer, errorMessageTemplate(message));
-}
-
-// ─── Overlay ─────────────────────────────────────────────────────────────────
-
-function createDetailsHTML(pokemon: Pokemon): string {
-  const height = (pokemon.height / 10).toFixed(1);
-  const weight = (pokemon.weight / 10).toFixed(1);
-  const abilities = pokemon.abilities.map(a => a.ability.name).join(', ');
-  return detailTemplate(pokemon, height, weight, abilities);
-}
-
-function showPokemonDetails(pokemon: Pokemon): void {
-  if (document.querySelector('.overlay')) return;
-
-  previouslyFocusedElement = document.activeElement as HTMLElement;
-  currentOverlayPokemon = pokemon;
-
-  document.title = `${formatMoveName(pokemon.name)} — Pokédex`;
-
-  const overlay = document.createElement('div');
-  overlay.className = 'overlay';
-  overlay.setAttribute('role', 'dialog');
-  overlay.setAttribute('aria-modal', 'true');
-  overlay.setAttribute('aria-label', `${formatMoveName(pokemon.name)} details`);
-  overlay.setAttribute('tabindex', '-1');
-
-  const detailsCard = document.createElement('div');
-  detailsCard.className = 'details-card';
-  const detailsBgColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
-  detailsCard.style.backgroundColor = detailsBgColor;
-  detailsCard.style.color = getTextColorForBackground(detailsBgColor);
-  setHTML(detailsCard, createDetailsHTML(pokemon));
-  attachTabListeners(detailsCard);
-  appendNavigationButtons(detailsCard, pokemon);
-
-  overlay.appendChild(detailsCard);
-  document.body.appendChild(overlay);
-  document.body.classList.add('no-scroll');
-
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) closeOverlay(overlay);
-  });
-
-  requestAnimationFrame(() => {
-    overlay.focus();
-    setupScrollIndicator(detailsCard);
-  });
-}
-
-function closeOverlay(overlay: HTMLElement): void {
-  activeScrollAbort?.abort();
-  activeScrollAbort = null;
-  overlay.remove();
-  document.body.classList.remove('no-scroll');
-  document.title = 'Pokédex';
-  currentOverlayPokemon = null;
-  previouslyFocusedElement?.focus();
-}
-
-function appendNavigationButtons(detailsCard: HTMLElement, pokemon: Pokemon): void {
-  const imageSection = detailsCard.querySelector('.pokemon-image-section');
-  if (!imageSection) return;
-
-  const prevButton = createNavButton('prev', pokemon);
-  const nextButton = createNavButton('next', pokemon);
-  prevButton.classList.add('arrow-left');
-  nextButton.classList.add('arrow-right');
-
-  imageSection.appendChild(prevButton);
-  imageSection.appendChild(nextButton);
-}
-
-function createNavButton(direction: 'prev' | 'next', currentPokemon: Pokemon): HTMLButtonElement {
-  const button = document.createElement('button');
-  button.textContent = direction === 'prev' ? '<' : '>';
-  button.className = `arrow-button ${direction}`;
-  button.setAttribute('aria-label', direction === 'prev' ? 'Previous Pokémon' : 'Next Pokémon');
-  button.addEventListener('click', e => {
-    e.stopPropagation();
-    if (direction === 'prev') showPreviousPokemon(currentPokemon);
-    else showNextPokemon(currentPokemon);
-  });
-  return button;
-}
-
-function showPreviousPokemon(current: Pokemon): void {
-  const idx = pokemonDetails.indexOf(current);
-  updateDetailsCard(pokemonDetails[(idx - 1 + pokemonDetails.length) % pokemonDetails.length] as Pokemon, 'prev');
-}
-
-function showNextPokemon(current: Pokemon): void {
-  const idx = pokemonDetails.indexOf(current);
-  updateDetailsCard(pokemonDetails[(idx + 1) % pokemonDetails.length] as Pokemon, 'next');
-}
-
-function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' = 'next'): void {
-  currentOverlayPokemon = pokemon;
-
-  const detailsCard = document.querySelector<HTMLElement>('.details-card');
-  if (!detailsCard) return;
-
-  const overlay = document.querySelector<HTMLElement>('.overlay');
-  const slideOut = direction === 'next' ? '-100%' : '100%';
-  const slideIn = direction === 'next' ? '100%' : '-100%';
-  const dur = `${SLIDE_DURATION_MS / 1000}s`;
-
-  detailsCard.style.transition = `transform ${dur} ease-out, opacity ${dur} ease-out`;
-  detailsCard.style.transform = `translateX(${slideOut})`;
-  detailsCard.style.opacity = '0';
-
-  detailsCard.addEventListener('transitionend', function onSlideOut(e: TransitionEvent) {
-    if (e.propertyName !== 'transform') return;
-    detailsCard.removeEventListener('transitionend', onSlideOut);
-
-    detailsCard.style.transition = 'none';
-    detailsCard.style.transform = `translateX(${slideIn})`;
-    const newBgColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
-    detailsCard.style.backgroundColor = newBgColor;
-    detailsCard.style.color = getTextColorForBackground(newBgColor);
-    setHTML(detailsCard, createDetailsHTML(pokemon));
-    attachTabListeners(detailsCard);
-    appendNavigationButtons(detailsCard, pokemon);
-    setupScrollIndicator(detailsCard);
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        detailsCard.style.transition = `transform ${dur} ease-out, opacity ${dur} ease-out`;
-        detailsCard.style.transform = 'translateX(0)';
-        detailsCard.style.opacity = '1';
-        overlay?.focus();
-      });
-    });
-  });
-}
-
-// ─── Scroll Indicator ─────────────────────────────────────────────────────────
-
-function getActiveScrollable(container: HTMLElement): HTMLElement | null {
-  const btn = container.querySelector<HTMLElement>('.tab-button.active');
-  const tab = btn?.dataset.tab;
-  if (!tab) return null;
-  return tab === 'Moves'
-    ? container.querySelector<HTMLElement>('.moves-container')
-    : container.querySelector<HTMLElement>(`#${tab}.tab-content`);
-}
-
-function updateScrollIndicator(container: HTMLElement): void {
-  const indicator = container.querySelector<HTMLElement>('.scroll-indicator');
-  if (!indicator) return;
-
-  activeScrollAbort?.abort();
-  activeScrollAbort = new AbortController();
-
-  const scrollable = getActiveScrollable(container);
-  const refresh = (): void => {
-    if (!scrollable) { indicator.hidden = true; return; }
-    const overflows = scrollable.scrollHeight > scrollable.clientHeight + 2;
-    const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight - 10;
-    indicator.hidden = !overflows || atBottom;
-  };
-  refresh();
-  scrollable?.addEventListener('scroll', refresh, { signal: activeScrollAbort.signal });
-}
-
-function setupScrollIndicator(container: HTMLElement): void {
-  const detailOverlay = container.querySelector<HTMLElement>('.detail-overlay');
-  if (!detailOverlay) return;
-  detailOverlay.querySelector('.scroll-indicator')?.remove();
-  const indicator = document.createElement('button');
-  indicator.className = 'scroll-indicator';
-  indicator.setAttribute('aria-label', 'Scroll down');
-  indicator.textContent = '↓';
-  indicator.hidden = true;
-  indicator.addEventListener('click', () => {
-    const scrollable = getActiveScrollable(container);
-    scrollable?.scrollBy({ top: 80, behavior: 'smooth' });
-  });
-  detailOverlay.appendChild(indicator);
-  updateScrollIndicator(container);
-}
-
-// ─── Tabs ─────────────────────────────────────────────────────────────────────
-
-function openTab(btn: HTMLElement, tabName: string): void {
-  document.querySelectorAll<HTMLElement>('.tab-content').forEach(tab => {
-    tab.style.display = 'none';
-  });
-  document.querySelectorAll<HTMLElement>('.tab-button').forEach(b => {
-    b.classList.remove('active');
-    b.setAttribute('aria-selected', 'false');
-  });
-
-  const target = document.getElementById(tabName);
-  if (target) target.style.display = 'block';
-  btn.classList.add('active');
-  btn.setAttribute('aria-selected', 'true');
-
-  const detailsCard = document.querySelector<HTMLElement>('.details-card');
-  if (!detailsCard) return;
-
-  if (tabName === 'Moves') {
-    detailsCard.classList.add('moves-active');
-    const movesContainer = document.querySelector<HTMLElement>('.moves-container');
-    if (movesContainer?.dataset.loaded === 'false') {
-      const pokemonId = movesContainer.dataset.pokemonId ?? '';
-      if (pokemonId) loadPokemonMoves(pokemonId);
-    }
-    setTimeout(() => { updateScrollIndicator(detailsCard); }, 50);
-  } else {
-    detailsCard.classList.remove('moves-active');
-    updateScrollIndicator(detailsCard);
-  }
-}
-
-function attachTabListeners(container: HTMLElement): void {
-  container.querySelectorAll<HTMLElement>('.tab-button').forEach(btn => {
-    btn.addEventListener('click', () => { openTab(btn, btn.dataset.tab ?? ''); });
-  });
-}
-
-function navigateTabs(key: string): void {
-  const tabs = Array.from(document.querySelectorAll<HTMLElement>('.tab-button'));
-  const activeIndex = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
-  const fromIndex = activeIndex !== -1 ? activeIndex : 0;
-  const nextIndex = key === 'ArrowDown'
-    ? (fromIndex + 1) % tabs.length
-    : (fromIndex - 1 + tabs.length) % tabs.length;
-  const nextTab = tabs[nextIndex];
-  if (nextTab) {
-    nextTab.focus();
-    openTab(nextTab, nextTab.dataset.tab ?? '');
-  }
-}
-
-function loadPokemonMoves(pokemonId: string): void {
-  const movesContainer = document.getElementById(`moves-${pokemonId}`);
-  if (!movesContainer) return;
-
-  const pokemon = pokemonDetails.find(p => p.id === Number(pokemonId));
-  if (!pokemon) {
-    setHTML(movesContainer, movesErrorTemplate());
-    return;
-  }
-
-  const moves = pokemon.moves.slice(0, 20).map(m => ({ name: m.move.name }));
-
-  movesContainer.dataset.loaded = 'true';
-  setHTML(movesContainer, createMovesHTMLTemplate(moves));
-  const dc = document.querySelector<HTMLElement>('.details-card');
-  if (dc) updateScrollIndicator(dc);
-}
-
-// ─── Keyboard & focus trap ────────────────────────────────────────────────────
-
-function onKeydown(e: KeyboardEvent): void {
-  const overlay = document.querySelector<HTMLElement>('.overlay');
-
-  if (overlay) {
-    if (e.key === 'Escape') {
-      closeOverlay(overlay);
-      return;
-    }
-    if (e.key === 'Tab') {
-      trapFocus(e, overlay);
-      return;
-    }
-    if (!currentOverlayPokemon) return;
-    if (e.key === 'ArrowLeft') { e.preventDefault(); showPreviousPokemon(currentOverlayPokemon); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); showNextPokemon(currentOverlayPokemon); }
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      navigateTabs(e.key);
-    }
-    return;
-  }
-
-  if ((document.activeElement as HTMLElement).tagName === 'INPUT') return;
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-    e.preventDefault();
-    document.body.classList.add('keyboard-nav');
-    navigateCards(e.key);
-  }
-}
-
-function onMousemove(): void {
-  document.body.classList.remove('keyboard-nav');
-}
-
-// Replace previous listeners to prevent accumulation when the module is re-imported (e.g. in tests).
-type DocRegistry = Document & { _pkKeydown?: typeof onKeydown; _pkMousemove?: typeof onMousemove };
-const _d = document as DocRegistry;
-if (_d._pkKeydown) document.removeEventListener('keydown', _d._pkKeydown);
-_d._pkKeydown = onKeydown;
-document.addEventListener('keydown', onKeydown);
-
-function trapFocus(e: KeyboardEvent, overlay: HTMLElement): void {
-  const focusable = overlay.querySelectorAll<HTMLElement>(
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-  );
-  if (focusable.length === 0) { e.preventDefault(); return; }
-
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-  if (!first || !last) return;
-
-  if (e.shiftKey) {
-    if (document.activeElement === first || document.activeElement === overlay) {
-      e.preventDefault();
-      last.focus();
-    }
-  } else if (document.activeElement === last) {
-    e.preventDefault();
-    first.focus();
-  }
-}
-
-function navigateCards(key: string): void {
-  const cards = Array.from(pokedexContainer.querySelectorAll<HTMLElement>('.pokemon-card'));
-  if (cards.length === 0) return;
-
-  const currentIndex = cards.indexOf(document.activeElement as HTMLElement);
-
-  if (currentIndex === -1) {
-    const target = key === 'ArrowLeft' ? cards[cards.length - 1] : cards[0];
-    target?.focus();
-    target?.scrollIntoView({ block: 'center' });
-    return;
-  }
-
-  if (key === 'ArrowRight') {
-    if (currentIndex + 1 < cards.length) {
-      cards[currentIndex + 1]?.focus();
-      cards[currentIndex + 1]?.scrollIntoView({ block: 'center' });
-    } else {
-      loadMoreButton.focus();
-      loadMoreButton.scrollIntoView({ block: 'center' });
-    }
-  } else {
-    if (currentIndex - 1 >= 0) {
-      cards[currentIndex - 1]?.focus();
-      cards[currentIndex - 1]?.scrollIntoView({ block: 'center' });
-    } else {
-      loadMoreButton.focus();
-      loadMoreButton.scrollIntoView({ block: 'center' });
-    }
-  }
-}
-
 // ─── Card interactions ────────────────────────────────────────────────────────
-
-function openCardOverlay(e: Event): void {
-  const card = (e.target as HTMLElement).closest<HTMLElement>('.pokemon-card');
-  if (!card) return;
-  const pokemon = pokemonDetails.find(p => p.name === card.dataset.name);
-  if (pokemon) showPokemonDetails(pokemon);
-}
 
 pokedexContainer.addEventListener('click', (e: MouseEvent) => {
   if ((e.target as HTMLElement).closest('.retry-btn')) {
     void init();
     return;
   }
-  openCardOverlay(e);
+  const card = (e.target as HTMLElement).closest<HTMLElement>('.pokemon-card');
+  if (!card) return;
+  const pokemon = state.pokemonDetails.find(p => p.name === card.dataset.name);
+  if (pokemon) showPokemonDetails(pokemon);
 });
 
-// throttled via requestAnimationFrame — fires at most once per frame
 pokedexContainer.addEventListener('mousemove', (e: MouseEvent) => {
-  if (mousemoveRafPending) return;
-  mousemoveRafPending = true;
+  if (state.mousemoveRafPending) return;
+  state.mousemoveRafPending = true;
   requestAnimationFrame(() => {
-    mousemoveRafPending = false;
+    state.mousemoveRafPending = false;
     const card = (e.target as HTMLElement).closest<HTMLElement>('.pokemon-card');
     if (!card) return;
     const { left, top, width, height } = card.getBoundingClientRect();
@@ -636,13 +173,11 @@ pokedexContainer.addEventListener('mouseout', (e: MouseEvent) => {
   card.style.setProperty('--y', '50%');
 });
 
-if (_d._pkMousemove) document.removeEventListener('mousemove', _d._pkMousemove);
-_d._pkMousemove = onMousemove;
-document.addEventListener('mousemove', onMousemove);
-
 loadMoreButton.addEventListener('click', () => { void fetchPokemonData(); });
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
+setupKeyboard();
 void init();
 setTimeout(initLogoAnimation, LOGO_ANIMATION_DELAY_MS);
+initPwaUpdateToast();
