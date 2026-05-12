@@ -2,6 +2,7 @@ import { defineConfig, type Plugin } from 'vite';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { VitePWA } from 'vite-plugin-pwa';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -20,8 +21,9 @@ function makeCSSnoblocking(): Plugin {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
+    ...(mode === 'analyze' ? [visualizer({ open: true, filename: 'dist/stats.html', gzipSize: true, brotliSize: true })] : []),
     makeCSSnoblocking(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -73,6 +75,7 @@ export default defineConfig({
     },
   },
   test: {
+    include: ['src/**/*.{test,spec}.ts'],
     environment: 'jsdom',
     globals: true,
     coverage: {
@@ -82,4 +85,4 @@ export default defineConfig({
       exclude: ['src/**/*.test.ts', 'src/**/__tests__/**', 'src/types.ts'],
     },
   },
-});
+}));
