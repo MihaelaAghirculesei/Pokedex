@@ -63,3 +63,11 @@ test('search filters cards by name', async ({ page }) => {
   await expect(page.locator('.pokemon-card')).toHaveCount(1);
   await expect(page.locator('.pokemon-card')).toContainText('Ivysaur');
 });
+
+test('search with no matches clears the grid and shows no-results message', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.pokemon-card')).toHaveCount(2);
+  await page.fill('#search-input', 'cha');
+  await expect(page.locator('.pokemon-card')).toHaveCount(0);
+  await expect(page.locator('#search-no-results')).toBeVisible();
+});
