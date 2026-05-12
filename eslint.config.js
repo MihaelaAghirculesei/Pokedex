@@ -1,7 +1,7 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
-import pluginVitest from 'eslint-plugin-vitest';
+import pluginVitest from '@vitest/eslint-plugin';
 
 export default tseslint.config(
   // Files to never lint
