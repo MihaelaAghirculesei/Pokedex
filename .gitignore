@@ -29,3 +29,6 @@ test-results/
 
 # Lighthouse CI
 .lighthouseci/
+
+# Husky internal scripts (auto-generated)
+.husky/_/

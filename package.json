@@ -19,6 +19,8 @@
     "size": "size-limit",
     "test:lighthouse": "lhci autorun",
     "test:e2e": "playwright test",
+    "e2e:visual:ci": "playwright test",
+    "lighthouse:ci": "lhci autorun",
     "prepare": "husky"
   },
   "lint-staged": {
