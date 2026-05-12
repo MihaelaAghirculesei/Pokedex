@@ -1531,6 +1531,22 @@ describe('main.ts — trapFocus !first guard (line 417)', () => {
   });
 });
 
+// ─── navigateCards: missing container early return (keyboard.ts line 33) ─────
+
+describe('keyboard.ts — navigateCards returns early when #pokedex-container is absent', () => {
+  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  afterEach(cleanup);
+
+  it('ArrowRight with no #pokedex-container does not throw (line 33 !container guard)', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    document.getElementById('pokedex-container')?.remove();
+    expect(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    }).not.toThrow();
+  });
+});
+
 // ─── navigateCards: empty card list early return (line 432) ──────────────────
 
 describe('main.ts — navigateCards cards.length===0 early return (line 432)', () => {
