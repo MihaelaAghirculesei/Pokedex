@@ -22,3 +22,7 @@ Thumbs.db
 # Editor
 .vscode/settings.json
 .idea/
+
+# Playwright
+playwright-report/
+test-results/
