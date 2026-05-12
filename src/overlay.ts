@@ -210,6 +210,8 @@ export function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' =
     appendNavigationButtons(detailsCard, pokemon);
     setupScrollIndicator(detailsCard);
 
+    // Two nested rAFs: first forces the browser to commit the new translateX
+    // position to layout, second starts the transition from that position to 0.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         detailsCard.style.transition = `transform ${dur} ease-out, opacity ${dur} ease-out`;
