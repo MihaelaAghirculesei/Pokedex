@@ -19,8 +19,8 @@ export function updateScrollIndicator(container: HTMLElement): void {
   const indicator = container.querySelector<HTMLElement>('.scroll-indicator');
   if (!indicator) return;
 
-  state.activeScrollAbort?.abort();
-  state.activeScrollAbort = new AbortController();
+  state.activeScrollCleanup?.();
+  state.activeScrollCleanup = null;
 
   const scrollable = getActiveScrollable(container);
   const refresh = (): void => {
@@ -30,7 +30,10 @@ export function updateScrollIndicator(container: HTMLElement): void {
     indicator.hidden = !overflows || atBottom;
   };
   refresh();
-  scrollable?.addEventListener('scroll', refresh, { signal: state.activeScrollAbort.signal });
+  if (scrollable) {
+    scrollable.addEventListener('scroll', refresh);
+    state.activeScrollCleanup = () => { scrollable.removeEventListener('scroll', refresh); };
+  }
 }
 
 export function setupScrollIndicator(container: HTMLElement): void {
@@ -131,8 +134,8 @@ function createDetailsHTML(pokemon: Pokemon, slideDurationMs: number): string {
 }
 
 export function closeOverlay(overlay: HTMLElement): void {
-  state.activeScrollAbort?.abort();
-  state.activeScrollAbort = null;
+  state.activeScrollCleanup?.();
+  state.activeScrollCleanup = null;
   overlay.remove();
   document.body.classList.remove('no-scroll');
   document.title = 'Pokédex';
