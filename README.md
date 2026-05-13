@@ -41,7 +41,7 @@ Migrated stack
 ├── TypeScript 6    — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
 ├── Vite 7          — HMR in development, optimized bundles in production
 ├── Vitest 4        — 200 unit tests covering templates, utilities, and i18n
-├── Playwright      — 6 E2E tests with mocked PokeAPI (Chromium)
+├── Playwright      — E2E tests with mocked PokeAPI (Chromium in CI; Firefox + WebKit locally via ALL_BROWSERS=true)
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
 ├── ESLint          — TypeScript strict rules + Vitest plugin
 ├── Husky + lint-staged — pre-commit ESLint fix, pre-push typecheck + tests
@@ -90,7 +90,8 @@ Open `http://localhost:5173` in your browser.
 | `npm run preview` | Preview the production build locally |
 | `npm test` | Run unit tests with Vitest |
 | `npm run test:coverage` | Tests + coverage report (HTML + lcov) |
-| `npm run test:e2e` | E2E tests with Playwright (Chromium) |
+| `npm run test:e2e` | E2E tests with Playwright (Chromium + mobile Chrome) |
+| `ALL_BROWSERS=true npm run test:e2e` | Full cross-browser E2E: Chromium, Firefox, WebKit — local only |
 | `npm run typecheck` | TypeScript type check (no emit) |
 | `npm run lint` | ESLint on `src/` |
 | `npm run lint:fix` | ESLint on `src/` with auto-fix |
@@ -155,7 +156,7 @@ Open `http://localhost:5173` in your browser.
 <table>
 <tr>
 <td align="center">
-<img src="imgs/readme/interface.jpg" width="200px" alt="Main grid"/>
+<img src="imgs/readme/interface.png" width="200px" alt="Main grid"/>
 <br/><sub>Main grid</sub>
 </td>
 <td align="center">
@@ -163,7 +164,7 @@ Open `http://localhost:5173` in your browser.
 <br/><sub>Holographic hover</sub>
 </td>
 <td align="center">
-<img src="imgs/readme/detailed_view.jpg" width="200px" alt="Detail overlay"/>
+<img src="imgs/readme/detailed_view.png" width="200px" alt="Detail overlay"/>
 <br/><sub>Detail overlay</sub>
 </td>
 </tr>
@@ -179,7 +180,7 @@ Open `http://localhost:5173` in your browser.
 | Language | Vanilla JavaScript (ES6+) | TypeScript 6 — strict mode |
 | Build | None (direct file serving) | Vite 7 — HMR + optimized bundles |
 | Offline | Hand-crafted Service Worker | Workbox via vite-plugin-pwa |
-| Testing | None | Vitest 4 — 200 unit tests + Playwright 6 E2E |
+| Testing | None | Vitest 4 — unit tests + Playwright E2E (Chromium in CI; cross-browser locally) |
 | Linting | None | ESLint + typescript-eslint strict |
 | Git hooks | None | Husky + lint-staged (pre-commit fix, pre-push gate) |
 | Styling | CSS3 — Grid, Flexbox, Custom Properties | Unchanged |
