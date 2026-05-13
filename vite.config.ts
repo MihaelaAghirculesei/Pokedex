@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       strategies: 'generateSW',
-      injectRegister: 'auto',
+      injectRegister: 'script-defer',
       manifest: false,
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,webp,svg,woff2}'],
