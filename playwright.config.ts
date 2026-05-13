@@ -13,6 +13,9 @@ export default defineConfig({
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
   },
+  // CI runs Chromium only to keep the pipeline fast and dependency-light.
+  // To run the full browser matrix locally (Firefox + WebKit/Safari):
+  //   ALL_BROWSERS=true npm run test:e2e
   projects: process.env['ALL_BROWSERS']
     ? [
         { name: 'chromium', use: { ...devices['Desktop Chrome'] } },

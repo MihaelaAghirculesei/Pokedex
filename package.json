@@ -19,7 +19,7 @@
     "size": "size-limit",
     "test:e2e": "playwright test",
     "test:e2e:functional": "playwright test e2e/app.spec.ts e2e/accessibility.spec.ts e2e/mobile.spec.ts",
-    "e2e:visual:ci": "playwright test e2e/visual.spec.ts --update-snapshots --reporter=dot",
+    "e2e:visual:ci": "playwright test e2e/visual.spec.ts --reporter=dot",
     "e2e:visual:update": "playwright test e2e/visual.spec.ts --update-snapshots",
     "lighthouse:ci": "lhci autorun",
     "prepare": "husky"
