@@ -40,8 +40,12 @@ let searchTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const showLoading = (): void => { loadingIndicator.removeAttribute('hidden'); };
-const hideLoading = (): void => { loadingIndicator.setAttribute('hidden', 'true'); };
+const showLoading    = (): void => { loadingIndicator.removeAttribute('hidden'); };
+const hideLoading    = (): void => { loadingIndicator.setAttribute('hidden', 'true'); };
+const revealLoadMore = (): void => {
+  loadMoreButton.style.visibility    = 'visible';
+  loadMoreButton.style.pointerEvents = '';
+};
 
 function announceSearchResults(count: number, searchTerm: string): void {
   searchResultsStatus.textContent = count > 0
@@ -53,7 +57,6 @@ function announceSearchResults(count: number, searchTerm: string): void {
 
 async function init(): Promise<void> {
   await fetchPokemonData();
-  initSearch();
 }
 
 async function fetchPokemonData(): Promise<void> {
@@ -70,7 +73,7 @@ async function fetchPokemonData(): Promise<void> {
     }
     loadMoreButton.disabled = true;
 
-    const data    = await fetchPokemons(offset, LIMIT, signal);
+    const data       = await fetchPokemons(offset, LIMIT, signal);
     const newPokemon = await fetchAllPokemonDetails(data.results, signal);
     state.pokemonDetails.push(...newPokemon);
     offset += LIMIT;
@@ -92,6 +95,7 @@ async function fetchPokemonData(): Promise<void> {
         }
       }
     }
+    revealLoadMore();
   } catch (error) {
     if (error instanceof Error && error.name !== 'AbortError') {
       console.error('Pokémon fetch failed:', error);
@@ -177,6 +181,7 @@ loadMoreButton.addEventListener('click', () => { void fetchPokemonData(); });
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
+initSearch();
 setupKeyboard();
 void init();
 setTimeout(initLogoAnimation, LOGO_ANIMATION_DELAY_MS);
