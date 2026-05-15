@@ -3,8 +3,14 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { VitePWA } from 'vite-plugin-pwa';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { createHash } from 'crypto';
+import { readFileSync, writeFileSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+function sha256(content: string): string {
+  return `'sha256-${createHash('sha256').update(content).digest('base64')}'`;
+}
 
 function makeCSSnoblocking(): Plugin {
   return {
@@ -21,10 +27,60 @@ function makeCSSnoblocking(): Plugin {
   };
 }
 
+function generateCspPlugin(): Plugin {
+  return {
+    name: 'generate-csp',
+    apply: 'build',
+    closeBundle() {
+      const distDir = resolve(__dirname, 'dist');
+      const styleHashes = new Set<string>();
+      const handlerHashes = new Set<string>();
+
+      for (const page of ['index.html', 'impressum.html']) {
+        let html: string;
+        try {
+          html = readFileSync(resolve(distDir, page), 'utf-8');
+        } catch {
+          continue;
+        }
+        for (const [, content] of html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)) {
+          styleHashes.add(sha256(content));
+        }
+        for (const [, content] of html.matchAll(/\bon\w+="([^"]*)"/g)) {
+          handlerHashes.add(sha256(content));
+        }
+      }
+
+      const styleSrc = [`'self'`, ...styleHashes].join(' ');
+      const scriptSrc = handlerHashes.size
+        ? [`'self'`, `'unsafe-hashes'`, ...handlerHashes].join(' ')
+        : `'self'`;
+
+      const csp = [
+        `default-src 'self'`,
+        `script-src ${scriptSrc}`,
+        `style-src ${styleSrc}`,
+        `img-src 'self' https://wsrv.nl https://raw.githubusercontent.com data:`,
+        `connect-src 'self' https://pokeapi.co https://*.ingest.sentry.io`,
+        `worker-src 'self'`,
+        `object-src 'none'`,
+        `base-uri 'self'`,
+        `frame-ancestors 'none'`,
+      ].join('; ');
+
+      writeFileSync(
+        resolve(distDir, '_headers'),
+        `/*\n  X-Frame-Options: SAMEORIGIN\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Content-Security-Policy: ${csp}\n`,
+      );
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => ({
   plugins: [
     ...(mode === 'analyze' ? [visualizer({ open: true, filename: 'dist/stats.html', gzipSize: true, brotliSize: true })] : []),
     makeCSSnoblocking(),
+    generateCspPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
       strategies: 'generateSW',
@@ -70,6 +126,7 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: {
           vendor: ['dompurify'],
+          monitoring: ['@sentry/browser'],
         },
       },
     },
@@ -82,7 +139,12 @@ export default defineConfig(({ mode }) => ({
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       include: ['src/**/*.ts'],
-      exclude: ['src/**/*.test.ts', 'src/**/__tests__/**', 'src/types.ts'],
+      exclude: ['src/**/*.test.ts', 'src/**/__tests__/**', 'src/types.ts', 'src/monitoring.ts', 'src/vite-env.d.ts'],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+      },
     },
   },
 }));
