@@ -78,24 +78,28 @@ describe('main.ts — fetch error handling', () => {
   });
 
   it('shows rate-limit message on HTTP 429', async () => {
-    stubFetchError(429, 'Too Many Requests');
-    await loadModule();
-
-    await vi.waitFor(() => {
+    vi.useFakeTimers();
+    try {
+      stubFetchError(429, 'Too Many Requests');
+      await loadModule();
+      await vi.runAllTimersAsync();
       expect(document.querySelector('.error-message')).toBeTruthy();
       expect(document.querySelector('.error-message')?.textContent).toContain('Too many requests');
-    });
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('shows server-error message on HTTP 5xx', async () => {
-    stubFetchError(503, 'Service Unavailable');
-    await loadModule();
-
-    await vi.waitFor(() => {
-      expect(document.querySelector('.error-message')?.textContent).toContain(
-        'temporarily unavailable',
-      );
-    });
+    vi.useFakeTimers();
+    try {
+      stubFetchError(503, 'Service Unavailable');
+      await loadModule();
+      await vi.runAllTimersAsync();
+      expect(document.querySelector('.error-message')?.textContent).toContain('temporarily unavailable');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('shows network-error message when fetch throws TypeError', async () => {
@@ -119,19 +123,21 @@ describe('main.ts — fetch error handling', () => {
   });
 
   it('retry button re-triggers fetch', async () => {
-    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 500, statusText: 'Error' });
-    vi.stubGlobal('fetch', fetchMock);
-    await loadModule();
+    vi.useFakeTimers();
+    try {
+      const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 500, statusText: 'Error' });
+      vi.stubGlobal('fetch', fetchMock);
+      await loadModule();
+      await vi.runAllTimersAsync();
 
-    await vi.waitFor(() => {
       expect(document.querySelector('.retry-btn')).toBeTruthy();
-    });
+      const callsBefore = fetchMock.mock.calls.length;
+      document.querySelector<HTMLButtonElement>('.retry-btn')?.click();
+      await vi.runAllTimersAsync();
 
-    const callsBefore = fetchMock.mock.calls.length;
-    document.querySelector<HTMLButtonElement>('.retry-btn')?.click();
-
-    await vi.waitFor(() => {
       expect(fetchMock.mock.calls.length).toBeGreaterThan(callsBefore);
-    });
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

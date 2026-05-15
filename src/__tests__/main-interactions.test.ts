@@ -1260,31 +1260,35 @@ describe('main.ts — fetch errors (handleFetchError)', () => {
   });
 
   it('shows rate-limit message when fetch returns HTTP 429', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({ ok: false, status: 429, statusText: 'Too Many Requests' }),
-    );
-    await import('../main.js');
-    await vi.waitFor(
-      () => { expect(document.querySelector('.error-message')).toBeTruthy(); },
-      { timeout: 2000 },
-    );
-    expect(document.querySelector('.error-message')?.textContent).toContain('Too many requests');
+    vi.useFakeTimers();
+    try {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({ ok: false, status: 429, statusText: 'Too Many Requests' }),
+      );
+      await import('../main.js');
+      await vi.runAllTimersAsync();
+      expect(document.querySelector('.error-message')).toBeTruthy();
+      expect(document.querySelector('.error-message')?.textContent).toContain('Too many requests');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('shows server-error message when fetch returns HTTP 500', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({ ok: false, status: 500, statusText: 'Internal Server Error' }),
-    );
-    await import('../main.js');
-    await vi.waitFor(
-      () => { expect(document.querySelector('.error-message')).toBeTruthy(); },
-      { timeout: 2000 },
-    );
-    expect(document.querySelector('.error-message')?.textContent).toContain(
-      'temporarily unavailable',
-    );
+    vi.useFakeTimers();
+    try {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({ ok: false, status: 500, statusText: 'Internal Server Error' }),
+      );
+      await import('../main.js');
+      await vi.runAllTimersAsync();
+      expect(document.querySelector('.error-message')).toBeTruthy();
+      expect(document.querySelector('.error-message')?.textContent).toContain('temporarily unavailable');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('loadPokemonMoves shows error template when individual pokemon fetch returns ok:false', async () => {
