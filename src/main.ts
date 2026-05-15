@@ -1,3 +1,6 @@
+import { initMonitoring } from './monitoring.js';
+initMonitoring();
+
 import '../shared.css';
 import '../style.css';
 import type { Pokemon } from './types.js';
@@ -42,10 +45,7 @@ let searchTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 const showLoading    = (): void => { loadingIndicator.removeAttribute('hidden'); };
 const hideLoading    = (): void => { loadingIndicator.setAttribute('hidden', 'true'); };
-const revealLoadMore = (): void => {
-  loadMoreButton.style.visibility    = 'visible';
-  loadMoreButton.style.pointerEvents = '';
-};
+const revealLoadMore = (): void => { loadMoreButton.classList.add('is-visible'); };
 
 function announceSearchResults(count: number, searchTerm: string): void {
   searchResultsStatus.textContent = count > 0
@@ -98,7 +98,6 @@ async function fetchPokemonData(): Promise<void> {
     revealLoadMore();
   } catch (error) {
     if (error instanceof Error && error.name !== 'AbortError') {
-      console.error('Pokémon fetch failed:', error);
       displayError(pokedexContainer, getErrorMessage(error));
     }
   } finally {
