@@ -9,8 +9,9 @@ import {
   formatMoveName,
   getTextColorForBackground,
 } from '../utils.js';
+import type { PokemonTypeName } from '../types.js';
 
-const ALL_TYPES = [
+const ALL_TYPES: PokemonTypeName[] = [
   'bug', 'dark', 'dragon', 'electric', 'fairy', 'fighting',
   'fire', 'flying', 'grass', 'ground', 'ghost', 'ice',
   'normal', 'poison', 'psychic', 'rock', 'steel', 'water',

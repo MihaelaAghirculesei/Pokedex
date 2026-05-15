@@ -1,4 +1,6 @@
-export const typeColor: Record<string, string> = {
+import type { PokemonTypeName } from './types.js';
+
+export const typeColor: Partial<Record<PokemonTypeName, string>> = {
   bug: '#26de81',
   dark: '#705848',
   dragon: '#ffeaa7',
@@ -19,7 +21,7 @@ export const typeColor: Record<string, string> = {
   water: '#0190FF',
 };
 
-const TYPE_ICONS: Record<string, string> = {
+const TYPE_ICONS: Record<PokemonTypeName, string> = {
   water: '/imgs/icons/water.webp',
   grass: '/imgs/icons/grass.webp',
   fire: '/imgs/icons/fire.webp',
@@ -40,7 +42,12 @@ const TYPE_ICONS: Record<string, string> = {
   dragon: '/imgs/icons/dragon.webp',
 };
 
-export const getTypeIconSrc = (type: string): string => TYPE_ICONS[type] ?? '';
+export function isPokemonTypeName(s: string): s is PokemonTypeName {
+  return s in typeColor;
+}
+
+export const getTypeIconSrc = (type: string): string =>
+  isPokemonTypeName(type) ? TYPE_ICONS[type] : '';
 
 export const capitalizeFirstLetter = (s: string): string =>
   s.charAt(0).toUpperCase() + s.slice(1);
