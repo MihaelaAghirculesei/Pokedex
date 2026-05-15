@@ -16,6 +16,14 @@ An offline-first Pokédex — originally built in pure Vanilla JavaScript to mas
 
 ---
 
+## Demo
+
+![Pokédex demo](imgs/readme/demo.gif)
+
+> **No GIF yet?** Record one with [ScreenToGif](https://www.screentogif.com/) (Windows) or [Kap](https://getkap.co/) (macOS): open the live demo, show the search + holographic hover + detail overlay, export at ~600px wide, 15 fps. Drop the file at `imgs/readme/demo.gif` and delete this note.
+
+---
+
 ## From Vanilla JS to TypeScript — and why it matters
 
 This project went through a deliberate two-phase journey.
@@ -70,6 +78,19 @@ Mouse position is tracked via `mousemove` (throttled with `requestAnimationFrame
 
 ---
 
+## Browser support
+
+| Browser | Version | Notes |
+|---------|---------|-------|
+| Chrome / Edge | 90+ | Full support; PWA install via address bar |
+| Firefox | 90+ | Full support |
+| Safari / iOS Safari | 15.4+ | Full support; PWA via Share → Add to Home Screen |
+| Samsung Internet | 14+ | Full support |
+
+Tested in CI with Playwright on **Chromium** (every push) and **Firefox + WebKit** locally (`ALL_BROWSERS=true npm run test:e2e`). Requires ES2020 — no IE support.
+
+---
+
 ## Quick start
 
 ```bash
@@ -97,6 +118,38 @@ Open `http://localhost:5173` in your browser.
 | `npm run lint:fix` | ESLint on `src/` with auto-fix |
 | `npm run analyze` | Production build + open bundle visualizer |
 | `npm run ci:local` | Full CI pipeline locally (typecheck → lint → test → build → E2E) |
+
+---
+
+## Deployment
+
+The live version runs on **Cloudflare Pages** (zero-config static hosting — no server required).
+
+### Deploy to Cloudflare Pages
+
+1. Push the repo to GitHub (already done if you cloned this).
+2. In the [Cloudflare Pages dashboard](https://pages.cloudflare.com/), create a new project and connect your GitHub repo.
+3. Set the build configuration:
+
+   | Setting | Value |
+   |---------|-------|
+   | Build command | `npm run build` |
+   | Build output directory | `dist` |
+   | Node.js version | `22` |
+
+4. Click **Save and Deploy** — Cloudflare runs the build and assigns a `*.pages.dev` URL automatically.
+5. Every subsequent push to `main` triggers a new deploy.
+
+### Deploy to any static host
+
+The output of `npm run build` is a fully self-contained `dist/` folder (HTML + JS + CSS + assets + pre-cached Service Worker). Upload it to any CDN or static host (GitHub Pages, Netlify, Vercel, etc.) with no additional configuration.
+
+```bash
+npm run build   # produces dist/
+# upload dist/ to your host
+```
+
+> The Service Worker uses absolute URLs, so set the correct `base` in `vite.config.ts` if you deploy to a subdirectory (e.g. `base: '/my-app/'`).
 
 ---
 
