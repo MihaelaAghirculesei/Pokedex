@@ -20,7 +20,7 @@ const IMPRESSUM_DOM = `
     <p class="adsimple-322947329">The images are protected.</p>
     <p><strong>The image rights belong to:</strong></p>
     <p class="adsimple-322947329">All texts are protected by copyright.</p>
-    <p style="margin-top:15px">Source: Created with the Legal Notice Generator by AdSimple</p>
+    <p id="impressum-source" style="margin-top:15px">Source: Created with the Legal Notice Generator by AdSimple</p>
   </main>
   <footer class="footer">
     <a href="index.html" class="button">Back to Pokédex</a>
