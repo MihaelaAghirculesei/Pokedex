@@ -1,13 +1,32 @@
 import type { Pokemon, PokemonListResponse } from './types.js';
 
 const BASE_URL = 'https://pokeapi.co/api/v2/';
+const RETRY_BASE_MS = 500;
+const MAX_RETRIES = 3;
+
+function sleep(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const onAbort = (): void => { clearTimeout(id); reject(signal.reason as Error); };
+    const id = setTimeout(() => { signal.removeEventListener('abort', onAbort); resolve(); }, ms);
+    signal.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
+async function fetchWithRetry(url: string, signal: AbortSignal): Promise<Response> {
+  for (let attempt = 0; ; attempt++) {
+    const response = await fetch(url, { signal });
+    const retryable = response.status === 429 || response.status >= 500;
+    if (response.ok || !retryable || attempt >= MAX_RETRIES) return response;
+    await sleep(RETRY_BASE_MS * 2 ** attempt, signal);
+  }
+}
 
 export async function fetchPokemons(
   offset: number,
   limit: number,
   signal: AbortSignal,
 ): Promise<PokemonListResponse> {
-  const response = await fetch(`${BASE_URL}pokemon?offset=${offset}&limit=${limit}`, { signal });
+  const response = await fetchWithRetry(`${BASE_URL}pokemon?offset=${offset}&limit=${limit}`, signal);
   if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   return response.json() as Promise<PokemonListResponse>;
 }
@@ -27,7 +46,7 @@ export async function fetchAllPokemonDetails(
 }
 
 export async function fetchOnePokemon(url: string, signal: AbortSignal): Promise<Pokemon> {
-  const response = await fetch(url, { signal });
+  const response = await fetchWithRetry(url, signal);
   if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   return response.json() as Promise<Pokemon>;
 }
