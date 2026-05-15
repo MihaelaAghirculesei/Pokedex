@@ -79,7 +79,9 @@ export function openTab(btn: HTMLElement, tabName: string): void {
       const pokemonId = movesContainer.dataset.pokemonId ?? '';
       if (pokemonId) loadPokemonMoves(pokemonId);
     }
-    setTimeout(() => { updateScrollIndicator(detailsCard); }, 50);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { updateScrollIndicator(detailsCard); });
+    });
   } else {
     detailsCard.classList.remove('moves-active');
     updateScrollIndicator(detailsCard);
@@ -125,8 +127,7 @@ export function loadPokemonMoves(pokemonId: string): void {
 
 // ─── Overlay lifecycle ────────────────────────────────────────────────────────
 
-function createDetailsHTML(pokemon: Pokemon, slideDurationMs: number): string {
-  void slideDurationMs; // consumed by overlay caller, not here
+function createDetailsHTML(pokemon: Pokemon): string {
   const height = (pokemon.height / 10).toFixed(1);
   const weight = (pokemon.weight / 10).toFixed(1);
   const abilities = pokemon.abilities.map(a => a.ability.name).join(', ');
@@ -208,7 +209,7 @@ export function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' =
     const newBgColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
     detailsCard.style.backgroundColor = newBgColor;
     detailsCard.style.color = getTextColorForBackground(newBgColor);
-    setHTML(detailsCard, createDetailsHTML(pokemon, slideDurationMs));
+    setHTML(detailsCard, createDetailsHTML(pokemon));
     attachTabListeners(detailsCard);
     appendNavigationButtons(detailsCard, pokemon);
     setupScrollIndicator(detailsCard);
@@ -245,7 +246,7 @@ export function showPokemonDetails(pokemon: Pokemon): void {
   const detailsBgColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
   detailsCard.style.backgroundColor = detailsBgColor;
   detailsCard.style.color = getTextColorForBackground(detailsBgColor);
-  setHTML(detailsCard, createDetailsHTML(pokemon, getSlideDurationMs()));
+  setHTML(detailsCard, createDetailsHTML(pokemon));
   attachTabListeners(detailsCard);
   appendNavigationButtons(detailsCard, pokemon);
 
