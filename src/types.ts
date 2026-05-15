@@ -7,9 +7,14 @@ export interface PokemonSprites {
   };
 }
 
+export type PokemonTypeName =
+  | 'bug' | 'dark' | 'dragon' | 'electric' | 'fairy' | 'fighting'
+  | 'fire' | 'flying' | 'ghost' | 'grass' | 'ground' | 'ice'
+  | 'normal' | 'poison' | 'psychic' | 'rock' | 'steel' | 'water';
+
 export interface PokemonType {
   type: {
-    name: string;
+    name: PokemonTypeName;
   };
 }
 
