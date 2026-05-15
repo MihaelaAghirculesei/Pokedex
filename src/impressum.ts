@@ -91,7 +91,7 @@ function applyTranslations(lang: Language): void {
   const backButton = qs('.button');
   if (backButton) backButton.textContent = tr.backButton;
 
-  const sourceP = qs('p[style*="margin-top:15px"]');
+  const sourceP = qs('#impressum-source');
   if (sourceP) sourceP.textContent = tr.sourceText;
 }
 
