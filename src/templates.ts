@@ -47,6 +47,7 @@ export function detailTemplate(
     ${createImageSection(src, pokemon.name)}
     <div class="type-button-container">${typeButtons}</div>
     ${createDetailOverlay(pokemon, height, weight, abilities)}
+    <p class="keyboard-shortcuts-hint" aria-hidden="true">⌨ <kbd>←</kbd><kbd>→</kbd> Pokémon &nbsp;·&nbsp; <kbd>↑</kbd><kbd>↓</kbd> tabs &nbsp;·&nbsp; <kbd>Esc</kbd> close</p>
   `;
 }
 
