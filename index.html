@@ -40,8 +40,7 @@
       .headline-box{display:flex;align-items:center;justify-content:center;flex-direction:row;gap:15px;width:100%}
       @keyframes spinLogo{0%{transform:rotate(0deg) scale(.5);opacity:0}50%{transform:rotate(360deg) scale(1.1);opacity:.7}100%{transform:rotate(720deg) scale(1);opacity:1}}
       .headline-icon{width:80px;flex-shrink:0;transition:all .3s ease;filter:drop-shadow(0 0 10px rgba(0,255,255,.5))}
-      #load-more{visibility:hidden;pointer-events:none}
-      .header .headline-icon{animation:spinLogo 2s ease-in-out}
+.header .headline-icon{animation:spinLogo 2s ease-in-out}
       .headline{color:#fff}
       .search-input{padding:5px 10px;border-radius:var(--border-radius);border:3px solid #000}
       .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -68,17 +67,31 @@
                     <h1 class="headline">Pokédex</h1>
                 </div>
             </a>
-            <input class="search-input"
-                   id="search-input"
-                   type="text"
-                   placeholder="Search (min. 3 chars)"
-                   aria-label="Search Pokémon"
-                   autocomplete="off">
+            <div class="header-controls">
+                <input class="search-input"
+                       id="search-input"
+                       type="text"
+                       placeholder="Search (min. 3 chars)"
+                       aria-label="Search Pokémon"
+                       autocomplete="off">
+                <details class="keyboard-hint">
+                    <summary aria-label="Keyboard shortcuts">⌨</summary>
+                    <div class="keyboard-hint-panel" role="tooltip">
+                        <p class="keyboard-hint-section">Grid</p>
+                        <p><kbd>←</kbd> <kbd>→</kbd> navigate cards</p>
+                        <p class="keyboard-hint-section">Detail view</p>
+                        <p><kbd>←</kbd> <kbd>→</kbd> Pokémon</p>
+                        <p><kbd>↑</kbd> <kbd>↓</kbd> switch tabs</p>
+                        <p><kbd>Esc</kbd> close</p>
+                        <p><kbd>Tab</kbd> cycle focus</p>
+                    </div>
+                </details>
+            </div>
         </div>
     </header>
 
     <main class="pokemon-content">
-        <div id="loading" class="loading-indicator" role="status">Loading...</div>
+        <div id="loading" class="loading-indicator" role="status" hidden>Loading...</div>
         <div role="status" aria-live="polite" aria-atomic="true" id="search-status" class="sr-only"></div>
         <div id="search-no-results" class="search-no-results" hidden></div>
         <h2 class="sr-only">Pokémon list</h2>
