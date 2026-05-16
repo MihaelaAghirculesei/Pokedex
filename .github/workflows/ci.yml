@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    name: Typecheck, Lint, Test, Build
+    name: Typecheck, Lint, Format, Test, Build
     runs-on: ubuntu-latest
 
     steps:
@@ -28,6 +28,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
 
       - name: Tests with coverage
         run: npm run test:coverage
