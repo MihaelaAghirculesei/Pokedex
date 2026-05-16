@@ -15,10 +15,10 @@ import { state } from './state.js';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const LIMIT                = 30;
-const MIN_SEARCH_LENGTH    = 3;
+const LIMIT = 30;
+const MIN_SEARCH_LENGTH = 3;
 const SEARCH_DEBOUNCE_DELAY = 300;
-const MAX_SEARCH_RESULTS   = 20;
+const MAX_SEARCH_RESULTS = 20;
 const LOGO_ANIMATION_DELAY_MS = 1000;
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
@@ -29,11 +29,11 @@ function getEl(id: string): HTMLElement {
   return el;
 }
 
-const loadingIndicator   = getEl('loading');
-const loadMoreButton     = getEl('load-more') as HTMLButtonElement;
-const pokedexContainer   = getEl('pokedex-container');
+const loadingIndicator = getEl('loading');
+const loadMoreButton = getEl('load-more') as HTMLButtonElement;
+const pokedexContainer = getEl('pokedex-container');
 const searchResultsStatus = getEl('search-status');
-const searchNoResults    = getEl('search-no-results');
+const searchNoResults = getEl('search-no-results');
 
 // ─── Private state ────────────────────────────────────────────────────────────
 
@@ -43,14 +43,21 @@ let searchTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const showLoading    = (): void => { loadingIndicator.removeAttribute('hidden'); };
-const hideLoading    = (): void => { loadingIndicator.setAttribute('hidden', 'true'); };
-const revealLoadMore = (): void => { loadMoreButton.classList.add('is-visible'); };
+const showLoading = (): void => {
+  loadingIndicator.removeAttribute('hidden');
+};
+const hideLoading = (): void => {
+  loadingIndicator.setAttribute('hidden', 'true');
+};
+const revealLoadMore = (): void => {
+  loadMoreButton.classList.add('is-visible');
+};
 
 function announceSearchResults(count: number, searchTerm: string): void {
-  searchResultsStatus.textContent = count > 0
-    ? `${count} Pokémon found for "${searchTerm}"`
-    : `No Pokémon found for "${searchTerm}". Try loading more.`;
+  searchResultsStatus.textContent =
+    count > 0
+      ? `${count} Pokémon found for "${searchTerm}"`
+      : `No Pokémon found for "${searchTerm}". Try loading more.`;
 }
 
 // ─── Fetch ────────────────────────────────────────────────────────────────────
@@ -73,14 +80,14 @@ async function fetchPokemonData(): Promise<void> {
     }
     loadMoreButton.disabled = true;
 
-    const data       = await fetchPokemons(offset, LIMIT, signal);
+    const data = await fetchPokemons(offset, LIMIT, signal);
     const newPokemon = await fetchAllPokemonDetails(data.results, signal);
     state.pokemonDetails.push(...newPokemon);
     offset += LIMIT;
 
     const activeSearch =
-      (document.getElementById('search-input') as HTMLInputElement | null)
-        ?.value.toLowerCase() ?? '';
+      (document.getElementById('search-input') as HTMLInputElement | null)?.value.toLowerCase() ??
+      '';
 
     if (activeSearch.length >= MIN_SEARCH_LENGTH) {
       handleSearch(activeSearch);
@@ -128,7 +135,9 @@ function handleSearchInput(e: Event): void {
     searchResultsStatus.textContent = '';
     return;
   }
-  searchTimeoutId = setTimeout(() => { handleSearch(searchTerm); }, SEARCH_DEBOUNCE_DELAY);
+  searchTimeoutId = setTimeout(() => {
+    handleSearch(searchTerm);
+  }, SEARCH_DEBOUNCE_DELAY);
 }
 
 function handleSearch(searchTerm: string): void {
@@ -152,7 +161,7 @@ pokedexContainer.addEventListener('click', (e: MouseEvent) => {
   }
   const card = (e.target as HTMLElement).closest<HTMLElement>('.pokemon-card');
   if (!card) return;
-  const pokemon = state.pokemonDetails.find(p => p.name === card.dataset.name);
+  const pokemon = state.pokemonDetails.find((p) => p.name === card.dataset.name);
   if (pokemon) showPokemonDetails(pokemon);
 });
 
@@ -176,7 +185,9 @@ pokedexContainer.addEventListener('mouseout', (e: MouseEvent) => {
   card.style.setProperty('--y', '50%');
 });
 
-loadMoreButton.addEventListener('click', () => { void fetchPokemonData(); });
+loadMoreButton.addEventListener('click', () => {
+  void fetchPokemonData();
+});
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
