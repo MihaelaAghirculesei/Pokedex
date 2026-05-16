@@ -12,21 +12,6 @@ function sha256(content: string): string {
   return `'sha256-${createHash('sha256').update(content).digest('base64')}'`;
 }
 
-function makeCSSnoblocking(): Plugin {
-  return {
-    name: 'make-css-non-blocking',
-    transformIndexHtml: {
-      order: 'post',
-      handler(html: string): string {
-        return html.replace(
-          /<link rel="stylesheet" crossorigin href="([^"]+\.css)">/g,
-          `<link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin href="$1">`
-        );
-      },
-    },
-  };
-}
-
 function generateCspPlugin(): Plugin {
   return {
     name: 'generate-csp',
@@ -78,8 +63,9 @@ function generateCspPlugin(): Plugin {
 
 export default defineConfig(({ mode }) => ({
   plugins: [
-    ...(mode === 'analyze' ? [visualizer({ open: true, filename: 'dist/stats.html', gzipSize: true, brotliSize: true })] : []),
-    makeCSSnoblocking(),
+    ...(mode === 'analyze'
+      ? [visualizer({ open: true, filename: 'dist/stats.html', gzipSize: true, brotliSize: true })]
+      : []),
     generateCspPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -139,7 +125,13 @@ export default defineConfig(({ mode }) => ({
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       include: ['src/**/*.ts'],
-      exclude: ['src/**/*.test.ts', 'src/**/__tests__/**', 'src/types.ts', 'src/monitoring.ts', 'src/vite-env.d.ts'],
+      exclude: [
+        'src/**/*.test.ts',
+        'src/**/__tests__/**',
+        'src/types.ts',
+        'src/monitoring.ts',
+        'src/vite-env.d.ts',
+      ],
       thresholds: {
         lines: 80,
         functions: 80,
