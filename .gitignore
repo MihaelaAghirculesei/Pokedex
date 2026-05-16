@@ -36,3 +36,13 @@ test-results/
 
 # Husky internal scripts (auto-generated)
 .husky/_/
+
+# Accidental empty files from terminal redirects
+3
+/eslint
+/npm
+/prettier
+/tsc
+/vite
+/vitest
+pokedex@*/
