@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
 import pluginVitest from '@vitest/eslint-plugin';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default tseslint.config(
   // Files to never lint
@@ -58,10 +59,7 @@ export default tseslint.config(
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
 
       // Numbers in template literals are always safe — no need for String() wrapping
-      '@typescript-eslint/restrict-template-expressions': [
-        'error',
-        { allowNumber: true },
-      ],
+      '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
     },
   },
 
@@ -78,4 +76,7 @@ export default tseslint.config(
       'no-console': 'off',
     },
   },
+
+  // Must be last: disables ESLint rules that conflict with Prettier formatting
+  eslintConfigPrettier,
 );
