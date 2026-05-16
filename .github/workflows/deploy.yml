@@ -1,0 +1,130 @@
+name: Deploy
+
+# Production: fires after CI completes on main (enforces the CI gate).
+# Preview:    fires on every PR push — gives a live URL for review.
+#
+# Required repository secrets:
+#   CLOUDFLARE_API_TOKEN  — "Cloudflare Pages: Edit" scoped token
+#   CLOUDFLARE_ACCOUNT_ID — found in Workers & Pages → Overview (right sidebar)
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── Production deploy ────────────────────────────────────────────────────────
+  deploy-production:
+    name: Production → Cloudflare Pages
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success'
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false # never cancel an in-flight production deploy
+    environment:
+      name: production
+      url: https://pokedex-aghirculesei.pages.dev
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Check out the exact commit CI tested, not whatever HEAD is now.
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Deploy to Cloudflare Pages (production)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >
+            pages deploy dist
+            --project-name=pokedex-aghirculesei
+            --branch=main
+
+  # ── Preview deploy ───────────────────────────────────────────────────────────
+  deploy-preview:
+    name: Preview → Cloudflare Pages
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    concurrency:
+      group: deploy-preview-${{ github.event.number }}
+      cancel-in-progress: true # cancel stale preview builds when PR is updated
+    permissions:
+      pull-requests: write # needed to post the preview comment
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Deploy preview to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >
+            pages deploy dist
+            --project-name=pokedex-aghirculesei
+            --branch=pr-${{ github.event.number }}
+
+      - name: Post preview URL as PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deployUrl = '${{ steps.deploy.outputs.deployment-url }}';
+            const body = [
+              '### Preview deploy',
+              '',
+              '| | |',
+              '|---|---|',
+              `| **URL** | ${deployUrl} |`,
+              `| **Branch** | \`pr-${{ github.event.number }}\` |`,
+              `| **Commit** | \`${{ github.event.pull_request.head.sha }}\` |`,
+            ].join('\n');
+
+            // Update existing bot comment instead of posting a new one every push.
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(
+              c => c.user.type === 'Bot' && c.body.includes('Preview deploy')
+            );
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
