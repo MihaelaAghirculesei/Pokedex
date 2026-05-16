@@ -8,7 +8,7 @@ async function assertNoA11yViolations(page: Page): Promise<void> {
   const { violations } = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
   expect(
     violations,
-    violations.map(v => `[${v.impact}] ${v.id}: ${v.description}`).join('\n'),
+    violations.map((v) => `[${v.impact}] ${v.id}: ${v.description}`).join('\n'),
   ).toHaveLength(0);
 }
 
