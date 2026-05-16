@@ -6,19 +6,21 @@ export function initLogoAnimation(): void {
   if (!footerLogo) return;
 
   const observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
+    (entries) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const el = entry.target as HTMLElement;
           el.classList.remove('animate-logo');
           requestAnimationFrame(() => {
-            requestAnimationFrame(() => { el.classList.add('animate-logo'); });
+            requestAnimationFrame(() => {
+              el.classList.add('animate-logo');
+            });
           });
           observer.unobserve(el);
         }
       });
     },
-    { threshold: 0.5 }
+    { threshold: 0.5 },
   );
   observer.observe(footerLogo);
 }

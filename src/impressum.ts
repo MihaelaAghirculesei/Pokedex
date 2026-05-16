@@ -30,7 +30,8 @@ const translations: Record<Language, PageTranslations> = {
     euText3:
       'Wir möchten Sie jedoch darauf hinweisen, dass wir nicht bereit oder verpflichtet sind, an Streitschlichtungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.',
     imageCredits: 'Bildernachweis',
-    imageText1: 'Die Bilder, Fotos und Grafiken auf dieser Webseite sind urheberrechtlich geschützt.',
+    imageText1:
+      'Die Bilder, Fotos und Grafiken auf dieser Webseite sind urheberrechtlich geschützt.',
     imageText2: 'Die Bilderrechte liegen bei:',
     imageText3: 'Alle Texte sind urheberrechtlich geschützt.',
     backButton: 'Zurück zum Pokédex',
@@ -73,7 +74,7 @@ function applyTranslations(lang: Language): void {
   setText('#eu-streitschlichtung', tr.euDispute);
 
   const euParagraphs = document.querySelectorAll<HTMLElement>(
-    '#eu-streitschlichtung + p.adsimple-322947329'
+    '#eu-streitschlichtung + p.adsimple-322947329',
   );
   if (euParagraphs[0]) euParagraphs[0].textContent = `${tr.euText1} ${tr.euText2}`;
 
@@ -83,9 +84,7 @@ function applyTranslations(lang: Language): void {
   const rightsStrong = qs('#bildernachweis + p.adsimple-322947329 + p strong');
   if (rightsStrong) rightsStrong.textContent = tr.imageText2;
 
-  const copyrightP = qs(
-    '#bildernachweis + p.adsimple-322947329 + p + p.adsimple-322947329'
-  );
+  const copyrightP = qs('#bildernachweis + p.adsimple-322947329 + p + p.adsimple-322947329');
   if (copyrightP) copyrightP.textContent = tr.imageText3;
 
   const backButton = qs('.button');
