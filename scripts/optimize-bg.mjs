@@ -1,14 +1,12 @@
 import sharp from 'sharp';
 import { copyFile } from 'fs/promises';
 
-const SRC      = 'imgs/background/Designer.jpeg';
+const SRC = 'imgs/background/Designer.jpeg';
 const DEST_WEBP = 'imgs/background/Designer.webp';
-const PUB_WEBP  = 'public/imgs/background/Designer.webp';
+const PUB_WEBP = 'public/imgs/background/Designer.webp';
 const ORIG_SIZE = 221514; // bytes of the original JPEG
 
-const info = await sharp(SRC)
-  .webp({ quality: 65 })
-  .toFile(DEST_WEBP);
+const info = await sharp(SRC).webp({ quality: 65 }).toFile(DEST_WEBP);
 
 await copyFile(DEST_WEBP, PUB_WEBP);
 
