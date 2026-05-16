@@ -9,11 +9,14 @@ function optimizeImageUrl(url: string, width: number): string {
 }
 
 export function createPokemonCardTemplate(pokemon: Pokemon, isFirst = false): string {
-  const typesButtons = pokemon.types.map(type => createTypeButtonTemplate(type)).join('');
-  const rawSrc = pokemon.sprites.other['official-artwork'].front_default
-    ?? pokemon.sprites.front_default
-    ?? FALLBACK_IMAGE;
-  const imgAttrs = isFirst ? 'fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"';
+  const typesButtons = pokemon.types.map((type) => createTypeButtonTemplate(type)).join('');
+  const rawSrc =
+    pokemon.sprites.other['official-artwork'].front_default ??
+    pokemon.sprites.front_default ??
+    FALLBACK_IMAGE;
+  const imgAttrs = isFirst
+    ? 'fetchpriority="high" decoding="async"'
+    : 'loading="lazy" decoding="async"';
   const src = optimizeImageUrl(rawSrc, 280);
   const srcsetAttr = rawSrc.startsWith('https://')
     ? `srcset="${optimizeImageUrl(rawSrc, 150)} 150w, ${optimizeImageUrl(rawSrc, 280)} 280w, ${optimizeImageUrl(rawSrc, 480)} 480w" sizes="(max-width: 432px) 150px, 240px"`
@@ -35,19 +38,20 @@ export function detailTemplate(
   pokemon: Pokemon,
   height: string,
   weight: string,
-  abilities: string
+  abilities: string,
 ): string {
-  const typeButtons = pokemon.types.map(type => createTypeButtonTemplate(type)).join('');
-  const src = pokemon.sprites.other['official-artwork'].front_default
-    ?? pokemon.sprites.front_default
-    ?? FALLBACK_IMAGE;
+  const typeButtons = pokemon.types.map((type) => createTypeButtonTemplate(type)).join('');
+  const src =
+    pokemon.sprites.other['official-artwork'].front_default ??
+    pokemon.sprites.front_default ??
+    FALLBACK_IMAGE;
 
   return `
     ${createDetailsHeader(pokemon)}
     ${createImageSection(src, pokemon.name)}
+    <p class="keyboard-shortcuts-hint" aria-hidden="true">⌨ <kbd>←</kbd><kbd>→</kbd> Pokémon &nbsp;·&nbsp; <kbd>↑</kbd><kbd>↓</kbd> tabs &nbsp;·&nbsp; <kbd>Esc</kbd> close</p>
     <div class="type-button-container">${typeButtons}</div>
     ${createDetailOverlay(pokemon, height, weight, abilities)}
-    <p class="keyboard-shortcuts-hint" aria-hidden="true">⌨ <kbd>←</kbd><kbd>→</kbd> Pokémon &nbsp;·&nbsp; <kbd>↑</kbd><kbd>↓</kbd> tabs &nbsp;·&nbsp; <kbd>Esc</kbd> close</p>
   `;
 }
 
@@ -59,7 +63,7 @@ export const movesErrorTemplate = (): string => '<p>Failed to load moves</p>';
 
 export function createMovesHTMLTemplate(moves: { name: string }[]): string {
   return `<div class="moves-table-content">
-      ${moves.map(move => `<span class="move-compact-tag">${addHyphenation(formatMoveName(move.name))}</span>`).join('')}
+      ${moves.map((move) => `<span class="move-compact-tag">${addHyphenation(formatMoveName(move.name))}</span>`).join('')}
     </div>`;
 }
 
@@ -81,7 +85,7 @@ function createDetailOverlay(
   pokemon: Pokemon,
   height: string,
   weight: string,
-  abilities: string
+  abilities: string,
 ): string {
   return `
     <div class="detail-overlay">
@@ -101,7 +105,7 @@ function createAboutTab(
   pokemon: Pokemon,
   height: string,
   weight: string,
-  abilities: string
+  abilities: string,
 ): string {
   return `<div id="About" class="tab-content" role="tabpanel" aria-labelledby="tab-About" tabindex="0">
       <div class="tab-table">
@@ -117,7 +121,10 @@ function createAboutTab(
 
 function createBaseStatsTab(pokemon: Pokemon): string {
   const rows = pokemon.stats
-    .map(stat => `<tr><th>${formatStatName(stat.stat.name)}:</th><td><progress value="${stat.base_stat}" max="255" aria-label="${formatStatName(stat.stat.name)}"></progress>${stat.base_stat}</td></tr>`)
+    .map(
+      (stat) =>
+        `<tr><th>${formatStatName(stat.stat.name)}:</th><td><progress value="${stat.base_stat}" max="255" aria-label="${formatStatName(stat.stat.name)}"></progress>${stat.base_stat}</td></tr>`,
+    )
     .join('');
 
   return `<div id="BaseStats" class="tab-content" role="tabpanel" aria-labelledby="tab-BaseStats" tabindex="0" style="display: none;">

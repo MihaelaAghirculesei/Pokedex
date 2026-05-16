@@ -58,7 +58,7 @@ export function createPokemonCard(
   card.style.backgroundColor = bgColor;
   card.style.color = getTextColorForBackground(bgColor);
   setHTML(card, createPokemonCardTemplate(pokemon, isFirst));
-  card.addEventListener('keydown', e => {
+  card.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       onOpen(pokemon);
