@@ -24,7 +24,10 @@ export function updateScrollIndicator(container: HTMLElement): void {
 
   const scrollable = getActiveScrollable(container);
   const refresh = (): void => {
-    if (!scrollable) { indicator.hidden = true; return; }
+    if (!scrollable) {
+      indicator.hidden = true;
+      return;
+    }
     const overflows = scrollable.scrollHeight > scrollable.clientHeight + 2;
     const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight - 10;
     indicator.hidden = !overflows || atBottom;
@@ -32,7 +35,9 @@ export function updateScrollIndicator(container: HTMLElement): void {
   refresh();
   if (scrollable) {
     scrollable.addEventListener('scroll', refresh);
-    state.activeScrollCleanup = () => { scrollable.removeEventListener('scroll', refresh); };
+    state.activeScrollCleanup = () => {
+      scrollable.removeEventListener('scroll', refresh);
+    };
   }
 }
 
@@ -56,10 +61,10 @@ export function setupScrollIndicator(container: HTMLElement): void {
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
 
 export function openTab(btn: HTMLElement, tabName: string): void {
-  document.querySelectorAll<HTMLElement>('.tab-content').forEach(tab => {
+  document.querySelectorAll<HTMLElement>('.tab-content').forEach((tab) => {
     tab.style.display = 'none';
   });
-  document.querySelectorAll<HTMLElement>('.tab-button').forEach(b => {
+  document.querySelectorAll<HTMLElement>('.tab-button').forEach((b) => {
     b.classList.remove('active');
     b.setAttribute('aria-selected', 'false');
   });
@@ -80,7 +85,9 @@ export function openTab(btn: HTMLElement, tabName: string): void {
       if (pokemonId) loadPokemonMoves(pokemonId);
     }
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => { updateScrollIndicator(detailsCard); });
+      requestAnimationFrame(() => {
+        updateScrollIndicator(detailsCard);
+      });
     });
   } else {
     detailsCard.classList.remove('moves-active');
@@ -89,18 +96,21 @@ export function openTab(btn: HTMLElement, tabName: string): void {
 }
 
 export function attachTabListeners(container: HTMLElement): void {
-  container.querySelectorAll<HTMLElement>('.tab-button').forEach(btn => {
-    btn.addEventListener('click', () => { openTab(btn, btn.dataset.tab ?? ''); });
+  container.querySelectorAll<HTMLElement>('.tab-button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      openTab(btn, btn.dataset.tab ?? '');
+    });
   });
 }
 
 export function navigateTabs(key: string): void {
   const tabs = Array.from(document.querySelectorAll<HTMLElement>('.tab-button'));
-  const activeIndex = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+  const activeIndex = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
   const fromIndex = activeIndex !== -1 ? activeIndex : 0;
-  const nextIndex = key === 'ArrowDown'
-    ? (fromIndex + 1) % tabs.length
-    : (fromIndex - 1 + tabs.length) % tabs.length;
+  const nextIndex =
+    key === 'ArrowDown'
+      ? (fromIndex + 1) % tabs.length
+      : (fromIndex - 1 + tabs.length) % tabs.length;
   const nextTab = tabs[nextIndex];
   if (nextTab) {
     nextTab.focus();
@@ -112,13 +122,13 @@ export function loadPokemonMoves(pokemonId: string): void {
   const movesContainer = document.getElementById(`moves-${pokemonId}`);
   if (!movesContainer) return;
 
-  const pokemon = state.pokemonDetails.find(p => p.id === Number(pokemonId));
+  const pokemon = state.pokemonDetails.find((p) => p.id === Number(pokemonId));
   if (!pokemon) {
     setHTML(movesContainer, movesErrorTemplate());
     return;
   }
 
-  const moves = pokemon.moves.slice(0, 20).map(m => ({ name: m.move.name }));
+  const moves = pokemon.moves.slice(0, 20).map((m) => ({ name: m.move.name }));
   movesContainer.dataset.loaded = 'true';
   setHTML(movesContainer, createMovesHTMLTemplate(moves));
   const dc = document.querySelector<HTMLElement>('.details-card');
@@ -130,7 +140,7 @@ export function loadPokemonMoves(pokemonId: string): void {
 function createDetailsHTML(pokemon: Pokemon): string {
   const height = (pokemon.height / 10).toFixed(1);
   const weight = (pokemon.weight / 10).toFixed(1);
-  const abilities = pokemon.abilities.map(a => a.ability.name).join(', ');
+  const abilities = pokemon.abilities.map((a) => a.ability.name).join(', ');
   return detailTemplate(pokemon, height, weight, abilities);
 }
 
@@ -160,7 +170,7 @@ function createNavButton(direction: 'prev' | 'next', currentPokemon: Pokemon): H
   button.textContent = direction === 'prev' ? '<' : '>';
   button.className = `arrow-button ${direction}`;
   button.setAttribute('aria-label', direction === 'prev' ? 'Previous Pokémon' : 'Next Pokémon');
-  button.addEventListener('click', e => {
+  button.addEventListener('click', (e) => {
     e.stopPropagation();
     if (direction === 'prev') showPreviousPokemon(currentPokemon);
     else showNextPokemon(currentPokemon);
@@ -171,7 +181,9 @@ function createNavButton(direction: 'prev' | 'next', currentPokemon: Pokemon): H
 export function showPreviousPokemon(current: Pokemon): void {
   const idx = state.pokemonDetails.indexOf(current);
   updateDetailsCard(
-    state.pokemonDetails[(idx - 1 + state.pokemonDetails.length) % state.pokemonDetails.length] as Pokemon,
+    state.pokemonDetails[
+      (idx - 1 + state.pokemonDetails.length) % state.pokemonDetails.length
+    ] as Pokemon,
     'prev',
   );
 }
@@ -193,19 +205,19 @@ export function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' =
   const overlay = document.querySelector<HTMLElement>('.overlay');
   const slideDurationMs = getSlideDurationMs();
   const slideOut = direction === 'next' ? '-100%' : '100%';
-  const slideIn  = direction === 'next' ? '100%'  : '-100%';
+  const slideIn = direction === 'next' ? '100%' : '-100%';
   const dur = `${slideDurationMs / 1000}s`;
 
   detailsCard.style.transition = `transform ${dur} ease-out, opacity ${dur} ease-out`;
-  detailsCard.style.transform  = `translateX(${slideOut})`;
-  detailsCard.style.opacity    = '0';
+  detailsCard.style.transform = `translateX(${slideOut})`;
+  detailsCard.style.opacity = '0';
 
   detailsCard.addEventListener('transitionend', function onSlideOut(e: TransitionEvent) {
     if (e.propertyName !== 'transform') return;
     detailsCard.removeEventListener('transitionend', onSlideOut);
 
     detailsCard.style.transition = 'none';
-    detailsCard.style.transform  = `translateX(${slideIn})`;
+    detailsCard.style.transform = `translateX(${slideIn})`;
     const newBgColor = typeColor[pokemon.types[0].type.name] ?? '#95afc0';
     detailsCard.style.backgroundColor = newBgColor;
     detailsCard.style.color = getTextColorForBackground(newBgColor);
@@ -219,8 +231,8 @@ export function updateDetailsCard(pokemon: Pokemon, direction: 'prev' | 'next' =
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         detailsCard.style.transition = `transform ${dur} ease-out, opacity ${dur} ease-out`;
-        detailsCard.style.transform  = 'translateX(0)';
-        detailsCard.style.opacity    = '1';
+        detailsCard.style.transform = 'translateX(0)';
+        detailsCard.style.opacity = '1';
         overlay?.focus();
       });
     });
@@ -231,7 +243,7 @@ export function showPokemonDetails(pokemon: Pokemon): void {
   if (document.querySelector('.overlay')) return;
 
   state.previouslyFocusedElement = document.activeElement as HTMLElement;
-  state.currentOverlayPokemon    = pokemon;
+  state.currentOverlayPokemon = pokemon;
   document.title = `${formatMoveName(pokemon.name)} — Pokédex`;
 
   const overlay = document.createElement('div');
@@ -254,7 +266,7 @@ export function showPokemonDetails(pokemon: Pokemon): void {
   document.body.appendChild(overlay);
   document.body.classList.add('no-scroll');
 
-  overlay.addEventListener('click', e => {
+  overlay.addEventListener('click', (e) => {
     if (e.target === overlay) closeOverlay(overlay);
   });
 

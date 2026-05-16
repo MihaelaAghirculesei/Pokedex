@@ -1,19 +1,17 @@
 import { state } from './state.js';
-import {
-  closeOverlay,
-  showPreviousPokemon,
-  showNextPokemon,
-  navigateTabs,
-} from './overlay.js';
+import { closeOverlay, showPreviousPokemon, showNextPokemon, navigateTabs } from './overlay.js';
 
 function trapFocus(e: KeyboardEvent, overlay: HTMLElement): void {
   const focusable = overlay.querySelectorAll<HTMLElement>(
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
   );
-  if (focusable.length === 0) { e.preventDefault(); return; }
+  if (focusable.length === 0) {
+    e.preventDefault();
+    return;
+  }
 
   const first = focusable[0];
-  const last  = focusable[focusable.length - 1];
+  const last = focusable[focusable.length - 1];
   if (!first || !last) return;
 
   if (e.shiftKey) {
@@ -29,7 +27,7 @@ function trapFocus(e: KeyboardEvent, overlay: HTMLElement): void {
 
 function navigateCards(key: string): void {
   const container = document.getElementById('pokedex-container');
-  const loadMore  = document.getElementById('load-more') as HTMLButtonElement | null;
+  const loadMore = document.getElementById('load-more') as HTMLButtonElement | null;
   if (!container) return;
 
   const cards = Array.from(container.querySelectorAll<HTMLElement>('.pokemon-card'));
@@ -67,12 +65,27 @@ function onKeydown(e: KeyboardEvent): void {
   const overlay = document.querySelector<HTMLElement>('.overlay');
 
   if (overlay) {
-    if (e.key === 'Escape') { closeOverlay(overlay); return; }
-    if (e.key === 'Tab')    { trapFocus(e, overlay); return; }
+    if (e.key === 'Escape') {
+      closeOverlay(overlay);
+      return;
+    }
+    if (e.key === 'Tab') {
+      trapFocus(e, overlay);
+      return;
+    }
     if (!state.currentOverlayPokemon) return;
-    if (e.key === 'ArrowLeft')  { e.preventDefault(); showPreviousPokemon(state.currentOverlayPokemon); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); showNextPokemon(state.currentOverlayPokemon); }
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); navigateTabs(e.key); }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      showPreviousPokemon(state.currentOverlayPokemon);
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      showNextPokemon(state.currentOverlayPokemon);
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      navigateTabs(e.key);
+    }
     return;
   }
 
@@ -93,10 +106,10 @@ type DocRegistry = Document & { _pkKeydown?: typeof onKeydown; _pkMousemove?: ty
 
 export function setupKeyboard(): void {
   const d = document as DocRegistry;
-  if (d._pkKeydown)  document.removeEventListener('keydown',   d._pkKeydown);
+  if (d._pkKeydown) document.removeEventListener('keydown', d._pkKeydown);
   if (d._pkMousemove) document.removeEventListener('mousemove', d._pkMousemove);
-  d._pkKeydown   = onKeydown;
+  d._pkKeydown = onKeydown;
   d._pkMousemove = onMousemove;
-  document.addEventListener('keydown',   onKeydown);
+  document.addEventListener('keydown', onKeydown);
   document.addEventListener('mousemove', onMousemove);
 }
