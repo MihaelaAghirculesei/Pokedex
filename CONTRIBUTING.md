@@ -20,31 +20,33 @@ npm run dev
 
 ## Scripts
 
-| Script | What it does | When to run |
-|--------|-------------|-------------|
-| `npm run dev` | Vite dev server with HMR on `localhost:5173` | Daily development |
-| `npm run build` | Production bundle to `dist/` | Before checking bundle output |
-| `npm run preview` | Serve the `dist/` build locally | Verify production build before pushing |
-| `npm run typecheck` | `tsc --noEmit` — no files emitted | Check types without building |
-| `npm run lint` | ESLint on `src/` | Check code style |
-| `npm run lint:fix` | ESLint on `src/` with auto-fix | Fix fixable lint errors |
-| `npm test` | Vitest unit tests (single run) | Quick local check |
-| `npm run test:watch` | Vitest in watch mode | During development |
-| `npm run test:coverage` | Unit tests + HTML/lcov coverage report | Before a PR |
-| `npm run test:e2e` | Playwright E2E — Chromium + mobile Chrome | Before a PR |
-| `ALL_BROWSERS=true npm run test:e2e` | Adds Firefox + WebKit | Cross-browser check — local only |
-| `npm run test:e2e:functional` | E2E without visual regression | Faster E2E run |
-| `npm run e2e:visual:update` | Regenerate visual snapshot baselines | After intentional UI changes |
-| `npm run analyze` | Bundle build + opens visualizer in browser | Investigate bundle size |
-| `npm run size` | Size-limit check against thresholds in `package.json` | Verify bundle limits |
-| `npm run ci:local` | Full CI pipeline locally (see below) | Final check before pushing |
+| Script                               | What it does                                          | When to run                            |
+| ------------------------------------ | ----------------------------------------------------- | -------------------------------------- |
+| `npm run dev`                        | Vite dev server with HMR on `localhost:5173`          | Daily development                      |
+| `npm run build`                      | Production bundle to `dist/`                          | Before checking bundle output          |
+| `npm run preview`                    | Serve the `dist/` build locally                       | Verify production build before pushing |
+| `npm run typecheck`                  | `tsc --noEmit` — no files emitted                     | Check types without building           |
+| `npm run lint`                       | ESLint on `src/`                                      | Check code style                       |
+| `npm run lint:fix`                   | ESLint on `src/` with auto-fix                        | Fix fixable lint errors                |
+| `npm run format`                     | Prettier — format all files in place                  | Before committing                      |
+| `npm run format:check`               | Prettier — check formatting without writing           | Verify formatting (runs in CI)         |
+| `npm test`                           | Vitest unit tests (single run)                        | Quick local check                      |
+| `npm run test:watch`                 | Vitest in watch mode                                  | During development                     |
+| `npm run test:coverage`              | Unit tests + HTML/lcov coverage report                | Before a PR                            |
+| `npm run test:e2e`                   | Playwright E2E — Chromium + mobile Chrome             | Before a PR                            |
+| `ALL_BROWSERS=true npm run test:e2e` | Adds Firefox + WebKit                                 | Cross-browser check — local only       |
+| `npm run test:e2e:functional`        | E2E without visual regression                         | Faster E2E run                         |
+| `npm run e2e:visual:update`          | Regenerate visual snapshot baselines                  | After intentional UI changes           |
+| `npm run analyze`                    | Bundle build + opens visualizer in browser            | Investigate bundle size                |
+| `npm run size`                       | Size-limit check against thresholds in `package.json` | Verify bundle limits                   |
+| `npm run ci:local`                   | Full CI pipeline locally (see below)                  | Final check before pushing             |
 
 ### Full local CI
 
 ```bash
 npm run ci:local
 # equivalent to:
-# typecheck → lint → test → build → size → test:e2e → npm audit
+# typecheck → lint → format:check → test → build → size → test:e2e → npm audit
 ```
 
 This mirrors what runs on GitHub Actions. Run it before opening a PR to avoid surprises.
@@ -55,10 +57,10 @@ This mirrors what runs on GitHub Actions. Run it before opening a PR to avoid su
 
 Hooks are managed by Husky and run automatically — no manual steps needed.
 
-| Hook | Trigger | What runs |
-|------|---------|-----------|
-| `pre-commit` | `git commit` | `lint-staged` → ESLint `--fix` on staged `src/**/*.ts` files |
-| `pre-push` | `git push` | `typecheck` + `npm test` |
+| Hook         | Trigger      | What runs                                                        |
+| ------------ | ------------ | ---------------------------------------------------------------- |
+| `pre-commit` | `git commit` | `lint-staged` → Prettier format + ESLint `--fix` on staged files |
+| `pre-push`   | `git push`   | `typecheck` + `npm test`                                         |
 
 If the pre-push hook fails, fix the errors before pushing — do not skip with `--no-verify`.
 
@@ -74,16 +76,16 @@ This project uses **Conventional Commits**. Every commit message must follow:
 
 ### Types
 
-| Type | Use for |
-|------|---------|
-| `feat` | New user-visible feature |
-| `fix` | Bug fix |
+| Type       | Use for                              |
+| ---------- | ------------------------------------ |
+| `feat`     | New user-visible feature             |
+| `fix`      | Bug fix                              |
 | `refactor` | Code change with no behaviour change |
-| `test` | Adding or updating tests |
-| `style` | CSS or formatting changes |
-| `ci` | CI/CD pipeline changes |
-| `docs` | Documentation only |
-| `chore` | Dependency bumps, tooling, config |
+| `test`     | Adding or updating tests             |
+| `style`    | CSS or formatting changes            |
+| `ci`       | CI/CD pipeline changes               |
+| `docs`     | Documentation only                   |
+| `chore`    | Dependency bumps, tooling, config    |
 
 ### Scope (optional but recommended)
 
@@ -151,7 +153,7 @@ CI auto-regenerates Linux baselines when a visual test fails due to a rendering 
 push / PR to main
 │
 ├─ ci job
-│   typecheck → lint → test:coverage → build → size-limit
+│   typecheck → lint → format:check → test:coverage → build → size-limit
 │
 ├─ e2e job  (needs: ci)
 │   functional E2E → visual regression (auto-update on mismatch)
