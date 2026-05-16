@@ -9,6 +9,10 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Mode-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![CI](https://img.shields.io/github/actions/workflow/status/MihaelaAghirculesei/Pokedex/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
 [![codecov](https://img.shields.io/codecov/c/github/MihaelaAghirculesei/Pokedex?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/MihaelaAghirculesei/Pokedex)
+[![Performance](https://img.shields.io/badge/Lighthouse_Performance-87%2F100-FF9800?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
+[![Accessibility](https://img.shields.io/badge/Lighthouse_Accessibility-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
+[![Best Practices](https://img.shields.io/badge/Lighthouse_Best_Practices-96%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
+[![SEO](https://img.shields.io/badge/Lighthouse_SEO-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
 
 </div>
 
@@ -80,14 +84,38 @@ Mouse position is tracked via `mousemove` (throttled with `requestAnimationFrame
 
 ## Browser support
 
-| Browser | Version | Notes |
-|---------|---------|-------|
-| Chrome / Edge | 90+ | Full support; PWA install via address bar |
-| Firefox | 90+ | Full support |
-| Safari / iOS Safari | 15.4+ | Full support; PWA via Share → Add to Home Screen |
-| Samsung Internet | 14+ | Full support |
+| Browser             | Version | Notes                                            |
+| ------------------- | ------- | ------------------------------------------------ |
+| Chrome / Edge       | 90+     | Full support; PWA install via address bar        |
+| Firefox             | 90+     | Full support                                     |
+| Safari / iOS Safari | 15.4+   | Full support; PWA via Share → Add to Home Screen |
+| Samsung Internet    | 14+     | Full support                                     |
 
 Tested in CI with Playwright on **Chromium** (every push) and **Firefox + WebKit** locally (`ALL_BROWSERS=true npm run test:e2e`). Requires ES2020 — no IE support.
+
+---
+
+## Performance & Quality
+
+Lighthouse CI runs automatically on every push (`npm run lighthouse:ci` to reproduce locally). Scores measured on a production build with simulated 4× mobile CPU throttling; external API calls are excluded so results reflect only the app itself.
+
+| Category       |         Score | CI threshold |
+| -------------- | ------------: | :----------: |
+| Performance    |  **87 / 100** |     ≥ 80     |
+| Accessibility  | **100 / 100** |     ≥ 90     |
+| Best Practices |  **96 / 100** |     ≥ 90     |
+| SEO            | **100 / 100** |     ≥ 80     |
+
+**Core Web Vitals** (production build, simulated mobile, no prior cache):
+
+| Metric                         | Value |      Rating       |
+| ------------------------------ | ----: | :---------------: |
+| First Contentful Paint (FCP)   | 1.1 s |       Good        |
+| Largest Contentful Paint (LCP) | 2.9 s | Needs improvement |
+| Total Blocking Time (TBT)      |  0 ms |       Good        |
+| Cumulative Layout Shift (CLS)  | 0.169 | Needs improvement |
+
+> LCP and CLS are measured before the Service Worker has cached anything. On repeat visits the SW serves assets from cache — FCP and LCP drop sharply on the live Cloudflare CDN.
 
 ---
 
@@ -104,20 +132,20 @@ Open `http://localhost:5173` in your browser.
 
 ### Available scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server with HMR |
-| `npm run build` | Production build to `dist/` |
-| `npm run preview` | Preview the production build locally |
-| `npm test` | Run unit tests with Vitest |
-| `npm run test:coverage` | Tests + coverage report (HTML + lcov) |
-| `npm run test:e2e` | E2E tests with Playwright (Chromium + mobile Chrome) |
-| `ALL_BROWSERS=true npm run test:e2e` | Full cross-browser E2E: Chromium, Firefox, WebKit — local only |
-| `npm run typecheck` | TypeScript type check (no emit) |
-| `npm run lint` | ESLint on `src/` |
-| `npm run lint:fix` | ESLint on `src/` with auto-fix |
-| `npm run analyze` | Production build + open bundle visualizer |
-| `npm run ci:local` | Full CI pipeline locally (typecheck → lint → test → build → E2E) |
+| Command                              | Description                                                      |
+| ------------------------------------ | ---------------------------------------------------------------- |
+| `npm run dev`                        | Start dev server with HMR                                        |
+| `npm run build`                      | Production build to `dist/`                                      |
+| `npm run preview`                    | Preview the production build locally                             |
+| `npm test`                           | Run unit tests with Vitest                                       |
+| `npm run test:coverage`              | Tests + coverage report (HTML + lcov)                            |
+| `npm run test:e2e`                   | E2E tests with Playwright (Chromium + mobile Chrome)             |
+| `ALL_BROWSERS=true npm run test:e2e` | Full cross-browser E2E: Chromium, Firefox, WebKit — local only   |
+| `npm run typecheck`                  | TypeScript type check (no emit)                                  |
+| `npm run lint`                       | ESLint on `src/`                                                 |
+| `npm run lint:fix`                   | ESLint on `src/` with auto-fix                                   |
+| `npm run analyze`                    | Production build + open bundle visualizer                        |
+| `npm run ci:local`                   | Full CI pipeline locally (typecheck → lint → test → build → E2E) |
 
 ---
 
@@ -131,11 +159,11 @@ The live version runs on **Cloudflare Pages** (zero-config static hosting — no
 2. In the [Cloudflare Pages dashboard](https://pages.cloudflare.com/), create a new project and connect your GitHub repo.
 3. Set the build configuration:
 
-   | Setting | Value |
-   |---------|-------|
-   | Build command | `npm run build` |
-   | Build output directory | `dist` |
-   | Node.js version | `22` |
+   | Setting                | Value           |
+   | ---------------------- | --------------- |
+   | Build command          | `npm run build` |
+   | Build output directory | `dist`          |
+   | Node.js version        | `22`            |
 
 4. Click **Save and Deploy** — Cloudflare runs the build and assigns a `*.pages.dev` URL automatically.
 5. Every subsequent push to `main` triggers a new deploy.
@@ -160,6 +188,7 @@ npm run build   # produces dist/
 <td width="50%">
 
 **Core**
+
 - Type-based dynamic color theming on cards
 - Search by name (substring) **or by Pokémon ID number** — with 300ms debounce
 - Progressive "Load More" pagination
@@ -173,6 +202,7 @@ npm run build   # produces dist/
 <td width="50%">
 
 **PWA / Offline**
+
 - Workbox Service Worker — auto-generated, cache-first strategy
 - API responses cached up to 7 days (300 entries max)
 - Pokémon sprites cached up to 30 days (600 entries max)
@@ -189,13 +219,13 @@ npm run build   # produces dist/
 
 ## Keyboard navigation
 
-| Key | Context | Action |
-|-----|---------|--------|
-| `→` / `←` | Card grid | Navigate between Pokémon cards |
-| `Enter` / `Space` | Focused card | Open detail overlay |
-| `ESC` | Overlay open | Close overlay, restore focus |
-| `→` / `←` | Overlay open | Next / previous Pokémon |
-| `↑` / `↓` | Overlay open | Switch tab (About → Base Stats → Moves) |
+| Key                 | Context      | Action                                         |
+| ------------------- | ------------ | ---------------------------------------------- |
+| `→` / `←`           | Card grid    | Navigate between Pokémon cards                 |
+| `Enter` / `Space`   | Focused card | Open detail overlay                            |
+| `ESC`               | Overlay open | Close overlay, restore focus                   |
+| `→` / `←`           | Overlay open | Next / previous Pokémon                        |
+| `↑` / `↓`           | Overlay open | Switch tab (About → Base Stats → Moves)        |
 | `Tab` / `Shift+Tab` | Overlay open | Cycle through overlay controls (focus trapped) |
 
 - Reaching the last card with `→` moves focus to **Load More**
@@ -228,18 +258,18 @@ npm run build   # produces dist/
 
 ## Tech
 
-| Layer | Phase 1 — Vanilla JS | Phase 2 — TypeScript |
-|-------|----------------------|----------------------|
-| Language | Vanilla JavaScript (ES6+) | TypeScript 6 — strict mode |
-| Build | None (direct file serving) | Vite 7 — HMR + optimized bundles |
-| Offline | Hand-crafted Service Worker | Workbox via vite-plugin-pwa |
-| Testing | None | Vitest 4 — unit tests + Playwright E2E (Chromium in CI; cross-browser locally) |
-| Linting | None | ESLint + typescript-eslint strict |
-| Git hooks | None | Husky + lint-staged (pre-commit fix, pre-push gate) |
-| Styling | CSS3 — Grid, Flexbox, Custom Properties | Unchanged |
-| Data | PokéAPI v2 via Fetch + AbortController | Unchanged |
-| Security | None | DOMPurify + HTTP security headers (CSP, X-Frame-Options…) |
-| Accessibility | WAI-ARIA, focus trap, keyboard nav | Unchanged |
+| Layer         | Phase 1 — Vanilla JS                    | Phase 2 — TypeScript                                                           |
+| ------------- | --------------------------------------- | ------------------------------------------------------------------------------ |
+| Language      | Vanilla JavaScript (ES6+)               | TypeScript 6 — strict mode                                                     |
+| Build         | None (direct file serving)              | Vite 7 — HMR + optimized bundles                                               |
+| Offline       | Hand-crafted Service Worker             | Workbox via vite-plugin-pwa                                                    |
+| Testing       | None                                    | Vitest 4 — unit tests + Playwright E2E (Chromium in CI; cross-browser locally) |
+| Linting       | None                                    | ESLint + typescript-eslint strict                                              |
+| Git hooks     | None                                    | Husky + lint-staged (pre-commit fix, pre-push gate)                            |
+| Styling       | CSS3 — Grid, Flexbox, Custom Properties | Unchanged                                                                      |
+| Data          | PokéAPI v2 via Fetch + AbortController  | Unchanged                                                                      |
+| Security      | None                                    | DOMPurify + HTTP security headers (CSP, X-Frame-Options…)                      |
+| Accessibility | WAI-ARIA, focus trap, keyboard nav      | Unchanged                                                                      |
 
 ---
 
@@ -247,9 +277,9 @@ npm run build   # produces dist/
 
 **Desktop (Chrome / Edge):** click the install icon in the address bar → runs in a standalone window.
 
-**Android:** Menu → *Add to Home screen* or *Install app*.
+**Android:** Menu → _Add to Home screen_ or _Install app_.
 
-**iOS / Safari:** Share → *Add to Home Screen*.
+**iOS / Safari:** Share → _Add to Home Screen_.
 
 ---
 
