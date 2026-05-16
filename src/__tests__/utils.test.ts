@@ -12,19 +12,34 @@ import {
 import type { PokemonTypeName } from '../types.js';
 
 const ALL_TYPES: PokemonTypeName[] = [
-  'bug', 'dark', 'dragon', 'electric', 'fairy', 'fighting',
-  'fire', 'flying', 'grass', 'ground', 'ghost', 'ice',
-  'normal', 'poison', 'psychic', 'rock', 'steel', 'water',
+  'bug',
+  'dark',
+  'dragon',
+  'electric',
+  'fairy',
+  'fighting',
+  'fire',
+  'flying',
+  'grass',
+  'ground',
+  'ghost',
+  'ice',
+  'normal',
+  'poison',
+  'psychic',
+  'rock',
+  'steel',
+  'water',
 ];
 
 describe('typeColor', () => {
   it('has an entry for all 18 types', () => {
-    const missingTypes = ALL_TYPES.filter(type => !typeColor[type]);
+    const missingTypes = ALL_TYPES.filter((type) => !typeColor[type]);
     expect(missingTypes).toHaveLength(0);
   });
 
   it('stores valid hex color strings', () => {
-    Object.values(typeColor).forEach(color => {
+    Object.values(typeColor).forEach((color) => {
       expect(color).toMatch(/^#[0-9a-fA-F]{3,6}$/);
     });
   });
@@ -40,7 +55,7 @@ describe('getTypeIconSrc', () => {
   });
 
   it('handles all 18 types without throwing', () => {
-    ALL_TYPES.forEach(type => {
+    ALL_TYPES.forEach((type) => {
       expect(() => getTypeIconSrc(type)).not.toThrow();
       expect(getTypeIconSrc(type)).not.toBe('');
     });
@@ -77,7 +92,7 @@ describe('filterPokemon', () => {
   it('filters by partial name', () => {
     const result = filterPokemon(list, 'char', 10);
     expect(result).toHaveLength(3);
-    expect(result.map(p => p.name)).toEqual(['charmander', 'charmeleon', 'charizard']);
+    expect(result.map((p) => p.name)).toEqual(['charmander', 'charmeleon', 'charizard']);
   });
 
   it('respects the limit', () => {

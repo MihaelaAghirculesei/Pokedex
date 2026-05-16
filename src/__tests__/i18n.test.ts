@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { getLang, setLang, applyLangToggleUI } from '../i18n.js';
 
-beforeEach(() => { localStorage.clear(); });
+beforeEach(() => {
+  localStorage.clear();
+});
 
 describe('getLang', () => {
   it('returns "en" by default when nothing is stored', () => {
@@ -86,4 +88,3 @@ describe('applyLangToggleUI', () => {
     expect(toggle.classList.contains('en')).toBe(false);
   });
 });
-

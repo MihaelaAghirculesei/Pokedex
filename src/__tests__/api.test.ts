@@ -10,7 +10,10 @@ function mockResponse(status: number, body: unknown = {}): Response {
 
 describe('fetchWithRetry — via fetchPokemons', () => {
   beforeEach(() => vi.useFakeTimers());
-  afterEach(() => { vi.restoreAllMocks(); vi.useRealTimers(); });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
 
   it('returns on first attempt when the API responds 200', async () => {
     const signal = new AbortController().signal;
@@ -74,18 +77,25 @@ describe('fetchWithRetry — via fetchPokemons', () => {
 
   it('does not retry when the AbortSignal fires', async () => {
     const controller = new AbortController();
-    const abortError = Object.assign(new Error('The user aborted a request.'), { name: 'AbortError' });
+    const abortError = Object.assign(new Error('The user aborted a request.'), {
+      name: 'AbortError',
+    });
     vi.spyOn(globalThis, 'fetch').mockRejectedValue(abortError);
     controller.abort();
 
-    await expect(fetchPokemons(0, 10, controller.signal)).rejects.toThrow('The user aborted a request.');
+    await expect(fetchPokemons(0, 10, controller.signal)).rejects.toThrow(
+      'The user aborted a request.',
+    );
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
   });
 });
 
 describe('fetchWithRetry — via fetchOnePokemon', () => {
   beforeEach(() => vi.useFakeTimers());
-  afterEach(() => { vi.restoreAllMocks(); vi.useRealTimers(); });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
 
   it('retries on 429 and succeeds', async () => {
     const signal = new AbortController().signal;
@@ -105,7 +115,10 @@ describe('fetchWithRetry — via fetchOnePokemon', () => {
 
 describe('sleep abort — via fetchPokemons', () => {
   beforeEach(() => vi.useFakeTimers());
-  afterEach(() => { vi.restoreAllMocks(); vi.useRealTimers(); });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
 
   it('rejects when AbortSignal fires during the retry sleep delay', async () => {
     const controller = new AbortController();
@@ -134,7 +147,10 @@ describe('fetchAllPokemonDetails', () => {
       .mockResolvedValueOnce(mockResponse(200, { id: 4, name: 'charmander' }));
 
     const result = await fetchAllPokemonDetails(
-      [{ url: 'https://pokeapi.co/api/v2/pokemon/1' }, { url: 'https://pokeapi.co/api/v2/pokemon/4' }],
+      [
+        { url: 'https://pokeapi.co/api/v2/pokemon/1' },
+        { url: 'https://pokeapi.co/api/v2/pokemon/4' },
+      ],
       signal,
     );
 
@@ -150,7 +166,10 @@ describe('fetchAllPokemonDetails', () => {
       .mockResolvedValueOnce(mockResponse(404));
 
     const result = await fetchAllPokemonDetails(
-      [{ url: 'https://pokeapi.co/api/v2/pokemon/1' }, { url: 'https://pokeapi.co/api/v2/pokemon/bad' }],
+      [
+        { url: 'https://pokeapi.co/api/v2/pokemon/1' },
+        { url: 'https://pokeapi.co/api/v2/pokemon/bad' },
+      ],
       signal,
     );
 
@@ -178,11 +197,15 @@ describe('fetchAllPokemonDetails', () => {
 
 describe('getErrorMessage', () => {
   it('returns rate-limit message for 429 errors', () => {
-    expect(getErrorMessage(new Error('HTTP 429: Too Many Requests'))).toContain('Too many requests');
+    expect(getErrorMessage(new Error('HTTP 429: Too Many Requests'))).toContain(
+      'Too many requests',
+    );
   });
 
   it('returns server error message for 5xx errors', () => {
-    expect(getErrorMessage(new Error('HTTP 503: Service Unavailable'))).toContain('temporarily unavailable');
+    expect(getErrorMessage(new Error('HTTP 503: Service Unavailable'))).toContain(
+      'temporarily unavailable',
+    );
   });
 
   it('returns generic message for network errors', () => {

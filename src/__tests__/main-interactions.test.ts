@@ -71,8 +71,8 @@ function stubFetchSuccessTwo(): ReturnType<typeof vi.fn> {
                 ],
               }
             : url.endsWith('/2/')
-            ? POKEMON2
-            : POKEMON,
+              ? POKEMON2
+              : POKEMON,
         ),
     }),
   );
@@ -83,7 +83,9 @@ function stubFetchSuccessTwo(): ReturnType<typeof vi.fn> {
 async function loadAndWaitForCards(): Promise<void> {
   await import('../main.js');
   await vi.waitFor(
-    () => { expect(document.querySelector('.pokemon-card')).toBeTruthy(); },
+    () => {
+      expect(document.querySelector('.pokemon-card')).toBeTruthy();
+    },
     { timeout: 2000 },
   );
 }
@@ -95,13 +97,18 @@ function openOverlay(): void {
 function cleanup(): void {
   vi.unstubAllGlobals();
   document.body.classList.remove('no-scroll', 'keyboard-nav');
-  document.querySelectorAll('.overlay').forEach(el => { el.remove(); });
+  document.querySelectorAll('.overlay').forEach((el) => {
+    el.remove();
+  });
 }
 
 // ─── Card rendering ───────────────────────────────────────────────────────────
 
 describe('main.ts — card rendering', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('sets correct data-name, role, and aria-label on card', async () => {
@@ -119,7 +126,10 @@ describe('main.ts — card rendering', () => {
 // ─── Overlay open / close ─────────────────────────────────────────────────────
 
 describe('main.ts — overlay', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('opens overlay and adds no-scroll class on card click', async () => {
@@ -171,7 +181,10 @@ describe('main.ts — overlay', () => {
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
 
 describe('main.ts — tabs', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('switches to BaseStats tab and shows its content', async () => {
@@ -229,7 +242,10 @@ describe('main.ts — tabs', () => {
 // ─── Navigation buttons ───────────────────────────────────────────────────────
 
 describe('main.ts — navigation buttons', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('clicking next button initiates slide animation', async () => {
@@ -278,7 +294,10 @@ describe('main.ts — navigation buttons', () => {
 // ─── Search ───────────────────────────────────────────────────────────────────
 
 describe('main.ts — search', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('filters cards and announces results when >= 3 chars typed', async () => {
@@ -288,7 +307,9 @@ describe('main.ts — search', () => {
     input.value = 'bul';
     input.dispatchEvent(new Event('input'));
     await vi.waitFor(
-      () => { expect(document.getElementById('search-status')?.textContent).toContain('Pokémon found'); },
+      () => {
+        expect(document.getElementById('search-status')?.textContent).toContain('Pokémon found');
+      },
       { timeout: 1500 },
     );
   });
@@ -317,7 +338,9 @@ describe('main.ts — search', () => {
     input.value = 'bul';
     input.dispatchEvent(new Event('input'));
     await vi.waitFor(
-      () => { expect(document.getElementById('search-status')?.textContent).not.toBe(''); },
+      () => {
+        expect(document.getElementById('search-status')?.textContent).not.toBe('');
+      },
       { timeout: 1500 },
     );
     input.value = 'bu';
@@ -329,7 +352,10 @@ describe('main.ts — search', () => {
 // ─── Keyboard navigation ──────────────────────────────────────────────────────
 
 describe('main.ts — keyboard navigation', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('opens overlay on Enter keydown on card', async () => {
@@ -395,9 +421,11 @@ describe('main.ts — keyboard navigation', () => {
 
     const overlay = document.querySelector<HTMLElement>('.overlay');
     if (!overlay) throw new Error('.overlay not found');
-    const focusable = Array.from(overlay.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-    ));
+    const focusable = Array.from(
+      overlay.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      ),
+    );
     const last = focusable[focusable.length - 1];
     if (!last) throw new Error('No focusable elements found in overlay');
     last.focus();
@@ -460,7 +488,9 @@ describe('main.ts — keyboard navigation', () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     const cards = document.querySelectorAll<HTMLElement>('.pokemon-card');
@@ -475,7 +505,9 @@ describe('main.ts — keyboard navigation', () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     const cards = document.querySelectorAll<HTMLElement>('.pokemon-card');
@@ -510,7 +542,10 @@ describe('main.ts — keyboard navigation', () => {
 // ─── Mouse interactions ───────────────────────────────────────────────────────
 
 describe('main.ts — mouse interactions', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('resets card CSS vars to 50% on mouseout', async () => {
@@ -543,13 +578,23 @@ describe('main.ts — mouse interactions', () => {
     await loadAndWaitForCards();
 
     // Make rAF run the callback synchronously so lines 491-496 are covered
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
 
     const card = document.querySelector<HTMLElement>('.pokemon-card');
     if (!card) throw new Error('.pokemon-card not found');
     vi.spyOn(card, 'getBoundingClientRect').mockReturnValue({
-      left: 0, top: 0, width: 100, height: 100,
-      right: 100, bottom: 100, x: 0, y: 0, toJSON: () => ({}),
+      left: 0,
+      top: 0,
+      width: 100,
+      height: 100,
+      right: 100,
+      bottom: 100,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
     });
 
     card.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 50, clientY: 25 }));
@@ -561,12 +606,17 @@ describe('main.ts — mouse interactions', () => {
   it('mousemove on container (not a card) skips CSS update inside rAF callback', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
     const container = document.getElementById('pokedex-container');
     if (!container) throw new Error('pokedex-container not found');
     // Target is the container itself — closest('.pokemon-card') returns null → early return
     container.dispatchEvent(new MouseEvent('mousemove', { bubbles: false }));
-    expect(document.querySelector<HTMLElement>('.pokemon-card')?.style.getPropertyValue('--x')).toBe('');
+    expect(
+      document.querySelector<HTMLElement>('.pokemon-card')?.style.getPropertyValue('--x'),
+    ).toBe('');
   });
 
   it('second mousemove while rAF is pending is skipped', async () => {
@@ -574,7 +624,10 @@ describe('main.ts — mouse interactions', () => {
     await loadAndWaitForCards();
 
     let rafCount = 0;
-    vi.stubGlobal('requestAnimationFrame', () => { rafCount++; return 0; });
+    vi.stubGlobal('requestAnimationFrame', () => {
+      rafCount++;
+      return 0;
+    });
 
     const container = document.getElementById('pokedex-container');
     if (!container) throw new Error('pokedex-container not found');
@@ -595,7 +648,8 @@ describe('main.ts — direction-specific navigation (lines 284-290)', () => {
     await import('../main.js');
     await vi.waitFor(
       () => {
-        if (document.querySelectorAll('.pokemon-card').length !== 2) throw new Error('cards not ready');
+        if (document.querySelectorAll('.pokemon-card').length !== 2)
+          throw new Error('cards not ready');
       },
       { timeout: 2000 },
     );
@@ -605,18 +659,25 @@ describe('main.ts — direction-specific navigation (lines 284-290)', () => {
   it('prev button applies translateX(100%) slide-out on details-card', () => {
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
     document.querySelector<HTMLButtonElement>('.arrow-button.prev')?.click();
-    expect(document.querySelector<HTMLElement>('.details-card')?.style.transform).toBe('translateX(100%)');
+    expect(document.querySelector<HTMLElement>('.details-card')?.style.transform).toBe(
+      'translateX(100%)',
+    );
   });
 
   it('next button applies translateX(-100%) slide-out on details-card', () => {
     document.querySelectorAll<HTMLElement>('.pokemon-card')[1]?.click();
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
-    expect(document.querySelector<HTMLElement>('.details-card')?.style.transform).toBe('translateX(-100%)');
+    expect(document.querySelector<HTMLElement>('.details-card')?.style.transform).toBe(
+      'translateX(-100%)',
+    );
   });
 
   it('prev from first pokemon wraps to last after slide-in completes', () => {
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
     document.querySelector<HTMLButtonElement>('.arrow-button.prev')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -628,7 +689,10 @@ describe('main.ts — direction-specific navigation (lines 284-290)', () => {
 
   it('next from last pokemon wraps to first after slide-in completes', () => {
     document.querySelectorAll<HTMLElement>('.pokemon-card')[1]?.click();
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -642,18 +706,26 @@ describe('main.ts — direction-specific navigation (lines 284-290)', () => {
 // ─── Slide-in animation via nested rAF (lines 314-327) ────────────────────────
 
 describe('main.ts — slide-in animation via nested rAF (lines 314-327)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('transitionend + synchronous rAF resets transform to translateX(0) and opacity to 1', async () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -668,14 +740,19 @@ describe('main.ts — slide-in animation via nested rAF (lines 314-327)', () => 
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
     const overlay = document.querySelector<HTMLElement>('.overlay');
     if (!overlay) throw new Error('.overlay not found');
     const focusSpy = vi.spyOn(overlay, 'focus');
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -689,7 +766,9 @@ describe('main.ts — slide-in animation via nested rAF (lines 314-327)', () => 
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
@@ -707,7 +786,9 @@ describe('main.ts — slide-in animation via nested rAF (lines 314-327)', () => 
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
@@ -725,7 +806,10 @@ describe('main.ts — slide-in animation via nested rAF (lines 314-327)', () => 
 // ─── openTab Moves guards + loadPokemonMoves (lines 348-365) ──────────────────
 
 describe('main.ts — openTab Moves guards and loadPokemonMoves (lines 348-365)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('second Moves tab click skips reload when data-loaded is already true (line 348 false branch)', async () => {
@@ -795,7 +879,10 @@ describe('main.ts — openTab Moves guards and loadPokemonMoves (lines 348-365)'
 // ─── Load more ────────────────────────────────────────────────────────────────
 
 describe('main.ts — load more', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('clicking load-more button triggers a new fetch', async () => {
@@ -804,7 +891,9 @@ describe('main.ts — load more', () => {
     const callsBefore = mock.mock.calls.length;
     document.getElementById('load-more')?.click();
     await vi.waitFor(
-      () => { expect(mock.mock.calls.length).toBeGreaterThan(callsBefore); },
+      () => {
+        expect(mock.mock.calls.length).toBeGreaterThan(callsBefore);
+      },
       { timeout: 2000 },
     );
   });
@@ -813,14 +902,18 @@ describe('main.ts — load more', () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
 
     document.getElementById('load-more')?.click();
 
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(4); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(4);
+      },
       { timeout: 2000 },
     );
 
@@ -839,7 +932,9 @@ describe('main.ts — load more', () => {
     document.getElementById('load-more')?.click();
 
     await vi.waitFor(
-      () => { expect(document.getElementById('search-status')?.textContent).toContain('Pokémon found'); },
+      () => {
+        expect(document.getElementById('search-status')?.textContent).toContain('Pokémon found');
+      },
       { timeout: 2000 },
     );
   });
@@ -848,14 +943,19 @@ describe('main.ts — load more', () => {
 // ─── navigateCards: no focused card (currentIndex === -1, lines 436-441) ─────
 
 describe('main.ts — navigateCards: no focused card (line 451 currentIndex=-1)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('ArrowRight with no focused card moves focus to first card', async () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
@@ -866,7 +966,9 @@ describe('main.ts — navigateCards: no focused card (line 451 currentIndex=-1)'
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
@@ -878,7 +980,10 @@ describe('main.ts — navigateCards: no focused card (line 451 currentIndex=-1)'
 // ─── openCardOverlay edge cases (lines 466-468) ───────────────────────────────
 
 describe('main.ts — openCardOverlay edge cases (lines 466-468)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('click directly on container with no card ancestor does not open overlay (line 466)', async () => {
@@ -904,7 +1009,10 @@ describe('main.ts — openCardOverlay edge cases (lines 466-468)', () => {
 // ─── Event listener cleanup after overlay close ───────────────────────────────
 
 describe('main.ts — event listener cleanup after overlay close', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('previously focused card regains focus when overlay closes via Escape', async () => {
@@ -931,7 +1039,9 @@ describe('main.ts — event listener cleanup after overlay close', () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
@@ -945,14 +1055,19 @@ describe('main.ts — event listener cleanup after overlay close', () => {
 // ─── updateDetailsCard: slide-out state and rAF lifecycle (lines 293-327) ────
 
 describe('main.ts — updateDetailsCard slide-out state and rAF lifecycle (lines 293-327)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('sets opacity to "0" and ease-out transition immediately after next click (lines 304-306)', async () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
@@ -967,7 +1082,9 @@ describe('main.ts — updateDetailsCard slide-out state and rAF lifecycle (lines
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
@@ -995,7 +1112,9 @@ describe('main.ts — updateDetailsCard slide-out state and rAF lifecycle (lines
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
@@ -1021,7 +1140,9 @@ describe('main.ts — updateDetailsCard slide-out state and rAF lifecycle (lines
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
@@ -1029,7 +1150,10 @@ describe('main.ts — updateDetailsCard slide-out state and rAF lifecycle (lines
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
 
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
 
     const evt = new Event('transitionend') as TransitionEvent;
     Object.defineProperty(evt, 'propertyName', { value: 'transform' });
@@ -1042,7 +1166,9 @@ describe('main.ts — updateDetailsCard slide-out state and rAF lifecycle (lines
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
@@ -1058,7 +1184,10 @@ describe('main.ts — updateDetailsCard slide-out state and rAF lifecycle (lines
 // ─── fetchPokemonData: catch-block + search-input guard (lines 93, 103-110) ──
 
 describe('main.ts — fetchPokemonData catch-block and search-input guard (lines 93, 103-110)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('#search-input absent during load-more falls back to empty string and keeps cards rendered (line 93)', async () => {
@@ -1149,7 +1278,10 @@ describe('main.ts — fetchPokemonData catch-block and search-input guard (lines
 // ─── trapFocus edge cases (lines 413-417) ────────────────────────────────────
 
 describe('main.ts — trapFocus edge cases (lines 413-417)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('Tab in overlay with no focusable elements calls preventDefault and returns early (line 413)', async () => {
@@ -1162,7 +1294,9 @@ describe('main.ts — trapFocus edge cases (lines 413-417)', () => {
     // Strip every focusable descendant so focusable.length === 0 → line 413 guard fires
     overlay
       .querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
-      .forEach(el => { el.remove(); });
+      .forEach((el) => {
+        el.remove();
+      });
 
     const tabEvent = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
     const preventDefaultSpy = vi.spyOn(tabEvent, 'preventDefault');
@@ -1176,21 +1310,31 @@ describe('main.ts — trapFocus edge cases (lines 413-417)', () => {
 // ─── Guard clause branches (lines 199, 232, 257) ─────────────────────────────
 
 describe('main.ts — guard clause branches (lines 199, 232, 257)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
-  afterEach(() => { vi.doUnmock('../templates.js'); cleanup(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
+  afterEach(() => {
+    vi.doUnmock('../templates.js');
+    cleanup();
+  });
 
   it('createPokemonCard applies fallback color when type is not in typeColor (line 199)', async () => {
     const unknownPokemon = { ...POKEMON, types: [{ type: { name: 'stellar' } }] };
-    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(
-          url.includes('?offset=')
-            ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
-            : unknownPokemon,
-        ),
-      }),
-    ));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation((url: string) =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve(
+              url.includes('?offset=')
+                ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
+                : unknownPokemon,
+            ),
+        }),
+      ),
+    );
     await loadAndWaitForCards();
     const card = document.querySelector<HTMLElement>('.pokemon-card');
     if (!card) throw new Error('.pokemon-card not found');
@@ -1199,16 +1343,20 @@ describe('main.ts — guard clause branches (lines 199, 232, 257)', () => {
 
   it('showPokemonDetails applies fallback color on details-card when type is not in typeColor (line 232)', async () => {
     const unknownPokemon = { ...POKEMON, types: [{ type: { name: 'stellar' } }] };
-    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(
-          url.includes('?offset=')
-            ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
-            : unknownPokemon,
-        ),
-      }),
-    ));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation((url: string) =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve(
+              url.includes('?offset=')
+                ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
+                : unknownPokemon,
+            ),
+        }),
+      ),
+    );
     await loadAndWaitForCards();
     openOverlay();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
@@ -1224,16 +1372,20 @@ describe('main.ts — guard clause branches (lines 199, 232, 257)', () => {
       movesErrorTemplate: () => '',
       createMovesHTMLTemplate: () => '',
     }));
-    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(
-          url.includes('?offset=')
-            ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
-            : POKEMON,
-        ),
-      }),
-    ));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation((url: string) =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve(
+              url.includes('?offset=')
+                ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
+                : POKEMON,
+            ),
+        }),
+      ),
+    );
     await loadAndWaitForCards();
     openOverlay();
     expect(document.querySelector('.overlay')).toBeTruthy();
@@ -1244,14 +1396,19 @@ describe('main.ts — guard clause branches (lines 199, 232, 257)', () => {
 // ─── Fetch errors → handleFetchError + loadPokemonMoves error path ────────────
 
 describe('main.ts — fetch errors (handleFetchError)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('shows generic connection error when fetch rejects with a network error', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelector('.error-message')).toBeTruthy(); },
+      () => {
+        expect(document.querySelector('.error-message')).toBeTruthy();
+      },
       { timeout: 2000 },
     );
     expect(document.querySelector('.error-message')?.textContent).toContain(
@@ -1285,7 +1442,9 @@ describe('main.ts — fetch errors (handleFetchError)', () => {
       await import('../main.js');
       await vi.runAllTimersAsync();
       expect(document.querySelector('.error-message')).toBeTruthy();
-      expect(document.querySelector('.error-message')?.textContent).toContain('temporarily unavailable');
+      expect(document.querySelector('.error-message')?.textContent).toContain(
+        'temporarily unavailable',
+      );
     } finally {
       vi.useRealTimers();
     }
@@ -1312,7 +1471,9 @@ describe('main.ts — fetch errors (handleFetchError)', () => {
     );
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelector('.error-message')).toBeTruthy(); },
+      () => {
+        expect(document.querySelector('.error-message')).toBeTruthy();
+      },
       { timeout: 2000 },
     );
     expect(document.querySelector('.pokemon-card')).toBeNull();
@@ -1322,17 +1483,22 @@ describe('main.ts — fetch errors (handleFetchError)', () => {
 // ─── SLIDE_DURATION_MS initialization (line 26) ──────────────────────────────
 
 describe('main.ts — SLIDE_DURATION_MS initialization (line 26)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('uses CSS variable when --transition-duration is set (truthy branch)', async () => {
     vi.stubGlobal('getComputedStyle', () => ({
-      getPropertyValue: (prop: string) => prop === '--transition-duration' ? '0.4' : '',
+      getPropertyValue: (prop: string) => (prop === '--transition-duration' ? '0.4' : ''),
     }));
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
@@ -1348,7 +1514,9 @@ describe('main.ts — SLIDE_DURATION_MS initialization (line 26)', () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelectorAll('.pokemon-card').length).toBe(2); },
+      () => {
+        expect(document.querySelectorAll('.pokemon-card').length).toBe(2);
+      },
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
@@ -1363,7 +1531,9 @@ describe('main.ts — SLIDE_DURATION_MS initialization (line 26)', () => {
 // ─── getEl: throws when required element is absent (line 33) ──────────────────
 
 describe('main.ts — getEl throws for missing element (line 33)', () => {
-  beforeEach(() => { vi.resetModules(); });
+  beforeEach(() => {
+    vi.resetModules();
+  });
   afterEach(cleanup);
 
   it('throws naming the missing element id when a required DOM element is absent', async () => {
@@ -1384,28 +1554,40 @@ describe('main.ts — getEl throws for missing element (line 33)', () => {
 // ─── Direction branches: lines 314, 343 ──────────────────────────────────────
 
 describe('main.ts — direction branches (lines 314, 343)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('sets backgroundColor to #95afc0 fallback when pokemon type is absent from typeColor map (line 314 ??)', async () => {
     const unknownTypePokemon = { ...POKEMON, types: [{ type: { name: 'unknown-xyz' } }] };
-    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(
-          url.includes('?offset=')
-            ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
-            : unknownTypePokemon,
-        ),
-      }),
-    ));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation((url: string) =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve(
+              url.includes('?offset=')
+                ? { results: [{ url: 'https://pokeapi.co/api/v2/pokemon/1/' }] }
+                : unknownTypePokemon,
+            ),
+        }),
+      ),
+    );
     await import('../main.js');
     await vi.waitFor(
-      () => { expect(document.querySelector('.pokemon-card')).toBeTruthy(); },
+      () => {
+        expect(document.querySelector('.pokemon-card')).toBeTruthy();
+      },
       { timeout: 2000 },
     );
     document.querySelector<HTMLElement>('.pokemon-card')?.click();
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -1429,7 +1611,9 @@ describe('main.ts — direction branches (lines 314, 343)', () => {
     // querySelector('.details-card') inside openTab will now return null → early return (line 343).
     document.body.appendChild(tabBtn);
     detailsCard.remove();
-    expect(() => { tabBtn.click(); }).not.toThrow();
+    expect(() => {
+      tabBtn.click();
+    }).not.toThrow();
     expect(document.querySelector('.details-card')).toBeNull();
   });
 });
@@ -1437,7 +1621,10 @@ describe('main.ts — direction branches (lines 314, 343)', () => {
 // ─── trapFocus: Shift+Tab when first element is focused (line 420 left branch) ──
 
 describe('main.ts — trapFocus: Shift+Tab on first focusable element (line 420)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('Shift+Tab when first focusable element is focused wraps focus to last (line 420 left branch)', async () => {
@@ -1471,14 +1658,20 @@ describe('main.ts — trapFocus: Shift+Tab on first focusable element (line 420)
 // ─── setupScrollIndicator: click handler (lines 427-428) ────────────────────
 
 describe('main.ts — scroll-indicator click handler (lines 427-428)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('clicking scroll-indicator scrolls the active tab content (non-null branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
     // Stub rAF synchronously so setupScrollIndicator runs immediately inside openOverlay
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
     openOverlay();
 
     const scrollBtn = document.querySelector<HTMLElement>('.scroll-indicator');
@@ -1495,23 +1688,31 @@ describe('main.ts — scroll-indicator click handler (lines 427-428)', () => {
   it('clicking scroll-indicator with no active tab does not throw (null branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
     openOverlay();
 
-    document.querySelectorAll<HTMLElement>('.tab-button').forEach(btn => {
+    document.querySelectorAll<HTMLElement>('.tab-button').forEach((btn) => {
       btn.classList.remove('active');
     });
 
     const scrollBtn = document.querySelector<HTMLElement>('.scroll-indicator');
     if (!scrollBtn) throw new Error('.scroll-indicator not found');
-    expect(() => { scrollBtn.click(); }).not.toThrow();
+    expect(() => {
+      scrollBtn.click();
+    }).not.toThrow();
   });
 });
 
 // ─── trapFocus: !first || !last guard (line 417) ─────────────────────────────
 
 describe('main.ts — trapFocus !first guard (line 417)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('trapFocus returns early without crash when querySelectorAll yields length>0 but undefined first (line 417)', async () => {
@@ -1540,7 +1741,10 @@ describe('main.ts — trapFocus !first guard (line 417)', () => {
 // ─── navigateCards: missing container early return (keyboard.ts line 33) ─────
 
 describe('keyboard.ts — navigateCards returns early when #pokedex-container is absent', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('ArrowRight with no #pokedex-container does not throw (line 33 !container guard)', async () => {
@@ -1556,14 +1760,19 @@ describe('keyboard.ts — navigateCards returns early when #pokedex-container is
 // ─── navigateCards: empty card list early return (line 432) ──────────────────
 
 describe('main.ts — navigateCards cards.length===0 early return (line 432)', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('ArrowRight with no cards in DOM does not throw and adds keyboard-nav (line 432)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
 
-    document.querySelectorAll('.pokemon-card').forEach(el => { el.remove(); });
+    document.querySelectorAll('.pokemon-card').forEach((el) => {
+      el.remove();
+    });
 
     expect(() => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
@@ -1576,7 +1785,9 @@ describe('main.ts — navigateCards cards.length===0 early return (line 432)', (
     stubFetchSuccess();
     await loadAndWaitForCards();
 
-    document.querySelectorAll('.pokemon-card').forEach(el => { el.remove(); });
+    document.querySelectorAll('.pokemon-card').forEach((el) => {
+      el.remove();
+    });
 
     expect(() => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
@@ -1589,7 +1800,10 @@ describe('main.ts — navigateCards cards.length===0 early return (line 432)', (
 // ─── navigateTabs: ArrowUp / ArrowDown inside overlay ─────────────────────────
 
 describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('ArrowDown switches from About to Base Stats', async () => {
@@ -1599,7 +1813,9 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(document.getElementById('BaseStats')?.style.display).toBe('block');
-    expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe('true');
+    expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe(
+      'true',
+    );
   });
 
   it('ArrowDown from Base Stats switches to Moves', async () => {
@@ -1610,7 +1826,9 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(document.getElementById('Moves')?.style.display).toBe('block');
-    expect(document.querySelector('[data-tab="Moves"]')?.getAttribute('aria-selected')).toBe('true');
+    expect(document.querySelector('[data-tab="Moves"]')?.getAttribute('aria-selected')).toBe(
+      'true',
+    );
   });
 
   it('ArrowDown from Moves wraps back to About', async () => {
@@ -1622,7 +1840,9 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(document.getElementById('About')?.style.display).toBe('block');
-    expect(document.querySelector('[data-tab="About"]')?.getAttribute('aria-selected')).toBe('true');
+    expect(document.querySelector('[data-tab="About"]')?.getAttribute('aria-selected')).toBe(
+      'true',
+    );
   });
 
   it('ArrowUp from About wraps to Moves', async () => {
@@ -1632,7 +1852,9 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
     expect(document.getElementById('Moves')?.style.display).toBe('block');
-    expect(document.querySelector('[data-tab="Moves"]')?.getAttribute('aria-selected')).toBe('true');
+    expect(document.querySelector('[data-tab="Moves"]')?.getAttribute('aria-selected')).toBe(
+      'true',
+    );
   });
 
   it('ArrowUp from Base Stats switches to About', async () => {
@@ -1643,7 +1865,9 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
     expect(document.getElementById('About')?.style.display).toBe('block');
-    expect(document.querySelector('[data-tab="About"]')?.getAttribute('aria-selected')).toBe('true');
+    expect(document.querySelector('[data-tab="About"]')?.getAttribute('aria-selected')).toBe(
+      'true',
+    );
   });
 
   it('ArrowUp/ArrowDown outside overlay does not trigger tab navigation', async () => {
@@ -1657,26 +1881,33 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
 // ─── Branch coverage: lines 421, 426-428, 462, 499 ───────────────────────────
 
 describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('ArrowDown with no aria-selected tab uses fromIndex=0 as fallback (line 421 false branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
     openOverlay();
-    document.querySelectorAll<HTMLElement>('.tab-button').forEach(btn => {
+    document.querySelectorAll<HTMLElement>('.tab-button').forEach((btn) => {
       btn.setAttribute('aria-selected', 'false');
     });
     document.querySelector<HTMLElement>('.tab-button')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
-    expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe('true');
+    expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe(
+      'true',
+    );
   });
 
   it('ArrowDown with no tab buttons skips openTab call gracefully (lines 426-428 false branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
     openOverlay();
-    document.querySelectorAll('.tab-button').forEach(el => { el.remove(); });
+    document.querySelectorAll('.tab-button').forEach((el) => {
+      el.remove();
+    });
     expect(() => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     }).not.toThrow();
@@ -1712,9 +1943,11 @@ describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases'
     openOverlay();
     const overlay = document.querySelector<HTMLElement>('.overlay');
     if (!overlay) throw new Error('.overlay not found');
-    const focusable = Array.from(overlay.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-    ));
+    const focusable = Array.from(
+      overlay.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      ),
+    );
     if (focusable.length < 3) throw new Error('Need at least 3 focusable elements');
     const middle = focusable[Math.floor(focusable.length / 2)];
     if (!middle) throw new Error('No middle focusable element');
@@ -1729,13 +1962,19 @@ describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases'
 // ─── Branch coverage: lines 411, 481, 502, 528 ───────────────────────────────
 
 describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
-  beforeEach(() => { vi.resetModules(); buildDOM(); });
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+  });
   afterEach(cleanup);
 
   it('updateScrollIndicator shows indicator when overflowing and not at bottom (line 411 || right branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
     openOverlay();
 
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
@@ -1767,11 +2006,13 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
     // With tabs=[] → nextIndex=NaN → nextTab=undefined → if(nextTab) false branch
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     const origQSA = document.querySelectorAll.bind(document);
-    const qsaSpy = vi.spyOn(document, 'querySelectorAll').mockImplementation((selector: string) =>
-      selector === '.tab-button'
-        ? document.createElement('div').querySelectorAll('.none')
-        : origQSA(selector),
-    );
+    const qsaSpy = vi
+      .spyOn(document, 'querySelectorAll')
+      .mockImplementation((selector: string) =>
+        selector === '.tab-button'
+          ? document.createElement('div').querySelectorAll('.none')
+          : origQSA(selector),
+      );
 
     expect(() => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
@@ -1831,7 +2072,9 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
 
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
 
-    expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe('true');
+    expect(document.querySelector('[data-tab="BaseStats"]')?.getAttribute('aria-selected')).toBe(
+      'true',
+    );
     expect(document.getElementById('BaseStats')?.style.display).toBe('block');
   });
 
@@ -1846,7 +2089,9 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
 
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
 
-    expect(document.querySelector('[data-tab="Moves"]')?.getAttribute('aria-selected')).toBe('true');
+    expect(document.querySelector('[data-tab="Moves"]')?.getAttribute('aria-selected')).toBe(
+      'true',
+    );
     expect(document.getElementById('Moves')?.style.display).toBe('block');
   });
 });

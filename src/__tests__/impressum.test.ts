@@ -49,7 +49,9 @@ describe('impressum.ts — language handling', () => {
     localStorage.setItem('pokedex-lang', 'de');
     await loadModule();
 
-    expect(document.getElementById('eu-streitschlichtung')?.textContent).toBe('EU-Streitschlichtung');
+    expect(document.getElementById('eu-streitschlichtung')?.textContent).toBe(
+      'EU-Streitschlichtung',
+    );
     expect(document.querySelector('.button')?.textContent).toBe('Zurück zum Pokédex');
   });
 

@@ -67,7 +67,12 @@ describe('createPokemonCardTemplate', () => {
       ...mockPokemon,
       sprites: {
         front_default: null,
-        other: { 'official-artwork': { front_default: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png' } },
+        other: {
+          'official-artwork': {
+            front_default:
+              'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
+          },
+        },
       },
     };
     const html = createPokemonCardTemplate(pokemonHttps);
@@ -109,7 +114,10 @@ describe('detailTemplate', () => {
   it('uses front_default when official-artwork is null', () => {
     const pokemon = {
       ...mockPokemon,
-      sprites: { front_default: 'front.png', other: { 'official-artwork': { front_default: null } } },
+      sprites: {
+        front_default: 'front.png',
+        other: { 'official-artwork': { front_default: null } },
+      },
     };
     const html = detailTemplate(pokemon, '0.7', '6.9', 'overgrow');
     expect(html).toContain('front.png');

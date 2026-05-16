@@ -96,7 +96,9 @@ describe('main.ts — fetch error handling', () => {
       stubFetchError(503, 'Service Unavailable');
       await loadModule();
       await vi.runAllTimersAsync();
-      expect(document.querySelector('.error-message')?.textContent).toContain('temporarily unavailable');
+      expect(document.querySelector('.error-message')?.textContent).toContain(
+        'temporarily unavailable',
+      );
     } finally {
       vi.useRealTimers();
     }

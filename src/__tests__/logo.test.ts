@@ -15,13 +15,19 @@ describe('initLogoAnimation', () => {
   beforeEach(() => {
     observeMock = vi.fn();
     unobserveMock = vi.fn();
-    vi.stubGlobal('IntersectionObserver', vi.fn(function(this: MockIOInstance, cb: IntersectionObserverCallback) {
-      capturedCallback = cb;
-      this.observe = observeMock;
-      this.unobserve = unobserveMock;
-      this.disconnect = vi.fn();
-    }));
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0; });
+    vi.stubGlobal(
+      'IntersectionObserver',
+      vi.fn(function (this: MockIOInstance, cb: IntersectionObserverCallback) {
+        capturedCallback = cb;
+        this.observe = observeMock;
+        this.unobserve = unobserveMock;
+        this.disconnect = vi.fn();
+      }),
+    );
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 0;
+    });
   });
 
   afterEach(() => {
@@ -35,12 +41,16 @@ describe('initLogoAnimation', () => {
       <footer class="footer"><span class="headline-icon"></span></footer>
     `;
     initLogoAnimation();
-    expect(document.querySelector('.header .headline-icon')?.classList.contains('animate-logo')).toBe(true);
+    expect(
+      document.querySelector('.header .headline-icon')?.classList.contains('animate-logo'),
+    ).toBe(true);
   });
 
   it('does not throw when header logo is absent', () => {
     document.body.innerHTML = `<footer class="footer"><span class="headline-icon"></span></footer>`;
-    expect(() => { initLogoAnimation(); }).not.toThrow();
+    expect(() => {
+      initLogoAnimation();
+    }).not.toThrow();
   });
 
   it('returns early and skips observer when footer logo is absent', () => {
@@ -72,7 +82,7 @@ describe('initLogoAnimation', () => {
 
     capturedCallback(
       [{ isIntersecting: true, target: footerLogo } as unknown as IntersectionObserverEntry],
-      {} as IntersectionObserver
+      {} as IntersectionObserver,
     );
 
     expect(footerLogo.classList.contains('animate-logo')).toBe(true);
@@ -90,7 +100,7 @@ describe('initLogoAnimation', () => {
 
     capturedCallback(
       [{ isIntersecting: false, target: footerLogo } as unknown as IntersectionObserverEntry],
-      {} as IntersectionObserver
+      {} as IntersectionObserver,
     );
 
     expect(unobserveMock).not.toHaveBeenCalled();
