@@ -90,7 +90,7 @@ jobs:
             --branch=pr-${{ github.event.number }}
 
       - name: Post preview URL as PR comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const deployUrl = '${{ steps.deploy.outputs.deployment-url }}';
