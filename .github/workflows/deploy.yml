@@ -50,10 +50,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: >
-            pages deploy dist
-            --project-name=pokedex-aghirculesei
-            --branch=main
+          command: pages deploy --branch=main
 
   # ── Preview deploy ───────────────────────────────────────────────────────────
   deploy-preview:
@@ -84,10 +81,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: >
-            pages deploy dist
-            --project-name=pokedex-aghirculesei
-            --branch=pr-${{ github.event.number }}
+          command: pages deploy --branch=pr-${{ github.event.number }}
 
       - name: Post preview URL as PR comment
         uses: actions/github-script@v9
