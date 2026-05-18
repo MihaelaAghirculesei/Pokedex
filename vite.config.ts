@@ -20,6 +20,7 @@ function generateCspPlugin(): Plugin {
       const distDir = resolve(__dirname, 'dist');
       const styleHashes = new Set<string>();
       const handlerHashes = new Set<string>();
+      const inlineScriptHashes = new Set<string>();
 
       for (const page of ['index.html', 'impressum.html']) {
         let html: string;
@@ -34,12 +35,19 @@ function generateCspPlugin(): Plugin {
         for (const [, content] of html.matchAll(/\bon\w+="([^"]*)"/g)) {
           handlerHashes.add(sha256(content));
         }
+        // Hash inline <script> blocks (no src attribute, not type="module")
+        for (const [, content] of html.matchAll(
+          /<script(?![^>]*\bsrc\b)(?![^>]*type\s*=\s*["']module["'])[^>]*>([\s\S]*?)<\/script>/gi,
+        )) {
+          if (content.trim()) inlineScriptHashes.add(sha256(content));
+        }
       }
 
       const styleSrc = [`'self'`, ...styleHashes].join(' ');
-      const scriptSrc = handlerHashes.size
-        ? [`'self'`, `'unsafe-hashes'`, ...handlerHashes].join(' ')
-        : `'self'`;
+
+      const scriptSrcParts: string[] = [`'self'`, ...inlineScriptHashes];
+      if (handlerHashes.size) scriptSrcParts.push(`'unsafe-hashes'`, ...handlerHashes);
+      const scriptSrc = scriptSrcParts.join(' ');
 
       const csp = [
         `default-src 'self'`,

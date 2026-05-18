@@ -31,12 +31,12 @@ jobs:
       url: https://pokedex-aghirculesei.pages.dev
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           # Check out the exact commit CI tested, not whatever HEAD is now.
           ref: ${{ github.event.workflow_run.head_sha }}
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
@@ -67,9 +67,9 @@ jobs:
       pull-requests: write # needed to post the preview comment
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm

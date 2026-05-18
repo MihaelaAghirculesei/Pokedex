@@ -514,6 +514,29 @@
   background: rgba(0, 0, 0, 0.12);
 }
 
+.sk-name {
+  width: 55%;
+  height: 18px;
+}
+.sk-id {
+  width: 20%;
+  height: 18px;
+}
+.sk-image {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+}
+.sk-badge {
+  width: 70px;
+  height: 28px;
+  border-radius: 12px;
+}
+
+.tab-hidden {
+  display: none;
+}
+
 @media (max-width: 431px) {
   #About .tab-table table {
     font-size: 12px;

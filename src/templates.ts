@@ -127,7 +127,7 @@ function createBaseStatsTab(pokemon: Pokemon): string {
     )
     .join('');
 
-  return `<div id="BaseStats" class="tab-content" role="tabpanel" aria-labelledby="tab-BaseStats" tabindex="0" style="display: none;">
+  return `<div id="BaseStats" class="tab-content tab-hidden" role="tabpanel" aria-labelledby="tab-BaseStats" tabindex="0">
       <div class="tab-table">
         <table>${rows}</table>
       </div>
@@ -135,7 +135,7 @@ function createBaseStatsTab(pokemon: Pokemon): string {
 }
 
 function createMovesTab(pokemon: Pokemon): string {
-  return `<div id="Moves" class="tab-content" role="tabpanel" aria-labelledby="tab-Moves" tabindex="0" style="display: none;">
+  return `<div id="Moves" class="tab-content tab-hidden" role="tabpanel" aria-labelledby="tab-Moves" tabindex="0">
       <div class="moves-container" id="moves-${pokemon.id}" data-loaded="false" data-pokemon-id="${pokemon.id}">Loading moves...</div>
     </div>`;
 }
