@@ -118,9 +118,9 @@ export default defineConfig(({ mode }) => ({
         impressum: resolve(__dirname, 'impressum.html'),
       },
       output: {
-        manualChunks: {
-          vendor: ['dompurify'],
-          monitoring: ['@sentry/browser'],
+        manualChunks(id) {
+          if (id.includes('node_modules/dompurify')) return 'vendor';
+          if (id.includes('node_modules/@sentry/browser')) return 'monitoring';
         },
       },
     },
