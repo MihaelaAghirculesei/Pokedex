@@ -96,7 +96,7 @@ jobs:
           fi
 
           git commit -m "test(visual): update Linux baselines [skip ci]"
-          git push
+          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
