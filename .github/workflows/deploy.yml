@@ -56,7 +56,7 @@ jobs:
   deploy-preview:
     name: Preview → Cloudflare Pages
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
     concurrency:
       group: deploy-preview-${{ github.event.number }}
       cancel-in-progress: true # cancel stale preview builds when PR is updated
