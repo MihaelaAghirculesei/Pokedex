@@ -9,9 +9,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Mode-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![CI](https://img.shields.io/github/actions/workflow/status/MihaelaAghirculesei/Pokedex/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
 [![codecov](https://img.shields.io/codecov/c/github/MihaelaAghirculesei/Pokedex?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/MihaelaAghirculesei/Pokedex)
-[![Performance](https://img.shields.io/badge/Lighthouse_Performance-87%2F100-FF9800?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
+[![Performance](https://img.shields.io/badge/Lighthouse_Performance-91%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
 [![Accessibility](https://img.shields.io/badge/Lighthouse_Accessibility-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
-[![Best Practices](https://img.shields.io/badge/Lighthouse_Best_Practices-96%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
+[![Best Practices](https://img.shields.io/badge/Lighthouse_Best_Practices-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
 [![SEO](https://img.shields.io/badge/Lighthouse_SEO-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
 
 </div>
@@ -23,8 +23,6 @@ An offline-first Pokédex — originally built in pure Vanilla JavaScript to mas
 ## Demo
 
 ![Pokédex demo](imgs/readme/demo.gif)
-
-> **No GIF yet?** Record one with [ScreenToGif](https://www.screentogif.com/) (Windows) or [Kap](https://getkap.co/) (macOS): open the live demo, show the search + holographic hover + detail overlay, export at ~600px wide, 15 fps. Drop the file at `imgs/readme/demo.gif` and delete this note.
 
 ---
 
@@ -52,7 +50,7 @@ Once the features were solid and the architecture was proven, the codebase was m
 Migrated stack
 ├── TypeScript 6    — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
 ├── Vite 7          — HMR in development, optimized bundles in production
-├── Vitest 4        — 200 unit tests covering templates, utilities, and i18n
+├── Vitest 4        — 215 unit tests covering templates, utilities, and i18n
 ├── Playwright      — E2E tests with mocked PokeAPI (Chromium in CI; Firefox + WebKit locally via ALL_BROWSERS=true)
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
 ├── ESLint          — TypeScript strict rules + Vitest plugin
@@ -101,21 +99,23 @@ Lighthouse CI runs automatically on every push (`npm run lighthouse:ci` to repro
 
 | Category       |         Score | CI threshold |
 | -------------- | ------------: | :----------: |
-| Performance    |  **87 / 100** |     ≥ 80     |
+| Performance    |  **91 / 100** |     ≥ 90     |
 | Accessibility  | **100 / 100** |     ≥ 90     |
-| Best Practices |  **96 / 100** |     ≥ 90     |
-| SEO            | **100 / 100** |     ≥ 80     |
+| Best Practices | **100 / 100** |     ≥ 90     |
+| SEO            | **100 / 100** |     ≥ 90     |
 
-**Core Web Vitals** (production build, simulated mobile, no prior cache):
+**Core Web Vitals** — cold-cache first visit, 4× mobile CPU throttle, external API blocked:
 
-| Metric                         | Value |      Rating       |
-| ------------------------------ | ----: | :---------------: |
-| First Contentful Paint (FCP)   | 1.1 s |       Good        |
-| Largest Contentful Paint (LCP) | 2.9 s | Needs improvement |
-| Total Blocking Time (TBT)      |  0 ms |       Good        |
-| Cumulative Layout Shift (CLS)  | 0.169 | Needs improvement |
+> On repeat visits the Service Worker serves all assets from cache — LCP drops under 1 s and layout shift is eliminated.
 
-> LCP and CLS are measured before the Service Worker has cached anything. On repeat visits the SW serves assets from cache — FCP and LCP drop sharply on the live Cloudflare CDN.
+| Metric                         | Value |     |
+| ------------------------------ | ----: | --- |
+| First Contentful Paint (FCP)   | 1.1 s | 🟢  |
+| Largest Contentful Paint (LCP) | 2.9 s | 🟡  |
+| Total Blocking Time (TBT)      |  0 ms | 🟢  |
+| Cumulative Layout Shift (CLS)  | 0.169 | 🟡  |
+
+🟢 Good · 🟡 Needs improvement — LCP is dominated by the full-bleed background image on first load; a preload hint has been added to improve subsequent runs.
 
 ---
 
