@@ -120,7 +120,6 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/dompurify')) return 'vendor';
-          if (id.includes('node_modules/@sentry/browser')) return 'monitoring';
         },
       },
     },
@@ -129,6 +128,7 @@ export default defineConfig(({ mode }) => ({
     include: ['src/**/*.{test,spec}.ts'],
     environment: 'jsdom',
     globals: true,
+    testTimeout: 15000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],

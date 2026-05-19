@@ -86,11 +86,6 @@
       "limit": "15 kB"
     },
     {
-      "name": "monitoring JS",
-      "path": "dist/assets/monitoring-*.js",
-      "limit": "50 kB"
-    },
-    {
       "name": "main CSS",
       "path": "dist/assets/main-*.css",
       "limit": "5 kB"
