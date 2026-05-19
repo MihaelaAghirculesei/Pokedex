@@ -33,6 +33,20 @@
     <link rel="dns-prefetch" href="https://wsrv.nl" />
     <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin />
     <link rel="dns-prefetch" href="https://raw.githubusercontent.com" />
+    <link
+      rel="preload"
+      href="/imgs/background/Designer-sm.webp"
+      as="image"
+      type="image/webp"
+      media="(max-width: 768px)"
+    />
+    <link
+      rel="preload"
+      href="/imgs/background/Designer-lg.webp"
+      as="image"
+      type="image/webp"
+      media="(min-width: 769px)"
+    />
 
     <style>
       :root {
@@ -66,10 +80,15 @@
         content: '';
         position: fixed;
         inset: 0;
-        background-image: url(/imgs/background/Designer.webp);
+        background-image: url(/imgs/background/Designer-sm.webp);
         background-size: cover;
         background-position: center;
         z-index: -1;
+      }
+      @media (min-width: 769px) {
+        body::before {
+          background-image: url(/imgs/background/Designer-lg.webp);
+        }
       }
       main {
         flex: 1;
@@ -163,6 +182,118 @@
         flex-direction: column;
         align-items: center;
       }
+      /* ── Skeleton: must be inline so the first paint is correct before
+         the external CSS file finishes loading ────────────────────────── */
+      .pokedex-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 50px;
+        padding: 50px;
+      }
+      .pokemon-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+      .pokemon-image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+      }
+      .pokemon-card-footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 35px;
+      }
+      @keyframes skeleton-shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+      .skeleton-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        width: var(--card-width);
+        height: var(--card-height);
+        padding: 15px;
+        border: 3px solid rgba(0, 0, 0, 0.08);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        background: linear-gradient(90deg, #ddd 25%, #eee 50%, #ddd 75%);
+        background-size: 200% 100%;
+        animation: skeleton-shimmer 1.5s infinite linear;
+      }
+      .skeleton-block {
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.12);
+      }
+      .sk-name {
+        width: 55%;
+        height: 18px;
+      }
+      .sk-id {
+        width: 20%;
+        height: 18px;
+      }
+      .sk-image {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+      }
+      .sk-badge {
+        width: 70px;
+        height: 28px;
+        border-radius: 12px;
+      }
+      .load-more-btn {
+        display: flex;
+        margin: 3rem auto;
+        padding: 1.2rem 3rem;
+        border: 3px solid black;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .footer {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        padding: var(--padding);
+        margin-top: 50px;
+      }
+      @media (max-width: 431px) {
+        .header,
+        header {
+          padding: 10px 12px;
+        }
+        .headline-icon {
+          width: 60px;
+        }
+        .footer {
+          padding: 12px 20px;
+          height: 75px;
+          margin-top: 0;
+          margin-bottom: 0;
+        }
+      }
+      @media (max-width: 365px) {
+        .pokedex-container {
+          padding: 15px;
+        }
+      }
     </style>
 
     <script src="/src/main.ts" type="module"></script>
@@ -239,29 +370,30 @@
     </main>
 
     <script>
-      (function () {
-        var c = document.getElementById('pokedex-container');
-        if (!c) return;
-        var inner =
-          '<div class="pokemon-card-header">' +
-          '<div class="skeleton-block sk-name"></div>' +
-          '<div class="skeleton-block sk-id"></div>' +
-          '</div>' +
-          '<div class="pokemon-image-container">' +
-          '<div class="skeleton-block sk-image"></div>' +
-          '</div>' +
-          '<div class="pokemon-card-footer">' +
-          '<div class="skeleton-block sk-badge"></div>' +
-          '</div>';
-        var f = document.createDocumentFragment();
-        for (var i = 0; i < 30; i++) {
-          var d = document.createElement('div');
-          d.className = 'skeleton-card';
-          d.innerHTML = inner;
-          f.appendChild(d);
+      {
+        const c = document.getElementById('pokedex-container');
+        if (c) {
+          const inner = `
+            <div class="pokemon-card-header">
+              <div class="skeleton-block sk-name"></div>
+              <div class="skeleton-block sk-id"></div>
+            </div>
+            <div class="pokemon-image-container">
+              <div class="skeleton-block sk-image"></div>
+            </div>
+            <div class="pokemon-card-footer">
+              <div class="skeleton-block sk-badge"></div>
+            </div>`;
+          const f = document.createDocumentFragment();
+          for (let i = 0; i < 30; i++) {
+            const d = document.createElement('div');
+            d.className = 'skeleton-card';
+            d.innerHTML = inner;
+            f.appendChild(d);
+          }
+          c.appendChild(f);
         }
-        c.appendChild(f);
-      })();
+      }
     </script>
 
     <footer class="footer">
