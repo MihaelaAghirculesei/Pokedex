@@ -64,7 +64,7 @@ export const formatStatName = (name: string): string =>
   STAT_NAMES[name] ?? capitalizeFirstLetter(name);
 
 export function filterPokemon<T extends { name: string; id: number }>(
-  pokemonList: T[],
+  pokemonList: readonly T[],
   searchTerm: string,
   limit: number,
 ): T[] {

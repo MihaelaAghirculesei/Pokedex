@@ -34,7 +34,7 @@ export function renderSkeletons(container: HTMLElement, limit: number): void {
 export function renderPokemon(
   container: HTMLElement,
   searchNoResults: HTMLElement,
-  pokemonArray: Pokemon[],
+  pokemonArray: readonly Pokemon[],
   createCard: (pokemon: Pokemon, isFirst: boolean) => HTMLElement,
 ): void {
   searchNoResults.setAttribute('hidden', '');
