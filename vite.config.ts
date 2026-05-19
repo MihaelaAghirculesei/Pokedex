@@ -131,6 +131,11 @@ export default defineConfig(({ mode }) => ({
     }),
   ],
   build: {
+    modulePreload: {
+      resolveDependencies(_, deps) {
+        return deps.filter((dep) => !dep.includes('interaction'));
+      },
+    },
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
