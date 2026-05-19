@@ -4,7 +4,12 @@ import type { Pokemon } from './types.js';
 import { filterPokemon } from './utils.js';
 import { fetchPokemons, fetchAllPokemonDetails, getErrorMessage } from './api.js';
 import { renderSkeletons, renderPokemon, createPokemonCard, displayError } from './render.js';
-import { state } from './state.js';
+import {
+  getPokemonDetails,
+  appendPokemonDetails,
+  isMousemoveRafPending,
+  setMousemoveRafPending,
+} from './state.js';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -56,16 +61,12 @@ function announceSearchResults(count: number, searchTerm: string): void {
 
 // ─── Fetch ────────────────────────────────────────────────────────────────────
 
-async function init(): Promise<void> {
-  await fetchPokemonData();
-}
-
 async function fetchPokemonData(): Promise<void> {
   fetchAbortController?.abort();
   fetchAbortController = new AbortController();
   const { signal } = fetchAbortController;
 
-  const previousCount = state.pokemonDetails.length;
+  const previousCount = getPokemonDetails().length;
   try {
     if (previousCount === 0) {
       // Skip if inline skeletons from index.html are already rendered
@@ -77,7 +78,7 @@ async function fetchPokemonData(): Promise<void> {
 
     const data = await fetchPokemons(offset, LIMIT, signal);
     const newPokemon = await fetchAllPokemonDetails(data.results, signal);
-    state.pokemonDetails.push(...newPokemon);
+    appendPokemonDetails(newPokemon);
     offset += LIMIT;
 
     const activeSearch = searchInput.value.toLowerCase();
@@ -85,7 +86,7 @@ async function fetchPokemonData(): Promise<void> {
     if (activeSearch.length >= MIN_SEARCH_LENGTH) {
       handleSearch(activeSearch);
     } else {
-      renderPokemon(pokedexContainer, searchNoResults, state.pokemonDetails, buildCard);
+      renderPokemon(pokedexContainer, searchNoResults, getPokemonDetails(), buildCard);
       if (previousCount > 0) {
         const cards = pokedexContainer.querySelectorAll<HTMLElement>('.pokemon-card');
         const newCard = cards[previousCount];
@@ -141,7 +142,7 @@ function handleSearchInput(e: Event): void {
   const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
   if (searchTimeoutId !== null) clearTimeout(searchTimeoutId);
   if (searchTerm.length < MIN_SEARCH_LENGTH) {
-    renderPokemon(pokedexContainer, searchNoResults, state.pokemonDetails, buildCard);
+    renderPokemon(pokedexContainer, searchNoResults, getPokemonDetails(), buildCard);
     searchResultsStatus.textContent = '';
     return;
   }
@@ -151,7 +152,7 @@ function handleSearchInput(e: Event): void {
 }
 
 function handleSearch(searchTerm: string): void {
-  const filtered = filterPokemon(state.pokemonDetails, searchTerm, MAX_SEARCH_RESULTS);
+  const filtered = filterPokemon(getPokemonDetails(), searchTerm, MAX_SEARCH_RESULTS);
   if (filtered.length > 0) {
     renderPokemon(pokedexContainer, searchNoResults, filtered, buildCard);
   } else {
@@ -166,20 +167,20 @@ function handleSearch(searchTerm: string): void {
 
 pokedexContainer.addEventListener('click', (e: MouseEvent) => {
   if ((e.target as HTMLElement).closest('.retry-btn')) {
-    void init();
+    void fetchPokemonData();
     return;
   }
   const card = (e.target as HTMLElement).closest<HTMLElement>('.pokemon-card');
   if (!card) return;
-  const pokemon = state.pokemonDetails.find((p) => p.name === card.dataset.name);
+  const pokemon = getPokemonDetails().find((p) => p.name === card.dataset.name);
   if (pokemon) _overlayMod?.showPokemonDetails(pokemon);
 });
 
 pokedexContainer.addEventListener('mousemove', (e: MouseEvent) => {
-  if (state.mousemoveRafPending) return;
-  state.mousemoveRafPending = true;
+  if (isMousemoveRafPending()) return;
+  setMousemoveRafPending(true);
   requestAnimationFrame(() => {
-    state.mousemoveRafPending = false;
+    setMousemoveRafPending(false);
     const card = (e.target as HTMLElement).closest<HTMLElement>('.pokemon-card');
     if (!card) return;
     const { left, top, width, height } = card.getBoundingClientRect();
@@ -202,7 +203,7 @@ loadMoreButton.addEventListener('click', () => {
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 initSearch();
-void init();
+void fetchPokemonData();
 
 // Defer non-critical modules to keep the critical path lean
 setTimeout(() => {
