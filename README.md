@@ -34,6 +34,8 @@ This project went through a deliberate two-phase journey.
 
 The first version had zero dependencies, zero build step, and zero framework overhead. Every feature was written against raw browser APIs. This was intentional: understanding the platform before abstracting it.
 
+> The original code is preserved as-is on the [`phase-1-vanilla`](https://github.com/MihaelaAghirculesei/Pokedex/tree/phase-1-vanilla) branch — no retroactive cleanup.
+
 ```
 Original stack
 ├── Pure Vanilla JavaScript (ES6+)     — zero framework overhead
