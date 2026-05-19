@@ -8,6 +8,24 @@ import { readFileSync, writeFileSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+function makeCSSnoblocking(): Plugin {
+  return {
+    name: 'make-css-non-blocking',
+    apply: 'build',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        return html.replace(
+          /<link rel="stylesheet"([^>]*?)>/g,
+          (_, attrs) =>
+            `<link rel="preload" as="style"${attrs} onload="this.onload=null;this.rel='stylesheet'">` +
+            `<noscript><link rel="stylesheet"${attrs}></noscript>`,
+        );
+      },
+    },
+  };
+}
+
 function sha256(content: string): string {
   return `'sha256-${createHash('sha256').update(content).digest('base64')}'`;
 }
@@ -74,6 +92,7 @@ export default defineConfig(({ mode }) => ({
     ...(mode === 'analyze'
       ? [visualizer({ open: true, filename: 'dist/stats.html', gzipSize: true, brotliSize: true })]
       : []),
+    makeCSSnoblocking(),
     generateCspPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -120,6 +139,7 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/dompurify')) return 'vendor';
+          if (id.includes('/src/overlay') || id.includes('/src/keyboard')) return 'interaction';
         },
       },
     },
