@@ -1,5 +1,7 @@
-import { state } from './state.js';
-import { closeOverlay, showPreviousPokemon, showNextPokemon, navigateTabs } from './overlay.js';
+import { getCurrentOverlayPokemon } from './state.js';
+import { closeOverlay } from './overlay.js';
+import { showPreviousPokemon, showNextPokemon } from './navigation.js';
+import { navigateTabs } from './tabs.js';
 
 function trapFocus(e: KeyboardEvent, overlay: HTMLElement): void {
   const focusable = overlay.querySelectorAll<HTMLElement>(
@@ -73,14 +75,15 @@ function onKeydown(e: KeyboardEvent): void {
       trapFocus(e, overlay);
       return;
     }
-    if (!state.currentOverlayPokemon) return;
+    const current = getCurrentOverlayPokemon();
+    if (!current) return;
     if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      showPreviousPokemon(state.currentOverlayPokemon);
+      showPreviousPokemon(current, overlay);
     }
     if (e.key === 'ArrowRight') {
       e.preventDefault();
-      showNextPokemon(state.currentOverlayPokemon);
+      showNextPokemon(current, overlay);
     }
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault();
