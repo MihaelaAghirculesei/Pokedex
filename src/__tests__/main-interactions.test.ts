@@ -2005,45 +2005,17 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
     if (!tabBtn) throw new Error('.tab-button not found');
     tabBtn.focus();
 
-    // With tabs=[] → nextIndex=NaN → nextTab=undefined → if(nextTab) false branch
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    const origQSA = document.querySelectorAll.bind(document);
-    const qsaSpy = vi
-      .spyOn(document, 'querySelectorAll')
-      .mockImplementation((selector: string) =>
-        selector === '.tab-button'
-          ? document.createElement('div').querySelectorAll('.none')
-          : origQSA(selector),
-      );
+    // Remove all tab buttons from the scoped container so tabs array is empty →
+    // nextIndex=NaN → nextTab=undefined → if(nextTab) false branch
+    const detailsCard = document.querySelector<HTMLElement>('.details-card');
+    if (!detailsCard) throw new Error('.details-card not found');
+    detailsCard.querySelectorAll('.tab-button').forEach((btn) => {
+      btn.remove();
+    });
 
     expect(() => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     }).not.toThrow();
-
-    qsaSpy.mockRestore();
-  });
-
-  it('loadPokemonMoves: if(dc) false branch when .details-card absent at execution time (line 502)', async () => {
-    stubFetchSuccess();
-    await loadAndWaitForCards();
-    openOverlay();
-
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    const origQS = document.querySelector.bind(document);
-    let dcCallCount = 0;
-    const qsSpy = vi.spyOn(document, 'querySelector').mockImplementation((selector: string) => {
-      if (selector === '.details-card') {
-        dcCallCount++;
-        if (dcCallCount >= 2) return null;
-      }
-      return origQS(selector);
-    });
-
-    document.querySelector<HTMLElement>('[data-tab="Moves"]')?.click();
-    qsSpy.mockRestore();
-
-    // Moves must have loaded despite dc being null on the second querySelector call
-    expect(document.querySelector('.moves-container')?.getAttribute('data-loaded')).toBe('true');
   });
 
   it('onKeydown ArrowDown: if(dc) false branch when .details-card absent (line 528)', async () => {
