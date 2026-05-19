@@ -49,10 +49,15 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: url(./imgs/background/Designer.webp);
+  background-image: url(/imgs/background/Designer-sm.webp);
   background-size: cover;
   background-position: center;
   z-index: -1;
+}
+@media (min-width: 769px) {
+  body::before {
+    background-image: url(/imgs/background/Designer-lg.webp);
+  }
 }
 
 main {
