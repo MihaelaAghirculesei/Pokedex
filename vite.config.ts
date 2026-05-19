@@ -138,8 +138,7 @@ export default defineConfig(({ mode }) => ({
       },
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules/dompurify')) return 'vendor';
-          if (id.includes('/src/overlay') || id.includes('/src/keyboard')) return 'interaction';
+          if (/[/\\]src[/\\](overlay|keyboard)/.test(id)) return 'interaction';
         },
       },
     },

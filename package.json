@@ -81,9 +81,9 @@
       "limit": "10 kB"
     },
     {
-      "name": "vendor JS",
-      "path": "dist/assets/vendor-*.js",
-      "limit": "15 kB"
+      "name": "interaction JS",
+      "path": "dist/assets/interaction-*.js",
+      "limit": "20 kB"
     },
     {
       "name": "main CSS",
