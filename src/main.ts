@@ -1,16 +1,9 @@
-import { initMonitoring } from './monitoring.js';
-initMonitoring();
-
 import '../shared.css';
 import '../style.css';
 import type { Pokemon } from './types.js';
 import { filterPokemon } from './utils.js';
-import { initLogoAnimation } from './logo.js';
-import { initPwaUpdateToast } from './pwa-toast.js';
 import { fetchPokemons, fetchAllPokemonDetails, getErrorMessage } from './api.js';
 import { renderSkeletons, renderPokemon, createPokemonCard, displayError } from './render.js';
-import { showPokemonDetails } from './overlay.js';
-import { setupKeyboard } from './keyboard.js';
 import { state } from './state.js';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -32,6 +25,7 @@ function getEl(id: string): HTMLElement {
 const loadingIndicator = getEl('loading');
 const loadMoreButton = getEl('load-more') as HTMLButtonElement;
 const pokedexContainer = getEl('pokedex-container');
+const searchInput = getEl('search-input') as HTMLInputElement;
 const searchResultsStatus = getEl('search-status');
 const searchNoResults = getEl('search-no-results');
 
@@ -74,7 +68,8 @@ async function fetchPokemonData(): Promise<void> {
   const previousCount = state.pokemonDetails.length;
   try {
     if (previousCount === 0) {
-      renderSkeletons(pokedexContainer, LIMIT);
+      // Skip if inline skeletons from index.html are already rendered
+      if (pokedexContainer.children.length === 0) renderSkeletons(pokedexContainer, LIMIT);
     } else {
       showLoading();
     }
@@ -85,9 +80,7 @@ async function fetchPokemonData(): Promise<void> {
     state.pokemonDetails.push(...newPokemon);
     offset += LIMIT;
 
-    const activeSearch =
-      (document.getElementById('search-input') as HTMLInputElement | null)?.value.toLowerCase() ??
-      '';
+    const activeSearch = searchInput.value.toLowerCase();
 
     if (activeSearch.length >= MIN_SEARCH_LENGTH) {
       handleSearch(activeSearch);
@@ -114,16 +107,33 @@ async function fetchPokemonData(): Promise<void> {
   }
 }
 
-// ─── Card factory (closes over showPokemonDetails) ────────────────────────────
+// ─── Interaction modules (pre-warmed, never on the critical render path) ──────
+
+// Both start downloading when main.js evaluates. By the time a user can
+// interact (cards are rendered + JS is idle), the modules are already cached
+// and _overlayMod is populated — so the click path is synchronous.
+interface OverlayMod {
+  showPokemonDetails: (p: Pokemon) => void;
+}
+let _overlayMod: OverlayMod | null = null;
+void import('./overlay.js').then((mod) => {
+  _overlayMod = mod;
+});
+void import('./keyboard.js').then(({ setupKeyboard }) => {
+  setupKeyboard();
+});
+
+// ─── Card factory ─────────────────────────────────────────────────────────────
 
 function buildCard(pokemon: Pokemon, isFirst: boolean): HTMLElement {
-  return createPokemonCard(pokemon, isFirst, showPokemonDetails);
+  return createPokemonCard(pokemon, isFirst, (p) => {
+    _overlayMod?.showPokemonDetails(p);
+  });
 }
 
 // ─── Search ───────────────────────────────────────────────────────────────────
 
 function initSearch(): void {
-  const searchInput = document.getElementById('search-input') as HTMLInputElement;
   searchInput.addEventListener('input', handleSearchInput);
 }
 
@@ -162,7 +172,7 @@ pokedexContainer.addEventListener('click', (e: MouseEvent) => {
   const card = (e.target as HTMLElement).closest<HTMLElement>('.pokemon-card');
   if (!card) return;
   const pokemon = state.pokemonDetails.find((p) => p.name === card.dataset.name);
-  if (pokemon) showPokemonDetails(pokemon);
+  if (pokemon) _overlayMod?.showPokemonDetails(pokemon);
 });
 
 pokedexContainer.addEventListener('mousemove', (e: MouseEvent) => {
@@ -192,7 +202,21 @@ loadMoreButton.addEventListener('click', () => {
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 initSearch();
-setupKeyboard();
 void init();
-setTimeout(initLogoAnimation, LOGO_ANIMATION_DELAY_MS);
-initPwaUpdateToast();
+
+// Defer non-critical modules to keep the critical path lean
+setTimeout(() => {
+  void import('./logo.js').then(({ initLogoAnimation }) => {
+    initLogoAnimation();
+  });
+}, LOGO_ANIMATION_DELAY_MS);
+setTimeout(() => {
+  void import('./pwa-toast.js').then(({ initPwaUpdateToast }) => {
+    initPwaUpdateToast();
+  });
+}, 0);
+setTimeout(() => {
+  void import('./monitoring.js').then(({ initMonitoring }) => {
+    initMonitoring();
+  });
+}, 2000);
