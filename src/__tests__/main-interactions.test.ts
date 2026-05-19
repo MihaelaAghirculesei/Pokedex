@@ -1864,10 +1864,12 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
     document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
-    expect(document.getElementById('About')?.style.display).toBe('block');
-    expect(document.querySelector('[data-tab="About"]')?.getAttribute('aria-selected')).toBe(
-      'true',
-    );
+    await vi.waitFor(() => {
+      expect(document.getElementById('About')?.style.display).toBe('block');
+      expect(document.querySelector('[data-tab="About"]')?.getAttribute('aria-selected')).toBe(
+        'true',
+      );
+    });
   });
 
   it('ArrowUp/ArrowDown outside overlay does not trigger tab navigation', async () => {
@@ -2048,6 +2050,9 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
     openOverlay();
+    await vi.waitFor(() => {
+      expect(document.querySelector('.overlay')).toBeTruthy();
+    });
 
     document.querySelector('.details-card')?.remove();
 
@@ -2065,6 +2070,9 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
     openOverlay();
+    await vi.waitFor(() => {
+      expect(document.querySelector('.overlay')).toBeTruthy();
+    });
 
     const overlay = document.querySelector<HTMLElement>('.overlay');
     if (!overlay) throw new Error('.overlay not found');
