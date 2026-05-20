@@ -101,7 +101,7 @@ Lighthouse CI runs automatically on every push (`npm run lighthouse:ci` to repro
 
 | Category       |         Score | CI threshold |
 | -------------- | ------------: | :----------: |
-| Performance    |  **91 / 100** |     ≥ 90     |
+| Performance    |  **91 / 100** |     ≥ 80     |
 | Accessibility  | **100 / 100** |     ≥ 90     |
 | Best Practices | **100 / 100** |     ≥ 90     |
 | SEO            | **100 / 100** |     ≥ 90     |
