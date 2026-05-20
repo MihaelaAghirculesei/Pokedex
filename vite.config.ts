@@ -72,7 +72,7 @@ function generateCspPlugin(): Plugin {
         `script-src ${scriptSrc}`,
         `style-src ${styleSrc}`,
         `img-src 'self' https://wsrv.nl https://raw.githubusercontent.com data:`,
-        `connect-src 'self' https://pokeapi.co https://*.ingest.sentry.io`,
+        `connect-src 'self' https://pokeapi.co https://wsrv.nl https://*.ingest.sentry.io`,
         `worker-src 'self'`,
         `object-src 'none'`,
         `base-uri 'self'`,
