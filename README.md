@@ -7,12 +7,12 @@
 [![Live Demo](https://img.shields.io/badge/Live_Demo-pokedex--aghirculesei.pages.dev-FF6B6B?style=for-the-badge&logo=rocket&logoColor=white)](https://pokedex-aghirculesei.pages.dev/)
 [![PWA](https://img.shields.io/badge/PWA-Installable-4ECDC4?style=for-the-badge&logo=pwa&logoColor=white)](https://pokedex-aghirculesei.pages.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Mode-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![CI](https://img.shields.io/github/actions/workflow/status/MihaelaAghirculesei/Pokedex/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/MihaelaAghirculesei/Pokedex/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/MihaelaAghirculesei/Pokedex/actions/workflows/ci.yml)
 [![codecov](https://img.shields.io/codecov/c/github/MihaelaAghirculesei/Pokedex?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/MihaelaAghirculesei/Pokedex)
-[![Performance](https://img.shields.io/badge/Lighthouse_Performance-91%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
-[![Accessibility](https://img.shields.io/badge/Lighthouse_Accessibility-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
-[![Best Practices](https://img.shields.io/badge/Lighthouse_Best_Practices-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
-[![SEO](https://img.shields.io/badge/Lighthouse_SEO-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions)
+[![Performance](https://img.shields.io/badge/Lighthouse_Performance-91%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions/workflows/ci.yml)
+[![Accessibility](https://img.shields.io/badge/Lighthouse_Accessibility-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions/workflows/ci.yml)
+[![Best Practices](https://img.shields.io/badge/Lighthouse_Best_Practices-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions/workflows/ci.yml)
+[![SEO](https://img.shields.io/badge/Lighthouse_SEO-100%2F100-00C853?style=for-the-badge&logo=lighthouse&logoColor=white)](https://github.com/MihaelaAghirculesei/Pokedex/actions/workflows/ci.yml)
 
 </div>
 
