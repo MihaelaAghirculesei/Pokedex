@@ -1,5 +1,8 @@
 name: Deploy
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 # Production: fires after CI completes on main (enforces the CI gate).
 # Preview:    fires on every PR push — gives a live URL for review.
 #
