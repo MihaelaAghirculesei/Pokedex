@@ -136,8 +136,14 @@
           opacity: 1;
         }
       }
+      .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
       .headline-icon {
         width: 80px;
+        height: auto;
         flex-shrink: 0;
         transition: all 0.3s ease;
         filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
@@ -278,6 +284,11 @@
         .header,
         header {
           padding: 10px 12px;
+        }
+        .header-content {
+          width: auto;
+          max-width: none;
+          padding: 5px 10px;
         }
         .headline-icon {
           width: 60px;
