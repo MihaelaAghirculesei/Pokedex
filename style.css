@@ -67,6 +67,7 @@
   padding: 5px 10px;
   border-radius: var(--border-radius);
   border: 3px solid var(--input-border);
+  min-width: 0;
 }
 
 .pokemon-content {
@@ -554,6 +555,25 @@
   .search-input {
     margin: 0;
     padding: 8px 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .header-controls {
+    flex: 1;
+    min-width: 0;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 0;
+    width: 0;
+  }
+}
+
+@media (max-width: 330px) {
+  .search-input {
+    font-size: 0.8rem;
+    padding: 6px 8px;
   }
 }
 
