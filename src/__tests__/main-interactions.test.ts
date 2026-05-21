@@ -2114,3 +2114,42 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
     expect(document.getElementById('Moves')?.style.display).toBe('block');
   });
 });
+
+// ─── openOverlay — else branch ────────────────────────────────────────────────
+
+describe('main.ts — openOverlay (overlay module still loading)', () => {
+  let resolveOverlay!: () => void;
+  let showMock!: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+    showMock = vi.fn();
+
+    vi.doMock('../overlay.js', async () => {
+      await new Promise<void>((resolve) => {
+        resolveOverlay = resolve;
+      });
+      return { showPokemonDetails: showMock };
+    });
+  });
+
+  afterEach(() => {
+    vi.doUnmock('../overlay.js');
+    cleanup();
+  });
+
+  it('calls showPokemonDetails via promise chain when _overlayMod is null', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    // _overlayMod is still null because overlay.js import is pending → else branch
+    document.querySelector<HTMLElement>('.pokemon-card')?.click();
+    resolveOverlay();
+    await vi.waitFor(
+      () => {
+        expect(showMock).toHaveBeenCalledWith(POKEMON);
+      },
+      { timeout: 2000 },
+    );
+  });
+});
