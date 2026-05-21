@@ -82,11 +82,13 @@ function stubFetchSuccessTwo(): ReturnType<typeof vi.fn> {
 
 async function loadAndWaitForCards(): Promise<void> {
   await import('../main.js');
+  // Generous timeout: repeated vi.resetModules() cycles accumulate garbage;
+  // GC pauses on loaded machines can exceed 2 s and starve the poll window.
   await vi.waitFor(
     () => {
       expect(document.querySelector('.pokemon-card')).toBeTruthy();
     },
-    { timeout: 2000 },
+    { timeout: 8000 },
   );
 }
 
@@ -1509,6 +1511,14 @@ describe('main.ts — SLIDE_DURATION_MS initialization (line 26)', () => {
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
+    await vi.waitFor(
+      () => {
+        expect(document.querySelector('.overlay')).toBeTruthy();
+      },
+      {
+        timeout: 2000,
+      },
+    );
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -1527,6 +1537,14 @@ describe('main.ts — SLIDE_DURATION_MS initialization (line 26)', () => {
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
+    await vi.waitFor(
+      () => {
+        expect(document.querySelector('.overlay')).toBeTruthy();
+      },
+      {
+        timeout: 2000,
+      },
+    );
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -1591,6 +1609,14 @@ describe('main.ts — direction branches (lines 314, 343)', () => {
       { timeout: 2000 },
     );
     document.querySelector<HTMLElement>('.pokemon-card')?.click();
+    await vi.waitFor(
+      () => {
+        expect(document.querySelector('.overlay')).toBeTruthy();
+      },
+      {
+        timeout: 2000,
+      },
+    );
     vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
       cb(0);
       return 0;
@@ -1637,6 +1663,12 @@ describe('main.ts — trapFocus: Shift+Tab on first focusable element (line 420)
   it('Shift+Tab when first focusable element is focused wraps focus to last (line 420 left branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
+    await vi.waitFor(
+      () => {
+        expect((document as unknown as { _pkKeydown?: unknown })._pkKeydown).toBeTruthy();
+      },
+      { timeout: 2000 },
+    );
 
     // Build a minimal overlay directly so the test is immune to showPokemonDetails state
     const overlay = document.createElement('div');
