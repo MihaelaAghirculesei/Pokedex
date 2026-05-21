@@ -63,6 +63,18 @@ export default tseslint.config(
     },
   },
 
+  // E2E test files (Playwright) — separate tsconfig
+  {
+    files: ['e2e/**/*.ts'],
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: {
+        project: './tsconfig.e2e.json',
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+
   // Relaxed rules for test files
   {
     files: ['src/__tests__/**/*.ts'],
