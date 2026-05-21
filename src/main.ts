@@ -117,19 +117,28 @@ interface OverlayMod {
   showPokemonDetails: (p: Pokemon) => void;
 }
 let _overlayMod: OverlayMod | null = null;
-void import('./overlay.js').then((mod) => {
+const _overlayModPromise = import('./overlay.js').then((mod) => {
   _overlayMod = mod;
+  return mod;
 });
 void import('./keyboard.js').then(({ setupKeyboard }) => {
   setupKeyboard();
 });
 
+function openOverlay(pokemon: Pokemon): void {
+  if (_overlayMod) {
+    _overlayMod.showPokemonDetails(pokemon);
+  } else {
+    void _overlayModPromise.then((mod) => {
+      mod.showPokemonDetails(pokemon);
+    });
+  }
+}
+
 // ─── Card factory ─────────────────────────────────────────────────────────────
 
 function buildCard(pokemon: Pokemon, isFirst: boolean): HTMLElement {
-  return createPokemonCard(pokemon, isFirst, (p) => {
-    _overlayMod?.showPokemonDetails(p);
-  });
+  return createPokemonCard(pokemon, isFirst, openOverlay);
 }
 
 // ─── Search ───────────────────────────────────────────────────────────────────
@@ -173,7 +182,7 @@ pokedexContainer.addEventListener('click', (e: MouseEvent) => {
   const card = (e.target as HTMLElement).closest<HTMLElement>('.pokemon-card');
   if (!card) return;
   const pokemon = getPokemonDetails().find((p) => p.name === card.dataset.name);
-  if (pokemon) _overlayMod?.showPokemonDetails(pokemon);
+  if (pokemon) openOverlay(pokemon);
 });
 
 pokedexContainer.addEventListener('mousemove', (e: MouseEvent) => {
