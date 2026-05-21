@@ -529,7 +529,7 @@ progress {
 
 @media (max-width: 431px) {
   .header-content {
-    width: auto;
+    width: 100%;
     padding: 5px 10px;
     max-width: none;
   }
@@ -543,6 +543,7 @@ progress {
   .headline-box {
     margin-right: 0;
     gap: 10px;
+    width: auto;
   }
 
   .headline-icon {
