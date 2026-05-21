@@ -3,8 +3,13 @@ export const BULBASAUR = {
   name: 'bulbasaur',
   types: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }],
   sprites: {
-    front_default: '',
-    other: { 'official-artwork': { front_default: '' } },
+    front_default: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
+    other: {
+      'official-artwork': {
+        front_default:
+          'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
+      },
+    },
   },
   height: 7,
   weight: 69,
@@ -25,5 +30,14 @@ export const IVYSAUR = {
   ...BULBASAUR,
   id: 2,
   name: 'ivysaur',
+  sprites: {
+    front_default: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png',
+    other: {
+      'official-artwork': {
+        front_default:
+          'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png',
+      },
+    },
+  },
   species: { name: 'ivysaur' },
 };
