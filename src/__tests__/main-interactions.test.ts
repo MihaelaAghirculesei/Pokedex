@@ -82,16 +82,24 @@ function stubFetchSuccessTwo(): ReturnType<typeof vi.fn> {
 
 async function loadAndWaitForCards(): Promise<void> {
   await import('../main.js');
+  // Generous timeout: repeated vi.resetModules() cycles accumulate garbage;
+  // GC pauses on loaded machines can exceed 2 s and starve the poll window.
   await vi.waitFor(
     () => {
       expect(document.querySelector('.pokemon-card')).toBeTruthy();
     },
-    { timeout: 2000 },
+    { timeout: 8000 },
   );
 }
 
-function openOverlay(): void {
-  document.querySelector<HTMLElement>('.pokemon-card')?.click();
+async function openOverlay(): Promise<void> {
+  await vi.waitFor(
+    () => {
+      document.querySelector<HTMLElement>('.pokemon-card')?.click();
+      expect(document.querySelector('.overlay')).toBeTruthy();
+    },
+    { timeout: 2000 },
+  );
 }
 
 function cleanup(): void {
@@ -135,7 +143,7 @@ describe('main.ts — overlay', () => {
   it('opens overlay and adds no-scroll class on card click', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     expect(document.querySelector('.overlay')).toBeTruthy();
     expect(document.body.classList.contains('no-scroll')).toBe(true);
   });
@@ -143,7 +151,7 @@ describe('main.ts — overlay', () => {
   it('overlay contains details-card with tab buttons and nav arrows', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     expect(document.querySelector('.details-card')).toBeTruthy();
     expect(document.querySelector('[data-tab="About"]')).toBeTruthy();
     expect(document.querySelector('[data-tab="BaseStats"]')).toBeTruthy();
@@ -155,15 +163,15 @@ describe('main.ts — overlay', () => {
   it('does not open a second overlay when one is already open', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
-    openOverlay();
+    await openOverlay();
+    await openOverlay();
     expect(document.querySelectorAll('.overlay').length).toBe(1);
   });
 
   it('closes overlay on Escape key', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     expect(document.querySelector('.overlay')).toBeNull();
     expect(document.body.classList.contains('no-scroll')).toBe(false);
@@ -172,7 +180,7 @@ describe('main.ts — overlay', () => {
   it('closes overlay when clicking the overlay backdrop', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('.overlay')?.click();
     expect(document.querySelector('.overlay')).toBeNull();
   });
@@ -190,7 +198,7 @@ describe('main.ts — tabs', () => {
   it('switches to BaseStats tab and shows its content', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('[data-tab="BaseStats"]')?.click();
     expect(document.getElementById('BaseStats')?.style.display).toBe('block');
     expect(document.getElementById('About')?.style.display).toBe('none');
@@ -199,7 +207,7 @@ describe('main.ts — tabs', () => {
   it('switches to Moves tab and loads move tags', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('[data-tab="Moves"]')?.click();
     expect(document.querySelector('.moves-container')?.getAttribute('data-loaded')).toBe('true');
     expect(document.querySelector('.move-compact-tag')).toBeTruthy();
@@ -208,7 +216,7 @@ describe('main.ts — tabs', () => {
   it('shows moves error template when pokemon id has no match in loaded list', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
 
     const movesContainer = document.querySelector<HTMLElement>('.moves-container');
     if (!movesContainer) throw new Error('.moves-container not found');
@@ -224,7 +232,7 @@ describe('main.ts — tabs', () => {
   it('adds moves-active class on details-card when Moves tab is opened', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('[data-tab="Moves"]')?.click();
     expect(document.querySelector('.details-card')?.classList.contains('moves-active')).toBe(true);
   });
@@ -232,7 +240,7 @@ describe('main.ts — tabs', () => {
   it('removes moves-active class when switching away from Moves tab', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('[data-tab="Moves"]')?.click();
     document.querySelector<HTMLElement>('[data-tab="About"]')?.click();
     expect(document.querySelector('.details-card')?.classList.contains('moves-active')).toBe(false);
@@ -251,7 +259,7 @@ describe('main.ts — navigation buttons', () => {
   it('clicking next button initiates slide animation', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     expect(document.querySelector('.details-card')).toBeTruthy();
   });
@@ -259,7 +267,7 @@ describe('main.ts — navigation buttons', () => {
   it('clicking prev button initiates slide animation', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLButtonElement>('.arrow-button.prev')?.click();
     expect(document.querySelector('.details-card')).toBeTruthy();
   });
@@ -267,7 +275,7 @@ describe('main.ts — navigation buttons', () => {
   it('transitionend on details-card runs the slide-in callback', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -280,7 +288,7 @@ describe('main.ts — navigation buttons', () => {
   it('transitionend with non-transform property is ignored', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -304,14 +312,15 @@ describe('main.ts — search', () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
     const input = document.getElementById('search-input') as HTMLInputElement;
-    input.value = 'bul';
-    input.dispatchEvent(new Event('input'));
-    await vi.waitFor(
-      () => {
-        expect(document.getElementById('search-status')?.textContent).toContain('Pokémon found');
-      },
-      { timeout: 1500 },
-    );
+    vi.useFakeTimers();
+    try {
+      input.value = 'bul';
+      input.dispatchEvent(new Event('input'));
+      vi.advanceTimersByTime(350);
+    } finally {
+      vi.useRealTimers();
+    }
+    expect(document.getElementById('search-status')?.textContent).toContain('Pokémon found');
   });
 
   it('shows no-results message and clears the grid when search yields nothing', async () => {
@@ -393,7 +402,7 @@ describe('main.ts — keyboard navigation', () => {
   it('ArrowLeft in overlay navigates to previous pokemon', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
     expect(document.querySelector('.overlay')).toBeTruthy();
   });
@@ -401,7 +410,7 @@ describe('main.ts — keyboard navigation', () => {
   it('ArrowRight in overlay navigates to next pokemon', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
     expect(document.querySelector('.overlay')).toBeTruthy();
   });
@@ -409,7 +418,7 @@ describe('main.ts — keyboard navigation', () => {
   it('Tab key with overlay open traps focus without closing overlay', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
     expect(document.querySelector('.overlay')).toBeTruthy();
   });
@@ -417,7 +426,7 @@ describe('main.ts — keyboard navigation', () => {
   it('Tab on last focusable overlay element wraps focus back to first', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
 
     const overlay = document.querySelector<HTMLElement>('.overlay');
     if (!overlay) throw new Error('.overlay not found');
@@ -438,7 +447,7 @@ describe('main.ts — keyboard navigation', () => {
   it('Shift+Tab wraps focus to last focusable element when overlay is focused', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     const overlay = document.querySelector<HTMLElement>('.overlay');
     if (!overlay) throw new Error('.overlay not found');
     overlay.focus();
@@ -815,7 +824,7 @@ describe('main.ts — openTab Moves guards and loadPokemonMoves (lines 348-365)'
   it('second Moves tab click skips reload when data-loaded is already true (line 348 false branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('[data-tab="Moves"]')?.click();
     const movesContainer = document.querySelector<HTMLElement>('.moves-container');
     expect(movesContainer?.dataset.loaded).toBe('true');
@@ -827,7 +836,7 @@ describe('main.ts — openTab Moves guards and loadPokemonMoves (lines 348-365)'
   it('empty pokemonId prevents loadPokemonMoves from being called (line 350 guard)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     const movesContainer = document.querySelector<HTMLElement>('.moves-container');
     if (!movesContainer) throw new Error('.moves-container not found');
     movesContainer.dataset.pokemonId = '';
@@ -838,7 +847,7 @@ describe('main.ts — openTab Moves guards and loadPokemonMoves (lines 348-365)'
   it('data-pokemon-id attribute absent on movesContainer ?? falls back to empty string (line 349)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     const movesContainer = document.querySelector<HTMLElement>('.moves-container');
     if (!movesContainer) throw new Error('.moves-container not found');
     movesContainer.removeAttribute('data-pokemon-id');
@@ -850,7 +859,7 @@ describe('main.ts — openTab Moves guards and loadPokemonMoves (lines 348-365)'
   it('tab button without data-tab attribute calls openTab with empty string (line 359 ??)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     const btn = document.querySelector<HTMLElement>('.tab-button');
     if (!btn) throw new Error('.tab-button not found');
     btn.removeAttribute('data-tab');
@@ -864,7 +873,7 @@ describe('main.ts — openTab Moves guards and loadPokemonMoves (lines 348-365)'
   it('loadPokemonMoves returns early when moves DOM element is absent (line 365)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     const movesContainer = document.querySelector<HTMLElement>('.moves-container');
     if (!movesContainer) throw new Error('.moves-container not found');
     // Rename id so getElementById('moves-1') returns null, but pokemonId attr stays '1'
@@ -1021,7 +1030,7 @@ describe('main.ts — event listener cleanup after overlay close', () => {
     const card = document.querySelector<HTMLElement>('.pokemon-card');
     if (!card) throw new Error('.pokemon-card not found');
     card.focus();
-    openOverlay();
+    await openOverlay();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     expect(document.activeElement).toBe(card);
   });
@@ -1287,7 +1296,7 @@ describe('main.ts — trapFocus edge cases (lines 413-417)', () => {
   it('Tab in overlay with no focusable elements calls preventDefault and returns early (line 413)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
 
     const overlay = document.querySelector<HTMLElement>('.overlay');
     if (!overlay) throw new Error('.overlay not found');
@@ -1358,7 +1367,7 @@ describe('main.ts — guard clause branches (lines 199, 232, 257)', () => {
       ),
     );
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
     expect(detailsCard.style.backgroundColor).toBeTruthy();
@@ -1387,7 +1396,7 @@ describe('main.ts — guard clause branches (lines 199, 232, 257)', () => {
       ),
     );
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     expect(document.querySelector('.overlay')).toBeTruthy();
     expect(document.querySelector('.arrow-button')).toBeNull();
   });
@@ -1502,6 +1511,14 @@ describe('main.ts — SLIDE_DURATION_MS initialization (line 26)', () => {
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
+    await vi.waitFor(
+      () => {
+        expect(document.querySelector('.overlay')).toBeTruthy();
+      },
+      {
+        timeout: 2000,
+      },
+    );
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -1520,6 +1537,14 @@ describe('main.ts — SLIDE_DURATION_MS initialization (line 26)', () => {
       { timeout: 2000 },
     );
     document.querySelectorAll<HTMLElement>('.pokemon-card')[0]?.click();
+    await vi.waitFor(
+      () => {
+        expect(document.querySelector('.overlay')).toBeTruthy();
+      },
+      {
+        timeout: 2000,
+      },
+    );
     document.querySelector<HTMLButtonElement>('.arrow-button.next')?.click();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -1584,6 +1609,14 @@ describe('main.ts — direction branches (lines 314, 343)', () => {
       { timeout: 2000 },
     );
     document.querySelector<HTMLElement>('.pokemon-card')?.click();
+    await vi.waitFor(
+      () => {
+        expect(document.querySelector('.overlay')).toBeTruthy();
+      },
+      {
+        timeout: 2000,
+      },
+    );
     vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
       cb(0);
       return 0;
@@ -1601,7 +1634,7 @@ describe('main.ts — direction branches (lines 314, 343)', () => {
   it('openTab exits early without throwing when .details-card is absent from DOM (line 343)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
     // Use document-level querySelector — same pattern as all other tab-button tests.
@@ -1630,6 +1663,12 @@ describe('main.ts — trapFocus: Shift+Tab on first focusable element (line 420)
   it('Shift+Tab when first focusable element is focused wraps focus to last (line 420 left branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
+    await vi.waitFor(
+      () => {
+        expect((document as unknown as { _pkKeydown?: unknown })._pkKeydown).toBeTruthy();
+      },
+      { timeout: 2000 },
+    );
 
     // Build a minimal overlay directly so the test is immune to showPokemonDetails state
     const overlay = document.createElement('div');
@@ -1672,7 +1711,7 @@ describe('main.ts — scroll-indicator click handler (lines 427-428)', () => {
       cb(0);
       return 0;
     });
-    openOverlay();
+    await openOverlay();
 
     const scrollBtn = document.querySelector<HTMLElement>('.scroll-indicator');
     if (!scrollBtn) throw new Error('.scroll-indicator not found');
@@ -1692,7 +1731,7 @@ describe('main.ts — scroll-indicator click handler (lines 427-428)', () => {
       cb(0);
       return 0;
     });
-    openOverlay();
+    await openOverlay();
 
     document.querySelectorAll<HTMLElement>('.tab-button').forEach((btn) => {
       btn.classList.remove('active');
@@ -1718,7 +1757,7 @@ describe('main.ts — trapFocus !first guard (line 417)', () => {
   it('trapFocus returns early without crash when querySelectorAll yields length>0 but undefined first (line 417)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
 
     const overlay = document.querySelector<HTMLElement>('.overlay');
     if (!overlay) throw new Error('.overlay not found');
@@ -1809,7 +1848,7 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
   it('ArrowDown switches from About to Base Stats', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(document.getElementById('BaseStats')?.style.display).toBe('block');
@@ -1821,7 +1860,7 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
   it('ArrowDown from Base Stats switches to Moves', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
@@ -1834,7 +1873,7 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
   it('ArrowDown from Moves wraps back to About', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
@@ -1848,7 +1887,7 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
   it('ArrowUp from About wraps to Moves', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
     expect(document.getElementById('Moves')?.style.display).toBe('block');
@@ -1860,7 +1899,7 @@ describe('main.ts — navigateTabs: ArrowUp/ArrowDown switches tabs in overlay',
   it('ArrowUp from Base Stats switches to About', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelector<HTMLElement>('.tab-button[aria-selected="true"]')?.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
@@ -1892,7 +1931,7 @@ describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases'
   it('ArrowDown with no aria-selected tab uses fromIndex=0 as fallback (line 421 false branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelectorAll<HTMLElement>('.tab-button').forEach((btn) => {
       btn.setAttribute('aria-selected', 'false');
     });
@@ -1906,7 +1945,7 @@ describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases'
   it('ArrowDown with no tab buttons skips openTab call gracefully (lines 426-428 false branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     document.querySelectorAll('.tab-button').forEach((el) => {
       el.remove();
     });
@@ -1930,7 +1969,7 @@ describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases'
   it('ArrowDown on a tab button without data-tab attribute falls back to empty string (line 428 ?? branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     const basestatsBtn = document.querySelector<HTMLElement>('[data-tab="BaseStats"]');
     if (!basestatsBtn) throw new Error('[data-tab="BaseStats"] not found');
     basestatsBtn.removeAttribute('data-tab');
@@ -1942,7 +1981,7 @@ describe('main.ts — branch coverage for navigateTabs and trapFocus edge cases'
   it('Shift+Tab with focus on middle overlay element does not wrap focus (line 499 false branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     const overlay = document.querySelector<HTMLElement>('.overlay');
     if (!overlay) throw new Error('.overlay not found');
     const focusable = Array.from(
@@ -1977,7 +2016,7 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
       cb(0);
       return 0;
     });
-    openOverlay();
+    await openOverlay();
 
     const detailsCard = document.querySelector<HTMLElement>('.details-card');
     if (!detailsCard) throw new Error('.details-card not found');
@@ -1999,7 +2038,7 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
   it('navigateTabs: if(nextTab) false branch when tabs list is empty (line 481)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
 
     const tabBtn = document.querySelector<HTMLElement>('.tab-button');
     if (!tabBtn) throw new Error('.tab-button not found');
@@ -2021,7 +2060,7 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
   it('onKeydown ArrowDown: if(dc) false branch when .details-card absent (line 528)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     await vi.waitFor(() => {
       expect(document.querySelector('.overlay')).toBeTruthy();
     });
@@ -2041,7 +2080,7 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
   it('ArrowDown with non-tab-button focus still navigates to BaseStats tab', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
     await vi.waitFor(() => {
       expect(document.querySelector('.overlay')).toBeTruthy();
     });
@@ -2061,7 +2100,7 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
   it('ArrowUp with non-tab-button focus navigates to Moves tab (wraps from About)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    openOverlay();
+    await openOverlay();
 
     const overlay = document.querySelector<HTMLElement>('.overlay');
     if (!overlay) throw new Error('.overlay not found');
@@ -2073,5 +2112,44 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
       'true',
     );
     expect(document.getElementById('Moves')?.style.display).toBe('block');
+  });
+});
+
+// ─── openOverlay — else branch ────────────────────────────────────────────────
+
+describe('main.ts — openOverlay (overlay module still loading)', () => {
+  let resolveOverlay!: () => void;
+  let showMock!: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    vi.resetModules();
+    buildDOM();
+    showMock = vi.fn();
+
+    vi.doMock('../overlay.js', async () => {
+      await new Promise<void>((resolve) => {
+        resolveOverlay = resolve;
+      });
+      return { showPokemonDetails: showMock };
+    });
+  });
+
+  afterEach(() => {
+    vi.doUnmock('../overlay.js');
+    cleanup();
+  });
+
+  it('calls showPokemonDetails via promise chain when _overlayMod is null', async () => {
+    stubFetchSuccess();
+    await loadAndWaitForCards();
+    // _overlayMod is still null because overlay.js import is pending → else branch
+    document.querySelector<HTMLElement>('.pokemon-card')?.click();
+    resolveOverlay();
+    await vi.waitFor(
+      () => {
+        expect(showMock).toHaveBeenCalledWith(POKEMON);
+      },
+      { timeout: 2000 },
+    );
   });
 });

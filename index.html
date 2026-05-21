@@ -136,8 +136,14 @@
           opacity: 1;
         }
       }
+      .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
       .headline-icon {
         width: 80px;
+        height: auto;
         flex-shrink: 0;
         transition: all 0.3s ease;
         filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
@@ -279,6 +285,11 @@
         header {
           padding: 10px 12px;
         }
+        .header-content {
+          width: 100%;
+          max-width: none;
+          padding: 5px 10px;
+        }
         .headline-icon {
           width: 60px;
         }
@@ -337,7 +348,7 @@
             autocomplete="off"
           />
           <details class="keyboard-hint">
-            <summary aria-label="Keyboard shortcuts">⌨</summary>
+            <summary aria-label="⌨ Keyboard shortcuts">⌨</summary>
             <div class="keyboard-hint-panel" role="tooltip">
               <p class="keyboard-hint-section">Grid</p>
               <p><kbd>←</kbd> <kbd>→</kbd> navigate cards</p>
