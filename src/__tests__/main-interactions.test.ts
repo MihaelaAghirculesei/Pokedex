@@ -788,7 +788,7 @@ describe('main.ts — slide-in animation via nested rAF (lines 314-327)', () => 
     Object.defineProperty(evt, 'propertyName', { value: 'transform' });
     detailsCard.dispatchEvent(evt);
     expect(detailsCard.style.backgroundColor).toBeTruthy();
-    expect(detailsCard.querySelector('.arrow-button')).toBeTruthy();
+    expect(document.querySelector('.overlay .arrow-button')).toBeTruthy();
   });
 
   it('prev direction: transitionend sets slideIn to translateX(-100%) before rAF runs (line 313)', async () => {
@@ -1694,57 +1694,6 @@ describe('main.ts — trapFocus: Shift+Tab on first focusable element (line 420)
   });
 });
 
-// ─── setupScrollIndicator: click handler (lines 427-428) ────────────────────
-
-describe('main.ts — scroll-indicator click handler (lines 427-428)', () => {
-  beforeEach(() => {
-    vi.resetModules();
-    buildDOM();
-  });
-  afterEach(cleanup);
-
-  it('clicking scroll-indicator scrolls the active tab content (non-null branch)', async () => {
-    stubFetchSuccess();
-    await loadAndWaitForCards();
-    // Stub rAF synchronously so setupScrollIndicator runs immediately inside openOverlay
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
-      cb(0);
-      return 0;
-    });
-    await openOverlay();
-
-    const scrollBtn = document.querySelector<HTMLElement>('.scroll-indicator');
-    if (!scrollBtn) throw new Error('.scroll-indicator not found');
-
-    const aboutTab = document.querySelector<HTMLElement>('#About');
-    if (!aboutTab) throw new Error('#About tab not found');
-    const scrollBySpy = vi.spyOn(aboutTab, 'scrollBy');
-    scrollBtn.click();
-
-    expect(scrollBySpy).toHaveBeenCalledWith({ top: 80, behavior: 'smooth' });
-  });
-
-  it('clicking scroll-indicator with no active tab does not throw (null branch)', async () => {
-    stubFetchSuccess();
-    await loadAndWaitForCards();
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
-      cb(0);
-      return 0;
-    });
-    await openOverlay();
-
-    document.querySelectorAll<HTMLElement>('.tab-button').forEach((btn) => {
-      btn.classList.remove('active');
-    });
-
-    const scrollBtn = document.querySelector<HTMLElement>('.scroll-indicator');
-    if (!scrollBtn) throw new Error('.scroll-indicator not found');
-    expect(() => {
-      scrollBtn.click();
-    }).not.toThrow();
-  });
-});
-
 // ─── trapFocus: !first || !last guard (line 417) ─────────────────────────────
 
 describe('main.ts — trapFocus !first guard (line 417)', () => {
@@ -2008,32 +1957,6 @@ describe('main.ts — branch coverage: lines 411, 481, 502, 528', () => {
     buildDOM();
   });
   afterEach(cleanup);
-
-  it('updateScrollIndicator shows indicator when overflowing and not at bottom (line 411 || right branch)', async () => {
-    stubFetchSuccess();
-    await loadAndWaitForCards();
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
-      cb(0);
-      return 0;
-    });
-    await openOverlay();
-
-    const detailsCard = document.querySelector<HTMLElement>('.details-card');
-    if (!detailsCard) throw new Error('.details-card not found');
-    const aboutTab = document.querySelector<HTMLElement>('#About');
-    if (!aboutTab) throw new Error('#About not found');
-
-    // scrollHeight (300) > clientHeight (0) + 2 → overflows=true → !overflows=false
-    // → right side of || is evaluated; atBottom = 0 >= 290 = false → hidden = false
-    Object.defineProperty(aboutTab, 'scrollHeight', { get: () => 300, configurable: true });
-
-    // Re-trigger updateScrollIndicator by clicking the already-active About tab
-    document.querySelector<HTMLElement>('[data-tab="About"]')?.click();
-
-    const indicator = detailsCard.querySelector<HTMLElement>('.scroll-indicator');
-    if (!indicator) throw new Error('.scroll-indicator not found');
-    expect(indicator.hidden).toBe(false);
-  });
 
   it('navigateTabs: if(nextTab) false branch when tabs list is empty (line 481)', async () => {
     stubFetchSuccess();

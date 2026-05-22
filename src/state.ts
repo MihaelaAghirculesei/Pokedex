@@ -4,7 +4,6 @@ interface AppState {
   pokemonDetails: Pokemon[];
   currentOverlayPokemon: Pokemon | null;
   previouslyFocusedElement: HTMLElement | null;
-  activeScrollCleanup: (() => void) | null;
   mousemoveRafPending: boolean;
 }
 
@@ -12,7 +11,6 @@ const _state: AppState = {
   pokemonDetails: [],
   currentOverlayPokemon: null,
   previouslyFocusedElement: null,
-  activeScrollCleanup: null,
   mousemoveRafPending: false,
 };
 
@@ -38,14 +36,6 @@ export function getPreviouslyFocusedElement(): HTMLElement | null {
 
 export function setPreviouslyFocusedElement(el: HTMLElement | null): void {
   _state.previouslyFocusedElement = el;
-}
-
-export function getActiveScrollCleanup(): (() => void) | null {
-  return _state.activeScrollCleanup;
-}
-
-export function setActiveScrollCleanup(fn: (() => void) | null): void {
-  _state.activeScrollCleanup = fn;
 }
 
 export function isMousemoveRafPending(): boolean {

@@ -99,6 +99,7 @@ export default defineConfig(({ mode }) => ({
       strategies: 'generateSW',
       injectRegister: 'script-defer',
       manifest: false,
+      devOptions: { enabled: false },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,webp,svg,woff2}'],
         runtimeCaching: [
@@ -143,8 +144,7 @@ export default defineConfig(({ mode }) => ({
       },
       output: {
         manualChunks(id) {
-          if (/[/\\]src[/\\](overlay|keyboard|navigation|tabs|scroll-indicator)/.test(id))
-            return 'interaction';
+          if (/[/\\]src[/\\](overlay|keyboard|navigation|tabs)/.test(id)) return 'interaction';
         },
       },
     },

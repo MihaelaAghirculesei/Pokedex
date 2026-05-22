@@ -4,7 +4,6 @@ import { detailTemplate } from './templates.js';
 import { setHTML } from './render.js';
 import { getPokemonDetails, setCurrentOverlayPokemon } from './state.js';
 import { attachTabListeners } from './tabs.js';
-import { setupScrollIndicator } from './scroll-indicator.js';
 
 export function createDetailsHTML(pokemon: Pokemon): string {
   const height = (pokemon.height / 10).toFixed(1);
@@ -18,14 +17,16 @@ export function appendNavigationButtons(
   pokemon: Pokemon,
   overlay: HTMLElement,
 ): void {
-  const imageSection = detailsCard.querySelector('.pokemon-image-section');
-  if (!imageSection) return;
+  if (!detailsCard.querySelector('.pokemon-image-section')) return;
+  overlay.querySelectorAll<HTMLButtonElement>('.arrow-left, .arrow-right').forEach((b) => {
+    b.remove();
+  });
   const prevButton = createNavButton('prev', pokemon, overlay);
   const nextButton = createNavButton('next', pokemon, overlay);
   prevButton.classList.add('arrow-left');
   nextButton.classList.add('arrow-right');
-  imageSection.appendChild(prevButton);
-  imageSection.appendChild(nextButton);
+  overlay.appendChild(prevButton);
+  overlay.appendChild(nextButton);
 }
 
 function createNavButton(
@@ -88,7 +89,6 @@ export function updateDetailsCard(
     setHTML(detailsCard, createDetailsHTML(pokemon));
     attachTabListeners(detailsCard);
     appendNavigationButtons(detailsCard, pokemon, overlay);
-    setupScrollIndicator(detailsCard);
 
     // Two nested rAFs: first forces the browser to commit the new translateX
     // position to layout, second starts the transition from that position to 0.
