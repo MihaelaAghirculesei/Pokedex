@@ -144,8 +144,7 @@ export default defineConfig(({ mode }) => ({
       },
       output: {
         manualChunks(id) {
-          if (/[/\\]src[/\\](overlay|keyboard|navigation|tabs|scroll-indicator)/.test(id))
-            return 'interaction';
+          if (/[/\\]src[/\\](overlay|keyboard|navigation|tabs)/.test(id)) return 'interaction';
         },
       },
     },
