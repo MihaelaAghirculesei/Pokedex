@@ -15,7 +15,6 @@ vi.mock('../templates.js', () => ({
 }));
 vi.mock('../render.js', () => ({ setHTML: vi.fn() }));
 vi.mock('../tabs.js', () => ({ attachTabListeners: vi.fn() }));
-vi.mock('../scroll-indicator.js', () => ({ setupScrollIndicator: vi.fn() }));
 
 import {
   createDetailsHTML,
