@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('../scroll-indicator.js', () => ({ updateScrollIndicator: vi.fn() }));
 vi.mock('../state.js', () => ({ getPokemonDetails: vi.fn(() => []) }));
 vi.mock('../render.js', () => ({ setHTML: vi.fn() }));
 vi.mock('../templates.js', () => ({
