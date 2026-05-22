@@ -1,4 +1,3 @@
-import { updateScrollIndicator } from './scroll-indicator.js';
 import { getPokemonDetails } from './state.js';
 import { setHTML } from './render.js';
 import { movesErrorTemplate, createMovesHTMLTemplate } from './templates.js';
@@ -24,14 +23,8 @@ export function openTab(container: HTMLElement, btn: HTMLElement, tabName: strin
       const pokemonId = movesContainer.dataset.pokemonId ?? '';
       if (pokemonId) loadPokemonMoves(pokemonId, container);
     }
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        updateScrollIndicator(container);
-      });
-    });
   } else {
     container.classList.remove('moves-active');
-    updateScrollIndicator(container);
   }
 }
 
@@ -73,5 +66,4 @@ export function loadPokemonMoves(pokemonId: string, container: HTMLElement): voi
   const moves = pokemon.moves.slice(0, 20).map((m) => ({ name: m.move.name }));
   movesContainer.dataset.loaded = 'true';
   setHTML(movesContainer, createMovesHTMLTemplate(moves));
-  updateScrollIndicator(container);
 }
