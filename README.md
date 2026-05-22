@@ -51,8 +51,8 @@ Once the features were solid and the architecture was proven, the codebase was m
 ```
 Migrated stack
 ├── TypeScript 6    — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
-├── Vite 7          — HMR in development, optimized bundles in production
-├── Vitest 4        — 215 unit tests covering templates, utilities, and i18n
+├── Vite 8          — HMR in development, optimized bundles in production
+├── Vitest 4        — 251 unit tests covering templates, utilities, and i18n
 ├── Playwright      — E2E tests with mocked PokeAPI (Chromium in CI; Firefox + WebKit locally via ALL_BROWSERS=true)
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
 ├── ESLint          — TypeScript strict rules + Vitest plugin
@@ -263,7 +263,7 @@ npm run build   # produces dist/
 | Layer         | Phase 1 — Vanilla JS                    | Phase 2 — TypeScript                                                           |
 | ------------- | --------------------------------------- | ------------------------------------------------------------------------------ |
 | Language      | Vanilla JavaScript (ES6+)               | TypeScript 6 — strict mode                                                     |
-| Build         | None (direct file serving)              | Vite 7 — HMR + optimized bundles                                               |
+| Build         | None (direct file serving)              | Vite 8 — HMR + optimized bundles                                               |
 | Offline       | Hand-crafted Service Worker             | Workbox via vite-plugin-pwa                                                    |
 | Testing       | None                                    | Vitest 4 — unit tests + Playwright E2E (Chromium in CI; cross-browser locally) |
 | Linting       | None                                    | ESLint + typescript-eslint strict                                              |

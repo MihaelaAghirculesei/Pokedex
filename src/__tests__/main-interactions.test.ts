@@ -788,7 +788,7 @@ describe('main.ts — slide-in animation via nested rAF (lines 314-327)', () => 
     Object.defineProperty(evt, 'propertyName', { value: 'transform' });
     detailsCard.dispatchEvent(evt);
     expect(detailsCard.style.backgroundColor).toBeTruthy();
-    expect(detailsCard.querySelector('.arrow-button')).toBeTruthy();
+    expect(document.querySelector('.overlay .arrow-button')).toBeTruthy();
   });
 
   it('prev direction: transitionend sets slideIn to translateX(-100%) before rAF runs (line 313)', async () => {

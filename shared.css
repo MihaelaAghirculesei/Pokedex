@@ -527,6 +527,25 @@ progress {
   justify-content: center;
 }
 
+@media (min-width: 432px) and (max-width: 560px) {
+  .header,
+  header {
+    padding: 10px 12px;
+  }
+
+  .header-content {
+    padding: 5px 10px;
+  }
+
+  .headline-icon {
+    width: 60px;
+  }
+
+  .headline-box .headline {
+    display: none;
+  }
+}
+
 @media (max-width: 431px) {
   .header-content {
     width: 100%;

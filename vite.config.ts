@@ -99,6 +99,7 @@ export default defineConfig(({ mode }) => ({
       strategies: 'generateSW',
       injectRegister: 'script-defer',
       manifest: false,
+      devOptions: { enabled: false },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,webp,svg,woff2}'],
         runtimeCaching: [

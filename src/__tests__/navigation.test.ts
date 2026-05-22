@@ -99,15 +99,16 @@ describe('appendNavigationButtons', () => {
     expect(card.querySelector('.arrow-button')).toBeNull();
   });
 
-  it('appends both prev and next buttons inside .pokemon-image-section', () => {
+  it('appends both prev and next buttons to the overlay (not inside .pokemon-image-section)', () => {
     const overlay = makeOverlay();
     const card = overlay.querySelector<HTMLElement>('.details-card') as HTMLElement;
     const section = document.createElement('div');
     section.className = 'pokemon-image-section';
     card.appendChild(section);
     appendNavigationButtons(card, base as never, overlay);
-    expect(section.querySelector('.arrow-button.prev')).toBeTruthy();
-    expect(section.querySelector('.arrow-button.next')).toBeTruthy();
+    expect(overlay.querySelector('.arrow-button.prev')).toBeTruthy();
+    expect(overlay.querySelector('.arrow-button.next')).toBeTruthy();
+    expect(section.querySelector('.arrow-button')).toBeNull();
   });
 
   it('sets accessible aria-labels on both nav buttons', () => {
@@ -117,10 +118,10 @@ describe('appendNavigationButtons', () => {
     section.className = 'pokemon-image-section';
     card.appendChild(section);
     appendNavigationButtons(card, base as never, overlay);
-    expect((section.querySelector('.prev') as Element).getAttribute('aria-label')).toBe(
+    expect((overlay.querySelector('.prev') as Element).getAttribute('aria-label')).toBe(
       'Previous Pokémon',
     );
-    expect((section.querySelector('.next') as Element).getAttribute('aria-label')).toBe(
+    expect((overlay.querySelector('.next') as Element).getAttribute('aria-label')).toBe(
       'Next Pokémon',
     );
   });

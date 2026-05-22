@@ -5,16 +5,11 @@ import {
   setCurrentOverlayPokemon,
   getPreviouslyFocusedElement,
   setPreviouslyFocusedElement,
-  getActiveScrollCleanup,
-  setActiveScrollCleanup,
 } from './state.js';
 import { attachTabListeners } from './tabs.js';
 import { createDetailsHTML, appendNavigationButtons } from './navigation.js';
-import { setupScrollIndicator } from './scroll-indicator.js';
 
 export function closeOverlay(overlay: HTMLElement): void {
-  getActiveScrollCleanup()?.();
-  setActiveScrollCleanup(null);
   overlay.remove();
   document.body.classList.remove('no-scroll');
   document.title = 'Pokédex';
@@ -43,9 +38,8 @@ export function showPokemonDetails(pokemon: Pokemon): void {
   detailsCard.style.color = getTextColorForBackground(detailsBgColor);
   setHTML(detailsCard, createDetailsHTML(pokemon));
   attachTabListeners(detailsCard);
-  appendNavigationButtons(detailsCard, pokemon, overlay);
-
   overlay.appendChild(detailsCard);
+  appendNavigationButtons(detailsCard, pokemon, overlay);
   document.body.appendChild(overlay);
   document.body.classList.add('no-scroll');
 
@@ -55,6 +49,5 @@ export function showPokemonDetails(pokemon: Pokemon): void {
 
   requestAnimationFrame(() => {
     overlay.focus();
-    setupScrollIndicator(detailsCard);
   });
 }
