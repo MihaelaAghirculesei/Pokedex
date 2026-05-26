@@ -1117,7 +1117,7 @@ describe('main.ts — updateDetailsCard slide-out state and rAF lifecycle (lines
     expect(transitionAtOuterRaf).toBe('none');
   });
 
-  it('requestAnimationFrame is called exactly twice for nested slide-in (lines 319-320)', async () => {
+  it('requestAnimationFrame is called exactly three times: once for button positioning, twice for nested slide-in (lines 319-320)', async () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
@@ -1142,7 +1142,7 @@ describe('main.ts — updateDetailsCard slide-out state and rAF lifecycle (lines
     Object.defineProperty(evt, 'propertyName', { value: 'transform' });
     detailsCard.dispatchEvent(evt);
 
-    expect(rafCount).toBe(2);
+    expect(rafCount).toBe(3);
   });
 
   it('inner rAF restores ease-out transition string after slide-in (line 321)', async () => {
