@@ -226,7 +226,11 @@ setTimeout(() => {
   });
 }, 0);
 setTimeout(() => {
-  void import('./monitoring.js').then(({ initMonitoring }) => {
-    initMonitoring();
-  });
+  void import('./monitoring.js')
+    .then(({ initMonitoring }) => {
+      initMonitoring();
+    })
+    .catch(() => {
+      // monitoring is non-critical; ignore load failures (e.g. test teardown)
+    });
 }, 2000);

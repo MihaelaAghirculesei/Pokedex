@@ -42,7 +42,7 @@ export function appendNavigationButtons(
 
   const mo = new MutationObserver(() => {
     if (!overlay.isConnected) {
-      window.removeEventListener('resize', handleResize);
+      if (typeof window !== 'undefined') window.removeEventListener('resize', handleResize);
       mo.disconnect();
       navCleanups.delete(overlay);
     }
