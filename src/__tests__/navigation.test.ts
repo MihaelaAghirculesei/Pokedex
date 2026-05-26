@@ -161,3 +161,89 @@ describe('showPreviousPokemon / showNextPokemon', () => {
     expect(vi.mocked(setCurrentOverlayPokemon)).toHaveBeenCalledWith(p3);
   });
 });
+
+// ─── positionNavButtons ───────────────────────────────────────────────────────
+
+describe('positionNavButtons', () => {
+  function makeConnectedOverlay(): { overlay: HTMLElement; card: HTMLElement } {
+    const overlay = document.createElement('div');
+    const card = document.createElement('div');
+    card.className = 'details-card';
+    card.appendChild(
+      Object.assign(document.createElement('div'), { className: 'pokemon-image-section' }),
+    );
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+    return { overlay, card };
+  }
+
+  it('re-runs positioning on window resize', () => {
+    const rafSpy = vi
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
+    const { overlay, card } = makeConnectedOverlay();
+    appendNavigationButtons(card, base as never, overlay);
+    expect(() => window.dispatchEvent(new Event('resize'))).not.toThrow();
+    rafSpy.mockRestore();
+    expect(overlay.querySelector('.arrow-left')).toBeTruthy();
+  });
+
+  it('returns early when nav buttons are absent during positioning', () => {
+    const rafSpy = vi
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
+    const { overlay, card } = makeConnectedOverlay();
+    appendNavigationButtons(card, base as never, overlay);
+    overlay.querySelectorAll('.arrow-button').forEach((b) => {
+      b.remove();
+    });
+    expect(() => window.dispatchEvent(new Event('resize'))).not.toThrow();
+    rafSpy.mockRestore();
+  });
+});
+
+// ─── onSlideIn ───────────────────────────────────────────────────────────────
+
+describe('onSlideIn in updateDetailsCard', () => {
+  const p1 = make({ id: 1, name: 'bulbasaur' });
+  const p2 = make({ id: 2, name: 'ivysaur' });
+
+  it('repositions buttons when slide-in transition ends', () => {
+    vi.mocked(getPokemonDetails).mockReturnValue([p1, p2] as never);
+    const rafSpy = vi
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
+
+    const overlay = document.createElement('div');
+    const card = document.createElement('div');
+    card.className = 'details-card';
+    card.appendChild(
+      Object.assign(document.createElement('div'), { className: 'pokemon-image-section' }),
+    );
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+
+    showNextPokemon(p1 as never, overlay);
+
+    // Fire onSlideOut → animation chain runs, onSlideIn is registered
+    card.dispatchEvent(new TransitionEvent('transitionend', { propertyName: 'transform' }));
+
+    // Non-transform event → early return in onSlideIn (line 175 branch covered)
+    card.dispatchEvent(new TransitionEvent('transitionend', { propertyName: 'opacity' }));
+
+    // Correct property → onSlideIn main path (lines 176-177)
+    card.dispatchEvent(new TransitionEvent('transitionend', { propertyName: 'transform' }));
+
+    rafSpy.mockRestore();
+    expect(overlay.querySelector('.arrow-left')).toBeTruthy();
+  });
+});
