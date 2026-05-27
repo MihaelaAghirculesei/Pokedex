@@ -39,9 +39,9 @@ export function showPokemonDetails(pokemon: Pokemon): void {
   setHTML(detailsCard, createDetailsHTML(pokemon));
   attachTabListeners(detailsCard);
   overlay.appendChild(detailsCard);
-  appendNavigationButtons(detailsCard, pokemon, overlay);
   document.body.appendChild(overlay);
   document.body.classList.add('no-scroll');
+  appendNavigationButtons(detailsCard, pokemon, overlay);
 
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) closeOverlay(overlay);

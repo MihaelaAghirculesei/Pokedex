@@ -372,11 +372,11 @@ progress {
 }
 
 .arrow-button {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 3px solid black;
-  font-size: 24px;
+  font-size: 20px;
   transition: all 0.3s;
   background-color: var(--secondary-color);
   color: rgb(7, 7, 7);
@@ -641,12 +641,6 @@ progress {
     font-size: 16px;
     padding: 0.7rem 1.2rem;
     margin: 3px;
-  }
-
-  .arrow-button {
-    position: static;
-    transform: none;
-    margin: 10px;
   }
 
   .pokemon-card:hover:before,

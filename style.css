@@ -402,20 +402,10 @@
   font-weight: bold;
 }
 
-.arrow-left {
-  position: absolute;
-  left: max(8px, calc(5vw - 54px));
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
-}
-
+.arrow-left,
 .arrow-right {
-  position: absolute;
-  right: max(8px, calc(5vw - 54px));
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
+  position: fixed;
+  z-index: 1000;
 }
 
 @media (max-width: 310px) {
@@ -538,14 +528,6 @@
   .search-input {
     font-size: 0.8rem;
     padding: 6px 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .arrow-button {
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
   }
 }
 
