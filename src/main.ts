@@ -216,9 +216,13 @@ void fetchPokemonData();
 
 // Defer non-critical modules to keep the critical path lean
 setTimeout(() => {
-  void import('./logo.js').then(({ initLogoAnimation }) => {
-    initLogoAnimation();
-  });
+  void import('./logo.js')
+    .then(({ initLogoAnimation }) => {
+      initLogoAnimation();
+    })
+    .catch(() => {
+      // logo animation is non-critical; ignore load failures (e.g. test teardown)
+    });
 }, LOGO_ANIMATION_DELAY_MS);
 setTimeout(() => {
   void import('./pwa-toast.js').then(({ initPwaUpdateToast }) => {

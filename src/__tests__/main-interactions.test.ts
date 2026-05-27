@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from 'vitest';
 
 vi.mock('../logo.js', () => ({ initLogoAnimation: vi.fn() }));
 vi.mock('../monitoring.js', () => ({ initMonitoring: vi.fn() }));
@@ -110,6 +110,15 @@ function cleanup(): void {
     el.remove();
   });
 }
+
+// Let the logo deferred-import timer (1000 ms) fire while mocks are still live
+// so it doesn't hit the environment after teardown and raise EnvironmentTeardownError.
+afterAll(
+  () =>
+    new Promise<void>((resolve) => {
+      setTimeout(resolve, 1100);
+    }),
+);
 
 // ─── Card rendering ───────────────────────────────────────────────────────────
 
@@ -1635,16 +1644,24 @@ describe('main.ts — direction branches (lines 314, 343)', () => {
   it('openTab exits early without throwing when .details-card is absent from DOM (line 343)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
-    await openOverlay();
-    const detailsCard = document.querySelector<HTMLElement>('.details-card');
-    if (!detailsCard) throw new Error('.details-card not found');
-    // Use document-level querySelector — same pattern as all other tab-button tests.
-    const tabBtn = document.querySelector<HTMLElement>('[data-tab="About"]');
-    if (!tabBtn) throw new Error('[data-tab="About"] not found');
+
+    const { attachTabListeners } = await import('../tabs.js');
+
+    // Build a minimal details-card with a tab button and attach real listeners.
+    const detailsCard = document.createElement('div');
+    detailsCard.className = 'details-card';
+    const tabBtn = document.createElement('button');
+    tabBtn.className = 'tab-button';
+    tabBtn.dataset.tab = 'About';
+    detailsCard.appendChild(tabBtn);
+    document.body.appendChild(detailsCard);
+    attachTabListeners(detailsCard);
+
     // Move tab button out before removing detailsCard so its event listener is preserved.
-    // querySelector('.details-card') inside openTab will now return null → early return (line 343).
+    // openTab receives the detached detailsCard as container — should exit cleanly without throw.
     document.body.appendChild(tabBtn);
     detailsCard.remove();
+
     expect(() => {
       tabBtn.click();
     }).not.toThrow();
@@ -1664,6 +1681,9 @@ describe('main.ts — trapFocus: Shift+Tab on first focusable element (line 420)
   it('Shift+Tab when first focusable element is focused wraps focus to last (line 420 left branch)', async () => {
     stubFetchSuccess();
     await loadAndWaitForCards();
+    await openOverlay();
+
+    // Wait for the keyboard module to register its handler.
     await vi.waitFor(
       () => {
         expect((document as unknown as { _pkKeydown?: unknown })._pkKeydown).toBeTruthy();
@@ -1671,27 +1691,27 @@ describe('main.ts — trapFocus: Shift+Tab on first focusable element (line 420)
       { timeout: 2000 },
     );
 
-    // Build a minimal overlay directly so the test is immune to showPokemonDetails state
-    const overlay = document.createElement('div');
-    overlay.className = 'overlay';
-    overlay.setAttribute('tabindex', '-1');
-    const btn1 = document.createElement('button');
-    btn1.textContent = 'First';
-    const btn2 = document.createElement('button');
-    btn2.textContent = 'Middle';
-    const btn3 = document.createElement('button');
-    btn3.textContent = 'Last';
-    overlay.append(btn1, btn2, btn3);
-    document.body.appendChild(overlay);
+    const overlay = document.querySelector<HTMLElement>('.overlay');
+    if (!overlay) throw new Error('.overlay not found');
+    const focusable = Array.from(
+      overlay.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+    if (focusable.length === 0) throw new Error('No focusable elements in overlay');
 
-    btn1.focus();
-    expect(document.activeElement).toBe(btn1);
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (!first || !last) throw new Error('Need at least one focusable element');
+
+    first.focus();
+    expect(document.activeElement).toBe(first);
 
     document.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }),
     );
 
-    expect(document.activeElement).toBe(btn3);
+    expect(document.activeElement).toBe(last);
   });
 });
 
