@@ -6,6 +6,7 @@
       "url": ["http://localhost/index.html", "http://localhost/impressum.html"],
       "settings": {
         "onlyCategories": ["accessibility", "best-practices", "seo", "performance"],
+        "clearStorage": true,
         "blockedUrlPatterns": [
           "*pokeapi.co*",
           "*wsrv.nl*",

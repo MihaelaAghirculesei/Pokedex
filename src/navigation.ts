@@ -38,11 +38,16 @@ export function appendNavigationButtons(
   const handleResize = () => {
     positionNavButtons(detailsCard, overlay);
   };
-  window.addEventListener('resize', handleResize);
+
+  // AbortController lets us remove the listener from the MutationObserver callback,
+  // which runs in Node.js microtask context where window/document globals are not
+  // injected by the test environment.
+  const ac = new AbortController();
+  window.addEventListener('resize', handleResize, { signal: ac.signal });
 
   const mo = new MutationObserver(() => {
     if (!overlay.isConnected) {
-      if (typeof window !== 'undefined') window.removeEventListener('resize', handleResize);
+      ac.abort();
       mo.disconnect();
       navCleanups.delete(overlay);
     }
@@ -50,7 +55,7 @@ export function appendNavigationButtons(
   mo.observe(document.body, { childList: true });
 
   navCleanups.set(overlay, () => {
-    window.removeEventListener('resize', handleResize);
+    ac.abort();
     mo.disconnect();
   });
 }
