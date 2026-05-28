@@ -188,6 +188,18 @@
         flex-direction: column;
         align-items: center;
       }
+      /* ── Card layout: inlined so real cards have correct dimensions even
+         if the external CSS loads after the first API response ─────────── */
+      .pokemon-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        width: var(--card-width);
+        height: var(--card-height);
+        padding: 15px;
+        overflow: hidden;
+      }
       /* ── Skeleton: must be inline so the first paint is correct before
          the external CSS file finishes loading ────────────────────────── */
       .pokedex-container {
@@ -238,6 +250,8 @@
         background: linear-gradient(90deg, #ddd 25%, #eee 50%, #ddd 75%);
         background-size: 200% 100%;
         animation: skeleton-shimmer 1.5s infinite linear;
+        content-visibility: auto;
+        contain-intrinsic-size: var(--card-width) var(--card-height);
       }
       .skeleton-block {
         border-radius: 6px;
