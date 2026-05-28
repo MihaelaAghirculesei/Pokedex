@@ -143,6 +143,22 @@ describe('main.ts — fetch error handling', () => {
     }
   });
 
+  it('silently ignores a logo load failure', async () => {
+    vi.doMock('../logo.js', () => {
+      throw new Error('simulated load failure');
+    });
+    stubFetchSuccess();
+    vi.useFakeTimers();
+    try {
+      await loadModule();
+      await vi.advanceTimersByTimeAsync(1100);
+      expect(document.querySelector('#pokedex-container')).not.toBeNull();
+    } finally {
+      vi.useRealTimers();
+      vi.doUnmock('../logo.js');
+    }
+  });
+
   it('silently ignores a monitoring load failure', async () => {
     vi.doMock('../monitoring.js', () => {
       throw new Error('simulated load failure');
