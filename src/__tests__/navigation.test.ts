@@ -208,6 +208,49 @@ describe('positionNavButtons', () => {
   });
 });
 
+// ─── navCleanup — MutationObserver teardown ──────────────────────────────────
+
+describe('navCleanup — MutationObserver teardown', () => {
+  it('removes resize listener when overlay is detached from DOM', async () => {
+    const rafSpy = vi
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
+
+    const overlay = document.createElement('div');
+    const card = document.createElement('div');
+    card.className = 'details-card';
+    card.appendChild(
+      Object.assign(document.createElement('div'), { className: 'pokemon-image-section' }),
+    );
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+    appendNavigationButtons(card, base as never, overlay);
+
+    // Trigger callback while overlay is still connected → covers the false branch
+    const dummy = document.createElement('div');
+    document.body.appendChild(dummy);
+    await Promise.resolve();
+
+    // Confirm the resize listener is still active before detach
+    rafSpy.mockClear();
+    window.dispatchEvent(new Event('resize'));
+    expect(rafSpy).toHaveBeenCalledTimes(1);
+
+    overlay.remove();
+    await Promise.resolve(); // flush MutationObserver microtask
+
+    // After cleanup, resize must no longer trigger repositioning
+    rafSpy.mockClear();
+    window.dispatchEvent(new Event('resize'));
+    expect(rafSpy).not.toHaveBeenCalled();
+
+    rafSpy.mockRestore();
+  });
+});
+
 // ─── onSlideIn ───────────────────────────────────────────────────────────────
 
 describe('onSlideIn in updateDetailsCard', () => {
