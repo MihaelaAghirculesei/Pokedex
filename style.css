@@ -679,4 +679,11 @@ body.no-scroll .pokemon-card .pokemon-image {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+
+  .pokemon-card:hover::before,
+  .pokemon-card:hover::after,
+  .pokemon-card:focus-visible::before,
+  .pokemon-card:focus-visible::after {
+    display: none;
+  }
 }
