@@ -265,7 +265,8 @@ npm run build   # produces dist/
 | Language      | Vanilla JavaScript (ES6+)               | TypeScript 6 — strict mode                                                     |
 | Build         | None (direct file serving)              | Vite 8 — HMR + optimized bundles                                               |
 | Offline       | Hand-crafted Service Worker             | Workbox via vite-plugin-pwa                                                    |
-| Testing       | None                                    | Vitest 4 — unit tests + Playwright E2E (Chromium in CI; cross-browser locally) |
+| Testing       | None                                    | Vitest 4 — unit + visual regression tests, Playwright E2E (Chromium in CI; cross-browser locally) |
+| Monitoring    | None                                    | Sentry (`@sentry/browser`) — opt-in via `VITE_SENTRY_DSN`, filters network noise and events without a stack trace |
 | Linting       | None                                    | ESLint + typescript-eslint strict                                              |
 | Git hooks     | None                                    | Husky + lint-staged (pre-commit fix, pre-push gate)                            |
 | Styling       | CSS3 — Grid, Flexbox, Custom Properties | Unchanged                                                                      |
