@@ -147,6 +147,8 @@ Open `http://localhost:5173` in your browser.
 | `npm run lint`                       | ESLint on `src/`                                                 |
 | `npm run lint:fix`                   | ESLint on `src/` with auto-fix                                   |
 | `npm run analyze`                    | Production build + open bundle visualizer                        |
+| `npm run e2e:visual:ci`              | Visual regression tests (screenshot diff), CI mode                |
+| `npm run e2e:visual:update`          | Update visual regression baseline screenshots                     |
 | `npm run ci:local`                   | Full CI pipeline locally (typecheck → lint → test → build → E2E) |
 
 ---
