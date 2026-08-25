@@ -53,8 +53,9 @@ Migrated stack
 ├── TypeScript 6    — strict mode, noUncheckedIndexedAccess, exactOptionalPropertyTypes
 ├── Vite 8          — HMR in development, optimized bundles in production
 ├── Vitest 4        — 243 unit tests covering templates, utilities, and i18n
-├── Playwright      — E2E tests with mocked PokeAPI (Chromium in CI; Firefox + WebKit locally via ALL_BROWSERS=true)
+├── Playwright      — E2E tests with mocked PokeAPI (Chromium in CI; Firefox + WebKit locally via ALL_BROWSERS=true), plus visual regression via screenshot diffing
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
+├── Sentry          — opt-in production error monitoring (VITE_SENTRY_DSN)
 ├── ESLint          — TypeScript strict rules + Vitest plugin
 ├── Husky + lint-staged — pre-commit ESLint fix, pre-push typecheck + tests
 └── GitHub Actions  — CI: typecheck → lint → test → build → E2E on every push
