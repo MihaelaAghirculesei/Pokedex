@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('../logo.js', () => ({ initLogoAnimation: vi.fn() }));
+vi.mock('../pwa-toast.js', () => ({ initPwaUpdateToast: vi.fn() }));
+vi.mock('../monitoring.js', () => ({ initMonitoring: vi.fn() }));
 
 const POKEMON = {
   id: 1,
