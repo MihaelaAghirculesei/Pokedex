@@ -5,6 +5,28 @@ updates:
     schedule:
       interval: 'weekly'
     open-pull-requests-limit: 5
+    groups:
+      size-limit:
+        patterns:
+          - 'size-limit'
+          - '@size-limit/*'
+      commitlint:
+        patterns:
+          - '@commitlint/*'
+      vitest:
+        patterns:
+          - 'vitest'
+          - '@vitest/*'
+      eslint:
+        patterns:
+          - 'eslint'
+          - '@eslint/*'
+          - 'eslint-*'
+          - 'typescript-eslint'
+      playwright:
+        patterns:
+          - 'playwright'
+          - '@playwright/*'
     ignore:
       - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
