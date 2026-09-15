@@ -68,7 +68,7 @@
     "workbox-window": "^7.4.0"
   },
   "dependencies": {
-    "@sentry/browser": "^10.53.1",
+    "@sentry/browser": "^10.74.0",
     "dompurify": "^3.4.15"
   },
   "overrides": {
