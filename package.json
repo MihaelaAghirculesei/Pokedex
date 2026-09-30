@@ -72,7 +72,10 @@
     "dompurify": "^3.4.16"
   },
   "overrides": {
-    "serialize-javascript": "^7.0.5"
+    "serialize-javascript": "^7.0.5",
+    "release-it": {
+      "undici": "^7.29.1"
+    }
   },
   "size-limit": [
     {
