@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { mockPokeApi } from './fixtures/mock-api';
 
 test.beforeEach(async ({ page }) => {
@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 // Waits for every visible .type-icon to finish decoding. The images are
 // loading="lazy" + decoding="async", so they race with the screenshot without
 // this guard — producing a flaky 1324-pixel diff on the badge icons.
-async function waitForTypeIcons(page: Parameters<typeof test>[1]['page']): Promise<void> {
+async function waitForTypeIcons(page: Page): Promise<void> {
   await page.waitForFunction(() => {
     const icons = Array.from(document.querySelectorAll<HTMLImageElement>('.type-icon'));
     return icons.length > 0 && icons.every((img) => img.complete && img.naturalWidth > 0);
