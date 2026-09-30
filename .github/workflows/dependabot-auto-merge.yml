@@ -12,9 +12,10 @@ name: Dependabot auto-merge
 
 on: pull_request_target
 
+# GITHUB_TOKEN is only used to read PR metadata; the merge uses AUTOMERGE_TOKEN.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  pull-requests: read
 
 jobs:
   auto-merge:
