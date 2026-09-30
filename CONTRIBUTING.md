@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- **Node.js 22** (same version as CI — `node -v` to check)
+- **Node.js 24** (same version as CI — `node -v` to check)
 - **npm** (bundled with Node)
 
 ## Setup
