@@ -158,13 +158,7 @@ export default defineConfig(({ mode }) => ({
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       include: ['src/**/*.ts'],
-      exclude: [
-        'src/**/*.test.ts',
-        'src/**/__tests__/**',
-        'src/types.ts',
-        'src/monitoring.ts',
-        'src/vite-env.d.ts',
-      ],
+      exclude: ['src/**/*.test.ts', 'src/**/__tests__/**', 'src/types.ts', 'src/vite-env.d.ts'],
       thresholds: {
         lines: 80,
         functions: 80,
