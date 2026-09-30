@@ -16,8 +16,10 @@ test.describe('Mobile viewport — PWA core flows', () => {
     const box = await card.boundingBox();
     const viewport = page.viewportSize();
 
-    expect(box!.x).toBeGreaterThanOrEqual(0);
-    expect(box!.width).toBeLessThanOrEqual(viewport!.width);
+    if (!box || !viewport) throw new Error('card bounding box or viewport size unavailable');
+
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.width).toBeLessThanOrEqual(viewport.width);
   });
 
   test('tap on card opens the detail overlay', async ({ page }) => {
