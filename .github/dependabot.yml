@@ -28,12 +28,6 @@ updates:
           - 'playwright'
           - '@playwright/*'
     ignore:
-      - dependency-name: 'eslint'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'eslint-plugin-vitest'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@eslint/js'
-        update-types: ['version-update:semver-major']
       # typescript-eslint 8.x peers on typescript <6.1.0, so a TS 7 bump fails
       # `npm ci` with ERESOLVE (PR #71). Remove this entry once a
       # typescript-eslint release widens its peer range to include 7.x (#87).
