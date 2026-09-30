@@ -2,7 +2,7 @@ import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { mockPokeApi } from './fixtures/mock-api';
 
-const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21aa'] as const;
+const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21aa'];
 
 async function assertNoA11yViolations(page: Page): Promise<void> {
   const { violations } = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
