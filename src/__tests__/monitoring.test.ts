@@ -44,9 +44,25 @@ describe('initMonitoring', () => {
       vi.stubEnv('VITE_SENTRY_DSN', 'https://key@o0.ingest.sentry.io/0');
     });
 
-    it('does not send personal data and keeps tracing off', async () => {
+    it('opts out of every personal-data collection category', async () => {
       await loadAndInit();
-      expect(initOptions()).toMatchObject({ sendDefaultPii: false, tracesSampleRate: 0 });
+      expect(initOptions().dataCollection).toEqual({
+        userInfo: false,
+        cookies: false,
+        httpHeaders: false,
+        httpBodies: [],
+        urlQueryParams: false,
+        stackFrameVariables: false,
+        graphQL: { document: false, variables: false },
+        genAI: { inputs: false, outputs: false },
+        databaseQueryData: false,
+        queues: false,
+      });
+    });
+
+    it('keeps tracing off and synthetic stack traces disabled', async () => {
+      await loadAndInit();
+      expect(initOptions()).toMatchObject({ tracesSampleRate: 0, attachStacktrace: false });
     });
 
     it('drops events whose stack trace has no frames', async () => {
