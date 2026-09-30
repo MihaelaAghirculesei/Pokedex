@@ -1,5 +1,15 @@
 name: Dependabot auto-merge
 
+# The merge must NOT be performed with GITHUB_TOKEN: GitHub never starts new
+# workflow runs for events created by GITHUB_TOKEN, so a squash-merge done with
+# it silently skips CI on main — and with it the production deploy, which is
+# chained to CI via `workflow_run` (see deploy.yml).
+#
+# Required Dependabot secret (Settings → Secrets and variables → Dependabot,
+# not "Actions" — runs triggered by Dependabot only see Dependabot secrets):
+#   AUTOMERGE_TOKEN — fine-grained PAT scoped to this repository only, with
+#                     "Contents: Read and write" + "Pull requests: Read and write"
+
 on: pull_request_target
 
 permissions:
@@ -20,7 +30,12 @@ jobs:
 
       - name: Enable auto-merge for patch/minor updates
         if: steps.metadata.outputs.update-type != 'version-update:semver-major'
-        run: gh pr merge --auto --squash "$PR_URL"
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::AUTOMERGE_TOKEN Dependabot secret is missing. Refusing to fall back to GITHUB_TOKEN: merges made with it skip CI on main."
+            exit 1
+          fi
+          gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.AUTOMERGE_TOKEN }}
