@@ -7,12 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.e2e.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix",
+    "lint": "eslint src/ e2e/",
+    "lint:fix": "eslint src/ e2e/ --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "optimize:images": "node scripts/optimize-bg.mjs && node scripts/resize-icons.mjs && node scripts/convert-webp.mjs",
@@ -30,7 +30,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,mjs,cjs,json,css,html,md}": "prettier --write",
-    "src/**/*.ts": "eslint --fix"
+    "{src,e2e}/**/*.ts": "eslint --fix"
   },
   "repository": {
     "type": "git",
