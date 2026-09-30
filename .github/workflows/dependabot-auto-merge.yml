@@ -19,7 +19,11 @@ permissions:
 
 jobs:
   auto-merge:
-    if: github.actor == 'dependabot[bot]'
+    # github.actor is whoever triggered this run, not who opened the PR:
+    # Dependabot updating someone else's PR would satisfy an actor-only check.
+    if: >
+      github.actor == 'dependabot[bot]' &&
+      github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
 
     steps:
