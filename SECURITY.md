@@ -27,9 +27,10 @@ I aim to acknowledge reports within **72 hours** and provide a resolution timeli
 
 - **DOMPurify** — all HTML rendered from external API data is sanitised before insertion into the DOM
 - **Content Security Policy** — strict CSP headers served by Cloudflare Pages (`_headers`)
-- **`X-Frame-Options: DENY`** and other security headers to prevent clickjacking
-- **`npm audit`** runs automatically in CI on every push (`--audit-level=high`)
-- **Dependabot** keeps dependencies up to date with automated PRs
+- **`frame-ancestors 'none'`** (CSP) and `X-Frame-Options: SAMEORIGIN` to prevent clickjacking
+- **`npm audit`** on production dependencies runs in CI on every push and pull request (`--audit-level=high`)
+- **Dependabot** version and security updates; patch/minor bumps auto-merge only after CI passes
+- **Secret scanning** with push protection enabled on the repository
 
 ## Scope
 
