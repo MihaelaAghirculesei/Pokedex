@@ -55,7 +55,7 @@
     "husky": "^9.1.7",
     "jsdom": "^30.1.1",
     "lint-staged": "^17.6.0",
-    "prettier": "^3.9.6",
+    "prettier": "^3.9.9",
     "release-it": "^21.0.2",
     "rollup-plugin-visualizer": "^7.0.1",
     "sharp": "^0.35.5",
