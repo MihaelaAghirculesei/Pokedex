@@ -1,0 +1,75 @@
+name: Health check
+
+# Weekly scan for what automation deliberately leaves to a human: major
+# Dependabot bumps, stuck PRs, a red main, a site that is down, vulnerable
+# production dependencies. Findings land in a single issue titled
+# "❗ Action required …" (GitHub mails it, the title becomes the subject);
+# the issue closes itself once everything passes. No findings, no mail.
+#
+# Dependabot alerts are not read here: GITHUB_TOKEN cannot access that API.
+# npm audit covers the same advisories for production dependencies, and
+# Dependabot security PRs are caught by the pull request check.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: health-check
+  cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  GH_TOKEN: ${{ github.token }}
+  GH_REPO: ${{ github.repository }}
+  ISSUE_LABEL: action-required
+  ISSUE_TITLE: '❗ Action required: repository health check'
+
+# Explicit shell adds pipefail, so a crash in health-check.sh is not hidden by tee.
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  health-check:
+    name: Health check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Run checks
+        run: bash .github/scripts/health-check.sh | tee findings.md
+        env:
+          SITE_URL: https://pokedex-aghirculesei.pages.dev
+          STALE_PR_DAYS: 3
+
+      - name: Open, update or close the action-required issue
+        run: bash .github/scripts/health-notify.sh findings.md
+
+      # A broken health check must not be mistaken for a healthy repository.
+      - name: Report a broken health check
+        if: failure()
+        run: |
+          body="The weekly health check itself failed, so this week's repository state is unknown. See the [run log]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)."
+          issue=$(gh issue list --label "$ISSUE_LABEL" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$issue" ]; then
+            gh issue comment "$issue" --body "$body"
+          else
+            gh label create "$ISSUE_LABEL" --color D73A4A --force \
+              --description "Opened by the weekly health check: needs a human"
+            gh issue create --title "$ISSUE_TITLE" --label "$ISSUE_LABEL" \
+              --assignee "$GITHUB_REPOSITORY_OWNER" --body "$body"
+          fi
