@@ -144,7 +144,7 @@ git add e2e/visual.spec.ts-snapshots/
 git commit -m "test(visual): update baselines after <description>"
 ```
 
-CI auto-regenerates Linux baselines when a visual test fails due to a rendering diff and commits them with `[skip ci]`.
+CI compares against the Linux baselines, and local renders never match the GitHub runner pixel for pixel. To regenerate them on the runner itself, start the **Update visual snapshots** workflow manually (Actions → Run workflow). It regenerates them and commits the result with `[skip ci]`.
 
 ---
 
@@ -154,16 +154,19 @@ CI auto-regenerates Linux baselines when a visual test fails due to a rendering 
 push / PR to main
 │
 ├─ ci job
-│   typecheck → lint → format:check → test:coverage → build → size-limit
+│   typecheck → lint → format:check → test:coverage → build → size-limit → npm audit
 │
 ├─ e2e job  (needs: ci)
-│   functional E2E → visual regression (auto-update on mismatch)
+│   functional E2E → visual regression
 │
-└─ lighthouse job  (needs: ci)
-    build → Lighthouse CI thresholds
+├─ lighthouse job  (needs: ci)
+│   build → Lighthouse CI thresholds
+│
+└─ deploy  (main only, after the whole CI workflow succeeds)
+    build → wrangler pages deploy
 ```
 
-All three jobs must pass before merging. The Lighthouse thresholds are defined in `.lighthouserc.cjs` (or equivalent config at repo root).
+All three jobs must pass before merging. The Lighthouse thresholds are defined in `.lighthouserc.json`. Dependabot patch/minor PRs are merged automatically once these checks are green.
 
 ---
 
