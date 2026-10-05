@@ -97,11 +97,11 @@ Tested in CI with Playwright on **Chromium** (every push) and **Firefox + WebKit
 
 ## Performance & Quality
 
-Lighthouse CI runs automatically on every push (`npm run lighthouse:ci` to reproduce locally). Scores measured on a production build with simulated 4× mobile CPU throttling; external API calls are excluded so results reflect only the app itself.
+Lighthouse CI runs on every push and pull request to `main` (`npm run lighthouse:ci` to reproduce locally). Scores measured on a production build with simulated 4× mobile CPU throttling; external API calls are excluded so results reflect only the app itself.
 
 | Category       |         Score | CI threshold |
 | -------------- | ------------: | :----------: |
-| Performance    |  **91 / 100** |     ≥ 80     |
+| Performance    |  **91 / 100** |     ≥ 90     |
 | Accessibility  | **100 / 100** |     ≥ 90     |
 | Best Practices | **100 / 100** |     ≥ 90     |
 | SEO            | **100 / 100** |     ≥ 90     |
@@ -134,22 +134,22 @@ Open `http://localhost:5173` in your browser.
 
 ### Available scripts
 
-| Command                              | Description                                                      |
-| ------------------------------------ | ---------------------------------------------------------------- |
-| `npm run dev`                        | Start dev server with HMR                                        |
-| `npm run build`                      | Production build to `dist/`                                      |
-| `npm run preview`                    | Preview the production build locally                             |
-| `npm test`                           | Run unit tests with Vitest                                       |
-| `npm run test:coverage`              | Tests + coverage report (HTML + lcov)                            |
-| `npm run test:e2e`                   | E2E tests with Playwright (Chromium + mobile Chrome)             |
-| `ALL_BROWSERS=true npm run test:e2e` | Full cross-browser E2E: Chromium, Firefox, WebKit — local only   |
-| `npm run typecheck`                  | TypeScript type check (no emit)                                  |
-| `npm run lint`                       | ESLint on `src/`                                                 |
-| `npm run lint:fix`                   | ESLint on `src/` with auto-fix                                   |
-| `npm run analyze`                    | Production build + open bundle visualizer                        |
-| `npm run e2e:visual:ci`              | Visual regression tests (screenshot diff), CI mode               |
-| `npm run e2e:visual:update`          | Update visual regression baseline screenshots                    |
-| `npm run ci:local`                   | Full CI pipeline locally (typecheck → lint → test → build → E2E) |
+| Command                              | Description                                                       |
+| ------------------------------------ | ----------------------------------------------------------------- |
+| `npm run dev`                        | Start dev server with HMR                                         |
+| `npm run build`                      | Production build to `dist/`                                       |
+| `npm run preview`                    | Preview the production build locally                              |
+| `npm test`                           | Run unit tests with Vitest                                        |
+| `npm run test:coverage`              | Tests + coverage report (HTML + lcov)                             |
+| `npm run test:e2e`                   | E2E tests with Playwright (Chromium + mobile Chrome)              |
+| `ALL_BROWSERS=true npm run test:e2e` | Full cross-browser E2E: Chromium, Firefox, WebKit — local only    |
+| `npm run typecheck`                  | TypeScript type check of `src/` and `e2e/` (no emit)              |
+| `npm run lint`                       | ESLint on `src/` and `e2e/`                                       |
+| `npm run lint:fix`                   | ESLint on `src/` and `e2e/` with auto-fix                         |
+| `npm run analyze`                    | Production build + open bundle visualizer                         |
+| `npm run e2e:visual:ci`              | Visual regression tests (screenshot diff), CI mode                |
+| `npm run e2e:visual:update`          | Update visual regression baseline screenshots                     |
+| `npm run ci:local`                   | Full CI pipeline locally (checks, tests, build, size, E2E, audit) |
 
 ---
 
