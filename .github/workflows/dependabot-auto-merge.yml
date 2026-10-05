@@ -5,14 +5,19 @@ name: Dependabot auto-merge
 # it silently skips CI on main — and with it the production deploy, which is
 # chained to CI via `workflow_run` (see deploy.yml).
 #
-# Required Dependabot secret (Settings → Secrets and variables → Dependabot,
+# Instead, each run mints a short-lived installation token for a GitHub App
+# installed on this repository only, with "Contents: Read and write" +
+# "Pull requests: Read and write". Installation tokens expire after one hour
+# and the App's private key does not expire, so there is nothing to rotate.
+#
+# Required Dependabot secrets (Settings → Secrets and variables → Dependabot,
 # not "Actions" — runs triggered by Dependabot only see Dependabot secrets):
-#   AUTOMERGE_TOKEN — fine-grained PAT scoped to this repository only, with
-#                     "Contents: Read and write" + "Pull requests: Read and write"
+#   AUTOMERGE_APP_CLIENT_ID   — the App's Client ID
+#   AUTOMERGE_APP_PRIVATE_KEY — a private key generated for the App (.pem)
 
 on: pull_request_target
 
-# GITHUB_TOKEN is only used to read PR metadata; the merge uses AUTOMERGE_TOKEN.
+# GITHUB_TOKEN is only used to read PR metadata; the merge uses the App token.
 permissions:
   contents: read
   pull-requests: read
@@ -33,14 +38,31 @@ jobs:
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
 
-      - name: Enable auto-merge for patch/minor updates
+      - name: Check GitHub App secrets
         if: steps.metadata.outputs.update-type != 'version-update:semver-major'
         run: |
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::error::AUTOMERGE_TOKEN Dependabot secret is missing. Refusing to fall back to GITHUB_TOKEN: merges made with it skip CI on main."
+          if [ -z "$CLIENT_ID" ] || [ -z "$PRIVATE_KEY" ]; then
+            echo "::error::AUTOMERGE_APP_CLIENT_ID and AUTOMERGE_APP_PRIVATE_KEY Dependabot secrets are required. Refusing to fall back to GITHUB_TOKEN: merges made with it skip CI on main."
             exit 1
           fi
-          gh pr merge --auto --squash "$PR_URL"
+        env:
+          CLIENT_ID: ${{ secrets.AUTOMERGE_APP_CLIENT_ID }}
+          PRIVATE_KEY: ${{ secrets.AUTOMERGE_APP_PRIVATE_KEY }}
+
+      - name: Create GitHub App token
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.AUTOMERGE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.AUTOMERGE_APP_PRIVATE_KEY }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Enable auto-merge for patch/minor updates
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.AUTOMERGE_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
