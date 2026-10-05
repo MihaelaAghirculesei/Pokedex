@@ -168,6 +168,8 @@ push / PR to main
 
 All three jobs must pass before merging. The Lighthouse thresholds are defined in `.lighthouserc.json`. Dependabot patch/minor PRs are merged automatically once these checks are green.
 
+Everything automation leaves to a human is caught by the weekly [health check](.github/workflows/health-check.yml) (Mondays, or **Run workflow** on demand): Dependabot PRs without auto-merge (majors), PRs open longer than 3 days, a failed CI or Deploy run on `main`, the live site not answering 200, and vulnerable production dependencies. Findings go into a single issue titled **❗ Action required: repository health check** (label `action-required`). The issue updates when the findings change and closes itself once every check passes, so fix the cause instead of closing it by hand.
+
 ---
 
 ## Opening a pull request

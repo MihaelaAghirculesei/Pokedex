@@ -57,7 +57,7 @@ Migrated stack
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
 ├── ESLint          — TypeScript strict rules + Vitest plugin
 ├── Husky + lint-staged — pre-commit Prettier + ESLint fix, commitlint, pre-push typecheck + tests
-└── GitHub Actions  — CI (checks → tests → build → E2E + Lighthouse), deploy only after green CI
+└── GitHub Actions  — CI (checks → tests → build → E2E + Lighthouse), deploy only after green CI, weekly health check
 ```
 
 **What the migration proves:** knowing when to use vanilla and when to add tooling is a more valuable skill than defaulting to a framework from the start.
