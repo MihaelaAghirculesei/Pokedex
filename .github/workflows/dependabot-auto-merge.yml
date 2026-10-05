@@ -10,8 +10,11 @@ name: Dependabot auto-merge
 # "Pull requests: Read and write". Installation tokens expire after one hour
 # and the App's private key does not expire, so there is nothing to rotate.
 #
-# Required Dependabot secrets (Settings → Secrets and variables → Dependabot,
-# not "Actions" — runs triggered by Dependabot only see Dependabot secrets):
+# Required Actions secrets (Settings → Secrets and variables → Actions).
+# pull_request_target runs read Actions secrets even when Dependabot triggers
+# them (the job log shows "Secret source: Actions"); Dependabot secrets are
+# not visible here. This is safe because the workflow never checks out or
+# runs code from the pull request.
 #   AUTOMERGE_APP_CLIENT_ID   — the App's Client ID
 #   AUTOMERGE_APP_PRIVATE_KEY — a private key generated for the App (.pem)
 
@@ -42,7 +45,7 @@ jobs:
         if: steps.metadata.outputs.update-type != 'version-update:semver-major'
         run: |
           if [ -z "$CLIENT_ID" ] || [ -z "$PRIVATE_KEY" ]; then
-            echo "::error::AUTOMERGE_APP_CLIENT_ID and AUTOMERGE_APP_PRIVATE_KEY Dependabot secrets are required. Refusing to fall back to GITHUB_TOKEN: merges made with it skip CI on main."
+            echo "::error::AUTOMERGE_APP_CLIENT_ID and AUTOMERGE_APP_PRIVATE_KEY Actions secrets are required. Refusing to fall back to GITHUB_TOKEN: merges made with it skip CI on main."
             exit 1
           fi
         env:
