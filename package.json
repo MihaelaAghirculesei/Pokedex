@@ -57,7 +57,7 @@
     "lint-staged": "^17.6.0",
     "prettier": "^3.9.9",
     "release-it": "^21.0.2",
-    "rollup-plugin-visualizer": "^7.0.1",
+    "rollup-plugin-visualizer": "^7.1.1",
     "sharp": "^0.35.5",
     "size-limit": "^14.1.0",
     "typescript": "^6.0.3",
