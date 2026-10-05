@@ -155,22 +155,24 @@ Open `http://localhost:5173` in your browser.
 
 ## Deployment
 
-The live version runs on **Cloudflare Pages** (zero-config static hosting — no server required).
+The live version runs on **Cloudflare Pages** (static hosting — no server required). Deploys are done by GitHub Actions ([`deploy.yml`](.github/workflows/deploy.yml)) with Wrangler, not by Cloudflare's Git integration, so nothing reaches production without passing CI.
 
-### Deploy to Cloudflare Pages
+### How it deploys
 
-1. Push the repo to GitHub (already done if you cloned this).
-2. In the [Cloudflare Pages dashboard](https://pages.cloudflare.com/), create a new project and connect your GitHub repo.
-3. Set the build configuration:
+- **Production** — after the full CI workflow (checks, unit tests, E2E, Lighthouse) succeeds on `main`, the exact commit CI tested is built and deployed with `wrangler pages deploy --branch=main`.
+- **Preview** — every pull request gets its own deploy (`pr-<number>` branch); the URL is posted as a PR comment.
 
-   | Setting                | Value           |
-   | ---------------------- | --------------- |
-   | Build command          | `npm run build` |
-   | Build output directory | `dist`          |
-   | Node.js version        | `22`            |
+### Set it up on your own fork
 
-4. Click **Save and Deploy** — Cloudflare runs the build and assigns a `*.pages.dev` URL automatically.
-5. Every subsequent push to `main` triggers a new deploy.
+1. Create a Cloudflare Pages project (direct upload) and set its name as `name` in [`wrangler.toml`](wrangler.toml). If the repo is connected to Cloudflare via Git, disable its automatic deployments.
+2. Add two repository secrets under **Settings → Secrets and variables → Actions**:
+
+   | Secret                  | Value                                                  |
+   | ----------------------- | ------------------------------------------------------ |
+   | `CLOUDFLARE_API_TOKEN`  | API token with the _Cloudflare Pages: Edit_ permission |
+   | `CLOUDFLARE_ACCOUNT_ID` | Your account ID (Workers & Pages → Overview)           |
+
+3. Push to `main` — CI runs, then the Deploy workflow publishes `dist/`.
 
 ### Deploy to any static host
 
