@@ -25,9 +25,9 @@ npm run dev
 | `npm run dev`                        | Vite dev server with HMR on `localhost:5173`          | Daily development                      |
 | `npm run build`                      | Production bundle to `dist/`                          | Before checking bundle output          |
 | `npm run preview`                    | Serve the `dist/` build locally                       | Verify production build before pushing |
-| `npm run typecheck`                  | `tsc --noEmit` — no files emitted                     | Check types without building           |
-| `npm run lint`                       | ESLint on `src/`                                      | Check code style                       |
-| `npm run lint:fix`                   | ESLint on `src/` with auto-fix                        | Fix fixable lint errors                |
+| `npm run typecheck`                  | `tsc --noEmit` on `src/` and `e2e/`                   | Check types without building           |
+| `npm run lint`                       | ESLint on `src/` and `e2e/`                           | Check code style                       |
+| `npm run lint:fix`                   | ESLint on `src/` and `e2e/` with auto-fix             | Fix fixable lint errors                |
 | `npm run format`                     | Prettier — format all files in place                  | Before committing                      |
 | `npm run format:check`               | Prettier — check formatting without writing           | Verify formatting (runs in CI)         |
 | `npm test`                           | Vitest unit tests (single run)                        | Quick local check                      |
@@ -60,6 +60,7 @@ Hooks are managed by Husky and run automatically — no manual steps needed.
 | Hook         | Trigger      | What runs                                                        |
 | ------------ | ------------ | ---------------------------------------------------------------- |
 | `pre-commit` | `git commit` | `lint-staged` → Prettier format + ESLint `--fix` on staged files |
+| `commit-msg` | `git commit` | `commitlint` — rejects messages that break the convention below  |
 | `pre-push`   | `git push`   | `typecheck` + `npm test`                                         |
 
 If the pre-push hook fails, fix the errors before pushing — do not skip with `--no-verify`.
@@ -107,7 +108,7 @@ ci: upgrade GitHub Actions runners to v6
 
 ### Unit tests (`src/`)
 
-Written with Vitest. Tests live next to the files they cover (`*.test.ts`). Run with `npm test` or `npm run test:watch`.
+Written with Vitest. Tests live in `src/__tests__/` (`*.test.ts`). Run with `npm test` or `npm run test:watch`.
 
 Coverage is uploaded to Codecov on every CI run. To view it locally:
 
