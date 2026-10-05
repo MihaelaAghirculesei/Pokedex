@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from 'vitest';
 
 vi.mock('../logo.js', () => ({ initLogoAnimation: vi.fn() }));
-vi.mock('../monitoring.js', () => ({ initMonitoring: vi.fn() }));
 
 // jsdom does not implement scrollIntoView or scrollBy
 HTMLElement.prototype.scrollIntoView = vi.fn();

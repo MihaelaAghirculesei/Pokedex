@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('../logo.js', () => ({ initLogoAnimation: vi.fn() }));
 vi.mock('../pwa-toast.js', () => ({ initPwaUpdateToast: vi.fn() }));
-vi.mock('../monitoring.js', () => ({ initMonitoring: vi.fn() }));
 
 const POKEMON = {
   id: 1,
@@ -158,22 +157,6 @@ describe('main.ts — fetch error handling', () => {
     } finally {
       vi.useRealTimers();
       vi.doUnmock('../logo.js');
-    }
-  });
-
-  it('silently ignores a monitoring load failure', async () => {
-    vi.doMock('../monitoring.js', () => {
-      throw new Error('simulated load failure');
-    });
-    stubFetchSuccess();
-    vi.useFakeTimers();
-    try {
-      await loadModule();
-      await vi.advanceTimersByTimeAsync(2100);
-      expect(document.querySelector('#pokedex-container')).not.toBeNull();
-    } finally {
-      vi.useRealTimers();
-      vi.doUnmock('../monitoring.js');
     }
   });
 });
