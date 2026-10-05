@@ -51,6 +51,11 @@ jobs:
       - name: Bundle size check
         run: npm run size
 
+      - name: Audit production dependencies
+        # Dev-only findings (Lighthouse's puppeteer chain) are an accepted risk;
+        # only what ships to the browser is gated here.
+        run: npm audit --audit-level=high --omit=dev
+
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
