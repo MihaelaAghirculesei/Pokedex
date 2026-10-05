@@ -55,7 +55,6 @@ Migrated stack
 ├── Vitest 4        — 243 unit tests covering templates, utilities, and i18n
 ├── Playwright      — E2E tests with mocked PokeAPI (Chromium in CI; Firefox + WebKit locally via ALL_BROWSERS=true), plus visual regression via screenshot diffing
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
-├── Sentry          — opt-in production error monitoring (VITE_SENTRY_DSN)
 ├── ESLint          — TypeScript strict rules + Vitest plugin
 ├── Husky + lint-staged — pre-commit ESLint fix, pre-push typecheck + tests
 └── GitHub Actions  — CI: typecheck → lint → test → build → E2E on every push
@@ -263,19 +262,18 @@ npm run build   # produces dist/
 
 ## Tech
 
-| Layer         | Phase 1 — Vanilla JS                    | Phase 2 — TypeScript                                                                                              |
-| ------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Language      | Vanilla JavaScript (ES6+)               | TypeScript 6 — strict mode                                                                                        |
-| Build         | None (direct file serving)              | Vite 8 — HMR + optimized bundles                                                                                  |
-| Offline       | Hand-crafted Service Worker             | Workbox via vite-plugin-pwa                                                                                       |
-| Testing       | None                                    | Vitest 4 — unit + visual regression tests, Playwright E2E (Chromium in CI; cross-browser locally)                 |
-| Monitoring    | None                                    | Sentry (`@sentry/browser`) — opt-in via `VITE_SENTRY_DSN`, filters network noise and events without a stack trace |
-| Linting       | None                                    | ESLint + typescript-eslint strict                                                                                 |
-| Git hooks     | None                                    | Husky + lint-staged (pre-commit fix, pre-push gate)                                                               |
-| Styling       | CSS3 — Grid, Flexbox, Custom Properties | Unchanged                                                                                                         |
-| Data          | PokéAPI v2 via Fetch + AbortController  | Unchanged                                                                                                         |
-| Security      | None                                    | DOMPurify + HTTP security headers (CSP, X-Frame-Options…)                                                         |
-| Accessibility | WAI-ARIA, focus trap, keyboard nav      | Unchanged                                                                                                         |
+| Layer         | Phase 1 — Vanilla JS                    | Phase 2 — TypeScript                                                                              |
+| ------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Language      | Vanilla JavaScript (ES6+)               | TypeScript 6 — strict mode                                                                        |
+| Build         | None (direct file serving)              | Vite 8 — HMR + optimized bundles                                                                  |
+| Offline       | Hand-crafted Service Worker             | Workbox via vite-plugin-pwa                                                                       |
+| Testing       | None                                    | Vitest 4 — unit + visual regression tests, Playwright E2E (Chromium in CI; cross-browser locally) |
+| Linting       | None                                    | ESLint + typescript-eslint strict                                                                 |
+| Git hooks     | None                                    | Husky + lint-staged (pre-commit fix, pre-push gate)                                               |
+| Styling       | CSS3 — Grid, Flexbox, Custom Properties | Unchanged                                                                                         |
+| Data          | PokéAPI v2 via Fetch + AbortController  | Unchanged                                                                                         |
+| Security      | None                                    | DOMPurify + HTTP security headers (CSP, X-Frame-Options…)                                         |
+| Accessibility | WAI-ARIA, focus trap, keyboard nav      | Unchanged                                                                                         |
 
 ---
 
