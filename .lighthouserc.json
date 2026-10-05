@@ -7,12 +7,7 @@
       "settings": {
         "onlyCategories": ["accessibility", "best-practices", "seo", "performance"],
         "clearStorage": true,
-        "blockedUrlPatterns": [
-          "*pokeapi.co*",
-          "*wsrv.nl*",
-          "*raw.githubusercontent.com*",
-          "*.ingest.sentry.io*"
-        ]
+        "blockedUrlPatterns": ["*pokeapi.co*", "*wsrv.nl*", "*raw.githubusercontent.com*"]
       }
     },
     "assert": {
