@@ -56,8 +56,8 @@ Migrated stack
 ├── Playwright      — E2E tests with mocked PokeAPI (Chromium in CI; Firefox + WebKit locally via ALL_BROWSERS=true), plus visual regression via screenshot diffing
 ├── Workbox PWA     — declarative offline caching via vite-plugin-pwa
 ├── ESLint          — TypeScript strict rules + Vitest plugin
-├── Husky + lint-staged — pre-commit ESLint fix, pre-push typecheck + tests
-└── GitHub Actions  — CI: typecheck → lint → test → build → E2E on every push
+├── Husky + lint-staged — pre-commit Prettier + ESLint fix, commitlint, pre-push typecheck + tests
+└── GitHub Actions  — CI (checks → tests → build → E2E + Lighthouse), deploy only after green CI
 ```
 
 **What the migration proves:** knowing when to use vanilla and when to add tooling is a more valuable skill than defaulting to a framework from the start.
@@ -271,7 +271,7 @@ npm run build   # produces dist/
 | Offline       | Hand-crafted Service Worker             | Workbox via vite-plugin-pwa                                                                       |
 | Testing       | None                                    | Vitest 5 — unit + visual regression tests, Playwright E2E (Chromium in CI; cross-browser locally) |
 | Linting       | None                                    | ESLint + typescript-eslint strict                                                                 |
-| Git hooks     | None                                    | Husky + lint-staged (pre-commit fix, pre-push gate)                                               |
+| Git hooks     | None                                    | Husky + lint-staged (pre-commit fix, commitlint, pre-push gate)                                   |
 | Styling       | CSS3 — Grid, Flexbox, Custom Properties | Unchanged                                                                                         |
 | Data          | PokéAPI v2 via Fetch + AbortController  | Unchanged                                                                                         |
 | Security      | None                                    | DOMPurify + HTTP security headers (CSP, X-Frame-Options…)                                         |
