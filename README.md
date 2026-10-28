@@ -291,7 +291,7 @@ npm run build   # produces dist/
 
 ## Contact
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-aghirculesei.pages.dev-FF6B6B?style=flat&logo=firefox&logoColor=white)](https://aghirculesei.pages.dev/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-aghirculesei.de-FF6B6B?style=flat&logo=firefox&logoColor=white)](https://aghirculesei.de/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Mihaela_Aghirculesei-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/mihaela-aghirculesei-84147a23b/)
 [![GitHub](https://img.shields.io/badge/GitHub-MihaelaAghirculesei-181717?style=flat&logo=github&logoColor=white)](https://github.com/MihaelaAghirculesei)
 [![Email](https://img.shields.io/badge/Email-aghirculesei@gmail.com-EA4335?style=flat&logo=gmail&logoColor=white)](mailto:aghirculesei@gmail.com)
