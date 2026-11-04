@@ -1,6 +1,7 @@
 {
   "name": "pokedex",
   "version": "1.0.0",
+  "packageManager": "npm@11.19.1",
   "description": "Interactive Pokédex built with TypeScript and Vite",
   "type": "module",
   "scripts": {
