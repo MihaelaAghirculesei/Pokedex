@@ -730,7 +730,7 @@ describe('main.ts — slide-in animation via nested rAF (lines 314-327)', () => 
   });
   afterEach(cleanup);
 
-  it('transitionend + synchronous rAF resets transform to translateX(0) and opacity to 1', async () => {
+  it('transitionend + synchronous rAF resets transform to translateX(0px) and opacity to 1', async () => {
     stubFetchSuccessTwo();
     await import('../main.js');
     await vi.waitFor(
@@ -750,7 +750,7 @@ describe('main.ts — slide-in animation via nested rAF (lines 314-327)', () => 
     const evt = new Event('transitionend') as TransitionEvent;
     Object.defineProperty(evt, 'propertyName', { value: 'transform' });
     detailsCard.dispatchEvent(evt);
-    expect(detailsCard.style.transform).toBe('translateX(0)');
+    expect(detailsCard.style.transform).toBe('translateX(0px)');
     expect(detailsCard.style.opacity).toBe('1');
   });
 
