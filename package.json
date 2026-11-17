@@ -69,7 +69,7 @@
     "workbox-window": "^7.4.0"
   },
   "dependencies": {
-    "dompurify": "^3.4.17"
+    "dompurify": "^3.4.18"
   },
   "overrides": {
     "serialize-javascript": "^7.0.5",
